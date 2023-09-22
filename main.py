@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 from discord import Embed , Color
+import webser
+from webser import keep_alive
 
 # Define the intents
 intents = discord.Intents.all()
@@ -71,6 +73,7 @@ async def welcome(ctx , member: discord.Member) :
                             f"BANNED players."
 
     await ctx.send(embed=embed)
+
 
 @client.command()
 async def ping(ctx) :
@@ -162,12 +165,12 @@ async def removenick(ctx , member: discord.Member) :
 
 
 @client.command(name='ts-m')
-@commands.has_role('admin')
+@commands.has_role('ADMN')
 async def ts_m(ctx , member: discord.Member , * , new_nickname) :
     flag1 = False
     flag2 = False
 
-    channel = client.get_channel(1154448688056385689)
+    channel = client.get_channel(1022987386172493955)
     try :
         await member.add_roles(discord.utils.get(ctx.guild.roles , name='red'))
         embed = Embed(color=Color.green())
@@ -209,10 +212,16 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
 
         await channel.send(embed=embed3)
 
-#hhs
+
 @client.command()
 async def emoji(ctx) :
     await ctx.send("<:Super_bowler:1138182991877775370>")
 
 
-client.run('MTE1NDM4MTA1NjkwMDg3MDE3NA.GzTN5l.t6uyyP_kpdlBpQbO5fA7Sy_JqVkVuhHIUxO7MQ')
+if __name__ == '__main__' :
+    keep_alive()
+    client.run('MTE1NDM4MTA1NjkwMDg3MDE3NA.GzTN5l.t6uyyP_kpdlBpQbO5fA7Sy_JqVkVuhHIUxO7MQ')
+
+
+
+
