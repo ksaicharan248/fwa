@@ -82,7 +82,7 @@ async def ping(ctx) :
 
 
 @client.command()
-@commands.has_any_role("admin" , "red")
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' )
 async def role(ctx , user: discord.Member , *roles: discord.Role) :
     if ctx.author.guild_permissions.manage_roles :
         if ctx.guild.me.guild_permissions.manage_roles :
@@ -95,7 +95,7 @@ async def role(ctx , user: discord.Member , *roles: discord.Role) :
 
 
 @client.command(name="rm")
-@commands.has_any_role("admin" , "red")
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' )
 async def rm_role(ctx , user: discord.Member , *roles: discord.Role) :
     if ctx.author.guild_permissions.manage_roles :
         if ctx.guild.me.guild_permissions.manage_roles :
@@ -108,7 +108,7 @@ async def rm_role(ctx , user: discord.Member , *roles: discord.Role) :
 
 
 @client.command()
-@commands.has_role("admin")  # Replace with the role that has permission to change nicknames
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' ,'TSL', 'WAL', 'HML')
 async def changenick(ctx , member: discord.Member , * , new_nickname) :
     # Check if the bot has the necessary permissions and role hierarchy to change nicknames
     if not ctx.me.top_role > member.top_role :
@@ -130,7 +130,7 @@ async def changenick(ctx , member: discord.Member , * , new_nickname) :
 
 
 @client.command()
-@commands.has_role('admin')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' ,'TSL', 'WAL', 'HML')
 async def rmrole(ctx , member: discord.Member) :
     try :
         await member.remove_roles(discord.utils.get(ctx.guild.roles , name='red'))
@@ -140,7 +140,7 @@ async def rmrole(ctx , member: discord.Member) :
 
 
 @client.command()
-@commands.has_role('admin')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' ,'TSL', 'WAL', 'HML')
 async def removenick(ctx , member: discord.Member) :
     # Check if the bot has the necessary permissions and role hierarchy to change nicknames
     if not ctx.me.top_role > member.top_role :
@@ -328,4 +328,4 @@ async def emoji(ctx) :
 
 if __name__ == '__main__' :
     keep_alive()
-    client.run('MTE1NDM4MTA1NjkwMDg3MDE3NA.GdXsKN.xo3qCy4rkuMWFb_gVvkbLwDSgjWpZFOvxtDkG4')
+    client.run('MTE1NDM4MTA1NjkwMDg3MDE3NA.GnLbP6.nMLkHhzQdgqncOvaxqYES-o-mRWrgwye1dg36Q')
