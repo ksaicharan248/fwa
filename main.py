@@ -1,8 +1,11 @@
+import io
 import discord
 from discord.ext import commands
 from discord import Embed , Color
 from key import key
 from webser import keep_alive
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 # Define the intents
 intents = discord.Intents.all()
@@ -324,21 +327,110 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
 
 @client.command()
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
-async def unq(ctx , member: discord.Member) :
+async def unq(ctx , member: discord.Member , * , new_nickname=None) :
     await ctx.message.delete()
-    await member.remove_roles(*member.roles)
+    if new_nickname is None :
+        await member.edit(nick=f"unq - {member.name}")
+    else :
+        await member.edit(nick=f"{new_nickname}")
+    await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
     await member.add_roles(discord.utils.get(ctx.guild.roles , name='unqualified❌'))
     channel = client.get_channel(1055440018279235657)
     await channel.send(f"{member.mention} has been unqualified by {ctx.author.mention}")
-    e = Embed(color=Color.dark_purple())
+    e = Embed(title="UNQUALIFIED " , color=Color.dark_purple())
     e.description = f'⚠️ You have been placed here Because you havent Fulfill the Minimum Requirements to Apply to ' \
                     f'Join our Clans. To check our Requirements please type \n ➡️ !reqs \n\n🔍 We are always here also ' \
                     f'to Assist you.\n❌ Donot request to Join in Game unless Instructed to do so\n🏛️You may stay in ' \
                     f'your current Clan or join a Random Clan while upgrading your base to Meet our Clan Requirements. ' \
-                    f'But do not join any FWA Blacklisted clans.\n ✅When your requirements are met, type !wel \nplease ' \
-                    f'follow all the instructions \n authour : {ctx.author.mention}'
+                    f'But do not join any FWA Blacklisted clans.\n ✅When your requirements are met, type !wel \n ' \
+                    f'\n**please follow all the instructions** \n authour : {ctx.author.mention}'
 
-    await member.send(embed=e)
+    await channel.send(embed=e)
+
+
+@client.command()
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
+async def approve(ctx , member: discord.Member , * , new_nickname=None) :
+    await ctx.message.delete()
+    if new_nickname is None :
+        await member.edit(nick=f"TH - {member.name}")
+    else :
+        await member.edit(nick=f"{new_nickname}")
+    await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
+    await member.add_roles(discord.utils.get(ctx.guild.roles , name='approved✅'))
+    channel = client.get_channel(1055439744739315743)
+    await channel.send(f"{member.mention} has been approved by {ctx.author.mention}")
+    e = Embed(title="APPROVED " , color=Color.brand_green())
+    e.description = f'🎯 Clan spots will be posted in this {client.get_channel(1055439744739315743).mention}, make sure to check it\n' \
+                    f'🎯You will be **@notified** if a spot available for your TH level.\n🎯Just make sure to reply as fast as possible to ensure your spot.\n' \
+                    f'🎯Donot request to join in game unless instructed to do so.\n' \
+                    f'🎯You may stay in your **current clan** or join a random clan while waiting for a **spot**.\n' \
+                    f'🎯Make sure to have **NO war timer** when you answer for spots.\n' \
+                    f'🎯Ask in {client.get_channel(1126856734095462511).mention} if you have any questions. \n authour : {ctx.author.mention}'
+    await channel.send(embed=e)
+
+
+@client.command()
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
+async def re(ctx , member: discord.Member , * , new_nickname=None) :
+    await ctx.message.delete()
+    if new_nickname is None :
+        await member.edit(nick=f"re - {member.name}")
+    else :
+        await member.edit(nick=f"{new_nickname}")
+    await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
+    await member.add_roles(discord.utils.get(ctx.guild.roles , name='re - apply'))
+    channel = client.get_channel(1055440286806966322)
+    await channel.send(f"{member.mention} has been sent to re-apply by {ctx.author.mention}")
+    e = Embed(title="RE-APPLY \n📛You have been Placed here due to the Following Reasons📛\n" , color=Color.gold())
+    e.description = f'• You have been Inactive from a Long time in our Clans. \n ' \
+                    f'• You Left without informing your Clans Leader/Co-Leader.\n' \
+                    f'• Your Activity seems Suspicious in the Server.\n' \
+                    f'• If you wish to reapply and join us again\n\n' \
+                    f'**Do the following**\n' \
+                    f'• Ping one of clan leaders using @thiername\n' \
+                    f'• Or just type " I need help reapplying "\n' \
+                    f'• We will assist you further, be kind and wait until we reply.'
+    await channel.send(embed=e)
+
+
+@client.command()
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML')
+async def check(ctx , * , tags) :
+    tags = tags.strip('#')
+    if tags is None :
+        await ctx.send("Missing tags")
+    else :
+        try :
+            opt = Options()
+            opt.add_argument('--headless')
+            opt.add_argument('--no-sandbox')
+            driver = webdriver.Chrome(options=opt)
+            clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
+            coslink = 'https://www.clashofstats.com/players/' + tags
+            driver.get(clink)
+            div_element = driver.find_element('css selector' , '#top')
+            screenshot = div_element.screenshot_as_png
+            screenshot_bytes = io.BytesIO(screenshot)
+            screenshot_bytes.seek(0)
+            driver.quit()
+            e = Embed(title="Member Check \n\n" , color=Color.blue())
+            e.description = f'[**Chocolate Clash**]({clink}) \n\n [clash of stats]({coslink}) \n' \
+                            f'📛 please check the palyer is **Banned** or not conform the base is correct.'
+            screenshot_file = discord.File(screenshot_bytes , filename="screenshot.png")
+            e.set_image(url="attachment://screenshot.png")
+
+            e.set_footer(text=f"Requested by {ctx.author.display_name} " ,icon_url=ctx.author.display_avatar)
+            await ctx.send(embed=e , file=screenshot_file)
+        except Exception as e :
+            clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
+            coslink = 'https://www.clashofstats.com/players/' + tags
+            e = Embed(title="Member Check \n\n" , color=Color.blue())
+            e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[CLASH OF STATS]({coslink}) \n' \
+                            f'📛 please check and ensure the palyer is **Banned** or not,then conform the base is correct or not.'
+
+            e.set_footer(text=f"Requested by {ctx.author.display_name} ",icon_url=ctx.author.display_avatar)
+            await ctx.send(embed=e)
 
 
 @client.command()
