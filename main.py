@@ -41,6 +41,7 @@ async def on_command_error(ctx , error) :
 async def on_member_join(member) :
     welcome_channel = client.get_channel(1055439542863274038)
     if welcome_channel :
+        await member.add_roles(discord.utils.get(member.guild.roles , name='🔸ENTRY🔸'))
         await welcome_channel.send(f'Hello, {member.mention} !')
         embed = Embed(title=f"Welcome {member.mention} to to 🛡 — THE SHIELD —🛡 !" , color=Color.green())
         embed.description = f"You can read our rules and details about 💎FWA💎 in {client.get_channel(1054438569378332754).mention} \n\n If you wish to " \
@@ -222,8 +223,9 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
         await ctx.message.delete()
         channel = client.get_channel(1063291093178916884)
         try :
-            await member.add_roles(discord.utils.get(ctx.guild.roles , name='red'))
-            await member.remove_roles(discord.utils.get(ctx.guild.roles , name='yellow'))
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='HMC'))
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
+            await member.remove_roles(discord.utils.get(ctx.guild.roles , name='🔸ENTRY🔸'))
             embed = Embed(color=Color.green())
             embed.description = f"✅Changed roles for {member.name}, +HMC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
             await channel.send(embed=embed)
