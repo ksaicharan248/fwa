@@ -167,7 +167,7 @@ async def removenick(ctx , member: discord.Member) :
 async def ts_m(ctx , member: discord.Member , * , new_nickname) :
     if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
-        channel = client.get_channel(1154470458314457178)
+        channel = client.get_channel(1055527200193007626)
         try :
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='TSC'))
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
