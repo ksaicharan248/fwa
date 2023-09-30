@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import Embed , Color
-import webser
+from key import key
 from webser import keep_alive
 
 # Define the intents
@@ -39,20 +39,19 @@ async def on_command_error(ctx , error) :
 
 @client.event
 async def on_member_join(member) :
-    welcome_channel_id = 1154448688056385689
-    welcome_channel = client.get_channel(welcome_channel_id)
+    welcome_channel = client.get_channel(1055439542863274038)
     if welcome_channel :
         await welcome_channel.send(f'Hello, {member.mention} !')
         embed = Embed(title=f"Welcome {member.mention} to to 🛡 — THE SHIELD —🛡 !" , color=Color.green())
-        embed.description = f"You can read our rules and details about 💎FWA💎 in {client.get_channel(1154470458314457178).mention} \n\n If you wish to " \
+        embed.description = f"You can read our rules and details about 💎FWA💎 in {client.get_channel(1054438569378332754).mention} \n\n If you wish to " \
                             f"join one of our clans then please follow the steps below.\n\n**•Step 1** : Post your " \
                             f"PLAYER tag\n**•Step 2** : Post a picture of My Profile tab\n**•Step 3**: Post a picture " \
                             f"of your 💎FWA💎 base \nIf you don’t have a 💎FWA💎 base then you can trigger \n```!th#```\n(" \
                             f"Replace # with your townhall level) OR visit  " \
-                            f"{client.get_channel(1154470491856314378).mention}\n**•Step 4**: Have some patience, " \
+                            f"{client.get_channel(1054438501233479760).mention}\n**•Step 4**: Have some patience, " \
                             f"you will be assisted shortly.\n\n We may not have an instant space but **ASAP** we have " \
                             f"a space, we will recruit you. Till then we will put you in " \
-                            f"{client.get_channel(1154470512257413210).mention} \n\n🚨Note - We don’t recruit FWA " \
+                            f"{client.get_channel(1055439744739315743).mention} \n\n🚨Note - We don’t recruit FWA " \
                             f"BANNED players."
         await welcome_channel.send(embed=embed)
 
@@ -61,15 +60,15 @@ async def on_member_join(member) :
 async def welcome(ctx , member: discord.Member) :
     await ctx.send(f'Hello, {member.mention} !')
     embed = Embed(title=f"Welcome {member.mention} to to 🛡 — THE SHIELD —🛡 !" , color=Color.brand_green())
-    embed.description = f"You can read our rules and details about 💎FWA💎 in {client.get_channel(1003969955001274429).mention} \n\n If you wish to " \
+    embed.description = f"You can read our rules and details about 💎FWA💎 in {client.get_channel(1054438569378332754).mention} \n\n If you wish to " \
                         f"join one of our clans then please follow the steps below.\n\n**•Step 1** : Post your " \
                         f"PLAYER tag\n**•Step 2** : Post a picture of My Profile tab\n**•Step 3**: Post a picture " \
                         f"of your 💎FWA💎 base \nIf you don’t have a 💎FWA💎 base then you can trigger \n```!th#```\n(" \
                         f"Replace # with your townhall level) OR visit  " \
-                        f"{client.get_channel(1004071348617887774).mention}\n**•Step 4**: Have some patience, " \
+                        f"{client.get_channel(1054438501233479760).mention}\n**•Step 4**: Have some patience, " \
                         f"you will be assisted shortly.\n\n We may not have an instant space but **ASAP** we have " \
                         f"a space, we will recruit you. Till then we will put you in " \
-                        f"{client.get_channel(1004121615891705948).mention} \n\n🚨Note - We don’t recruit FWA " \
+                        f"{client.get_channel(1055439744739315743).mention} \n\n🚨Note - We don’t recruit FWA " \
                         f"BANNED players."
 
     await ctx.send(embed=embed)
@@ -82,7 +81,7 @@ async def ping(ctx) :
 
 
 @client.command()
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' )
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def role(ctx , user: discord.Member , *roles: discord.Role) :
     if ctx.author.guild_permissions.manage_roles :
         if ctx.guild.me.guild_permissions.manage_roles :
@@ -95,7 +94,7 @@ async def role(ctx , user: discord.Member , *roles: discord.Role) :
 
 
 @client.command(name="rm")
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' )
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def rm_role(ctx , user: discord.Member , *roles: discord.Role) :
     if ctx.author.guild_permissions.manage_roles :
         if ctx.guild.me.guild_permissions.manage_roles :
@@ -108,7 +107,7 @@ async def rm_role(ctx , user: discord.Member , *roles: discord.Role) :
 
 
 @client.command()
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' ,'TSL', 'WAL', 'HML')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'TSL' , 'WAL' , 'HML')
 async def changenick(ctx , member: discord.Member , * , new_nickname) :
     # Check if the bot has the necessary permissions and role hierarchy to change nicknames
     if not ctx.me.top_role > member.top_role :
@@ -130,7 +129,7 @@ async def changenick(ctx , member: discord.Member , * , new_nickname) :
 
 
 @client.command()
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' ,'TSL', 'WAL', 'HML')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'TSL' , 'WAL' , 'HML')
 async def rmrole(ctx , member: discord.Member) :
     try :
         await member.remove_roles(discord.utils.get(ctx.guild.roles , name='red'))
@@ -140,7 +139,7 @@ async def rmrole(ctx , member: discord.Member) :
 
 
 @client.command()
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' ,'TSL', 'WAL', 'HML')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'TSL' , 'WAL' , 'HML')
 async def removenick(ctx , member: discord.Member) :
     # Check if the bot has the necessary permissions and role hierarchy to change nicknames
     if not ctx.me.top_role > member.top_role :
@@ -322,10 +321,29 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
 
 
 @client.command()
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
+async def unq(ctx , member: discord.Member) :
+    await ctx.message.delete()
+    await member.remove_roles(*member.roles)
+    await member.add_roles(discord.utils.get(ctx.guild.roles , name='unqualified❌'))
+    channel = client.get_channel(1055440018279235657)
+    await channel.send(f"{member.mention} has been unqualified by {ctx.author.mention}")
+    e = Embed(color=Color.dark_purple())
+    e.description = f'⚠️ You have been placed here Because you havent Fulfill the Minimum Requirements to Apply to ' \
+                    f'Join our Clans. To check our Requirements please type \n ➡️ !reqs \n\n🔍 We are always here also ' \
+                    f'to Assist you.\n❌ Donot request to Join in Game unless Instructed to do so\n🏛️You may stay in ' \
+                    f'your current Clan or join a Random Clan while upgrading your base to Meet our Clan Requirements. ' \
+                    f'But do not join any FWA Blacklisted clans.\n ✅When your requirements are met, type !wel \nplease ' \
+                    f'follow all the instructions \n authour : {ctx.author.mention}'
+
+    await member.send(embed=e)
+
+
+@client.command()
 async def emoji(ctx) :
     await ctx.send("<:Super_bowler:1138182991877775370>")
 
 
 if __name__ == '__main__' :
     keep_alive()
-    client.run('MTE1NDM4MTA1NjkwMDg3MDE3NA.GnLbP6.nMLkHhzQdgqncOvaxqYES-o-mRWrgwye1dg36Q')
+    client.run(key)
