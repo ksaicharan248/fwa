@@ -415,7 +415,7 @@ async def check(ctx , * , tags) :
             screenshot_bytes.seek(0)
             driver.quit()
             e = Embed(title="Member Check \n\n" , color=Color.blue())
-            e.description = f'[**Chocolate Clash**]({clink}) \n\n [clash of stats]({coslink}) \n' \
+            e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
                             f'📛 please check the palyer is **Banned** or not conform the base is correct.'
             screenshot_file = discord.File(screenshot_bytes , filename="screenshot.png")
             e.set_image(url="attachment://screenshot.png")
@@ -426,7 +426,7 @@ async def check(ctx , * , tags) :
             clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
             coslink = 'https://www.clashofstats.com/players/' + tags
             e = Embed(title="Member Check \n\n" , color=Color.blue())
-            e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[CLASH OF STATS]({coslink}) \n' \
+            e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
                             f'📛 please check and ensure the palyer is **Banned** or not,then conform the base is correct or not.'
 
             e.set_footer(text=f"Requested by {ctx.author.display_name} ",icon_url=ctx.author.display_avatar)
