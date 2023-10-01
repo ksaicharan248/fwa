@@ -35,4 +35,4 @@ def get_id(th) :
 
 
 if __name__ == '__main__' :
-    get_user()
+    print(get_user('9JVUQGYLQ'))
