@@ -1,11 +1,13 @@
 import io
 import discord
 from discord.ext import commands
+import COC
 from discord import Embed , Color
-from key import key
+from setkey import keyy
 from webser import keep_alive
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+import pickle
 
 # Define the intents
 intents = discord.Intents.all()
@@ -396,11 +398,21 @@ async def re(ctx , member: discord.Member , * , new_nickname=None) :
 
 @client.command()
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML')
-async def check(ctx , * , tags) :
-    tags = tags.strip('#')
-    if tags is None :
-        await ctx.send("Missing tags")
+async def check(ctx , * , target=None) :
+    if target is None :
+        e = Embed(title="Please provide a user mention or ID." , color=Color.red())
+        await ctx.send(embed=e)
+        return
     else :
+        if ctx.message.mentions :
+            user = ctx.message.mentions[0].id
+            with open('userdata.pkl','rb') as f:
+                data = pickle.load(f)
+            tags = data[user]
+        else :
+            tags = target
+            tags = tags.strip('#')
+
         try :
             opt = Options()
             opt.add_argument('--headless')
@@ -420,7 +432,7 @@ async def check(ctx , * , tags) :
             screenshot_file = discord.File(screenshot_bytes , filename="screenshot.png")
             e.set_image(url="attachment://screenshot.png")
 
-            e.set_footer(text=f"Requested by {ctx.author.display_name} " ,icon_url=ctx.author.display_avatar)
+            e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e , file=screenshot_file)
         except Exception as e :
             clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
@@ -429,7 +441,7 @@ async def check(ctx , * , tags) :
             e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
                             f'📛 please check and ensure the palyer is **Banned** or not,then conform the base is correct or not.'
 
-            e.set_footer(text=f"Requested by {ctx.author.display_name} ",icon_url=ctx.author.display_avatar)
+            e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
 
 
@@ -438,6 +450,69 @@ async def emoji(ctx) :
     await ctx.send("<:Super_bowler:1138182991877775370>")
 
 
+''''
+                                        coc
+'''
+
+
+@client.command()
+async def link(ctx , tag=None , token=None) :
+    tag = tag.strip('#')
+    with open('userdata.pkl' , 'rb') as file :
+        user_data = pickle.load(file)
+    if ctx.author.id in user_data.keys() :
+        e = Embed(title="You have already linked your account <:ver:1157952898362261564>" , colour=Color.green())
+        await ctx.send(embed=e)
+        await ctx.send()
+        return
+    else :
+        if tag is None or token is None :
+            await ctx.send("Please provide a tag and token correctly")
+        else :
+            sta = COC.verify(tag , token)
+            if sta[0] == 200 and sta[1]["status"] == "ok" :
+                player = COC.get_user(tag=tag)
+                e = Embed(
+                    title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
+                    color=Color.blue())
+                e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {ctx.author.mention}'
+                e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
+                await ctx.send(embed=e)
+                user_data[ctx.author.id]=tag
+                with open('userdata.pkl' , 'wb') as file :
+                    pickle.dump(user_data , file)
+            else :
+                e = Embed(title="Link Error" , color=Color.red())
+                e.description = f'{sta[0]} : {sta[1]["status"]}'
+                await ctx.send(embed=e)
+
+
+@client.command(name="profile")
+async def profile(ctx , * , target=None) :
+    with open('userdata.pkl' , 'rb') as f :
+        user_data = pickle.load(f)
+    if target is None :
+        if ctx.author.id in user_data.keys() :
+            tags = user_data[ctx.author.id]
+        else:
+            e = Embed(title="Please provide a user mention or ID." , color=Color.red())
+            await ctx.send(embed=e)
+            return
+    else :
+        if ctx.message.mentions :
+            user = ctx.message.mentions[0].id
+            tags = user_data[user]
+        else :
+            tags = target
+            tags = tags.strip('#')
+    player = COC.get_user(tag=tags)
+    url = f'https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23{player["tag"]}'
+    e = Embed(title=f"{player['name']} - {player['tag']}" , url=url , color=Color.blue())
+    e.description ="\n\n\n"
+    e.set_footer(text=f"Done by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
+    await ctx.send(embed=e)
+
+
 if __name__ == '__main__' :
     keep_alive()
-    client.run(key)
+    client.run(keyy)
