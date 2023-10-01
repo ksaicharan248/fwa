@@ -1,4 +1,7 @@
 # Default ignored files
+setkey.py
+/setkey.py
+/setkey.py/
 /shelf/
 /workspace.xml
-setkey.py
+
