@@ -175,9 +175,9 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
         await ctx.message.delete()
         channel = client.get_channel(1055527200193007626)
         try :
+            await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='TSC'))
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
-            await member.remove_roles(discord.utils.get(ctx.guild.roles , name='🔸ENTRY🔸'))
             embed = Embed(color=Color.green())
             embed.description = f"✅Changed roles for {member.name}, +TSC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
             await channel.send(embed=embed)
@@ -228,9 +228,9 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
         await ctx.message.delete()
         channel = client.get_channel(1063291093178916884)
         try :
+            await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='HMC'))
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
-            await member.remove_roles(discord.utils.get(ctx.guild.roles , name='🔸ENTRY🔸'))
             embed = Embed(color=Color.green())
             embed.description = f"✅Changed roles for {member.name}, +HMC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
             await channel.send(embed=embed)
@@ -281,9 +281,9 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
         await ctx.message.delete()
         channel = client.get_channel(1055527254643445812)
         try :
+            await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='WAC'))
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
-            await member.remove_roles(discord.utils.get(ctx.guild.roles , name='🔸ENTRY🔸'))
             embed = Embed(color=Color.green())
             embed.description = f"✅Changed roles for {member.name}, +WAC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
             await channel.send(embed=embed)
