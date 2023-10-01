@@ -1,13 +1,13 @@
 import io
 import discord
 from discord.ext import commands
+import COC
 from discord import Embed , Color
-from key import key
+from setkey import keyy
 from webser import keep_alive
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import WebDriverException
+import pickle
 
 # Define the intents
 intents = discord.Intents.all()
@@ -173,7 +173,7 @@ async def removenick(ctx , member: discord.Member) :
 async def ts_m(ctx , member: discord.Member , * , new_nickname) :
     if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
-        channel = client.get_channel(1154470458314457178)
+        channel = client.get_channel(1055527200193007626)
         try :
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='TSC'))
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
@@ -326,6 +326,7 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
     else :
         await ctx.send("MISSING permissions")
 
+
 @client.command()
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def unq(ctx , member: discord.Member , * , new_nickname=None) :
@@ -355,7 +356,7 @@ async def approve(ctx , member: discord.Member , * , new_nickname=None) :
     await ctx.message.delete()
     if new_nickname is None :
         await member.edit(nick=f"TH - {member.name}")
-    else:
+    else :
         await member.edit(nick=f"{new_nickname}")
     await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
     await member.add_roles(discord.utils.get(ctx.guild.roles , name='approved✅'))
@@ -363,11 +364,11 @@ async def approve(ctx , member: discord.Member , * , new_nickname=None) :
     await channel.send(f"{member.mention} has been approved by {ctx.author.mention}")
     e = Embed(title="APPROVED " , color=Color.brand_green())
     e.description = f'🎯 Clan spots will be posted in this {client.get_channel(1055439744739315743).mention}, make sure to check it\n' \
-                    f'🎯 You will be **@notified** if a spot available for your TH level.\n🎯 Just make sure to reply as fast as possible to ensure your spot.\n' \
-                    f'🎯 Donot request to join in game unless instructed to do so.\n' \
-                    f'🎯 You may stay in your **current clan** or join a random clan while waiting for a **spot**.\n' \
-                    f'🎯 Make sure to have **NO war timer** when you answer for spots.\n' \
-                    f'🎯 Ask in {client.get_channel(1126856734095462511).mention} if you have any questions. \n authour : {ctx.author.mention}'
+                    f'🎯You will be **@notified** if a spot available for your TH level.\n🎯Just make sure to reply as fast as possible to ensure your spot.\n' \
+                    f'🎯Donot request to join in game unless instructed to do so.\n' \
+                    f'🎯You may stay in your **current clan** or join a random clan while waiting for a **spot**.\n' \
+                    f'🎯Make sure to have **NO war timer** when you answer for spots.\n' \
+                    f'🎯Ask in {client.get_channel(1126856734095462511).mention} if you have any questions. \n authour : {ctx.author.mention}'
     await channel.send(embed=e)
 
 
@@ -384,7 +385,7 @@ async def re(ctx , member: discord.Member , * , new_nickname=None) :
     channel = client.get_channel(1055440286806966322)
     await channel.send(f"{member.mention} has been sent to re-apply by {ctx.author.mention}")
     e = Embed(title="RE-APPLY \n📛You have been Placed here due to the Following Reasons📛\n" , color=Color.gold())
-    e.description = f'• You have been Inactive from a Long time in our Clans. \n '\
+    e.description = f'• You have been Inactive from a Long time in our Clans. \n ' \
                     f'• You Left without informing your Clans Leader/Co-Leader.\n' \
                     f'• Your Activity seems Suspicious in the Server.\n' \
                     f'• If you wish to reapply and join us again\n\n' \
@@ -395,14 +396,23 @@ async def re(ctx , member: discord.Member , * , new_nickname=None) :
     await channel.send(embed=e)
 
 
-
 @client.command()
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML')
-async def check(ctx , * , tags) :
-    tags = tags.strip('#')
-    if tags is None :
-        await ctx.send("Missing tags")
+async def check(ctx , * , target=None) :
+    if target is None :
+        e = Embed(title="Please provide a user mention or ID." , color=Color.red())
+        await ctx.send(embed=e)
+        return
     else :
+        if ctx.message.mentions :
+            user = ctx.message.mentions[0].id
+            with open('userdata.pkl','rb') as f:
+                data = pickle.load(f)
+            tags = data[user]
+        else :
+            tags = target
+            tags = tags.strip('#')
+
         try :
             opt = Options()
             opt.add_argument('--headless')
@@ -417,21 +427,21 @@ async def check(ctx , * , tags) :
             screenshot_bytes.seek(0)
             driver.quit()
             e = Embed(title="Member Check \n\n" , color=Color.blue())
-            e.description = f'[**Chocolate Clash**]({clink}) \n\n [clash of stats]({coslink}) \n' \
+            e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
                             f'📛 please check the palyer is **Banned** or not conform the base is correct.'
             screenshot_file = discord.File(screenshot_bytes , filename="screenshot.png")
             e.set_image(url="attachment://screenshot.png")
 
-            e.set_footer(text=f"Requested by {ctx.author.display_name} " ,icon_url=ctx.author.display_avatar)
+            e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e , file=screenshot_file)
         except Exception as e :
             clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
             coslink = 'https://www.clashofstats.com/players/' + tags
             e = Embed(title="Member Check \n\n" , color=Color.blue())
-            e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[CLASH OF STATS]({coslink}) \n' \
+            e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
                             f'📛 please check and ensure the palyer is **Banned** or not,then conform the base is correct or not.'
 
-            e.set_footer(text=f"Requested by {ctx.author.display_name} ",icon_url=ctx.author.display_avatar)
+            e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
 
 
@@ -440,7 +450,69 @@ async def emoji(ctx) :
     await ctx.send("<:Super_bowler:1138182991877775370>")
 
 
+''''
+                                        coc
+'''
+
+
+@client.command()
+async def link(ctx , tag=None , token=None) :
+    tag = tag.strip('#')
+    with open('userdata.pkl' , 'rb') as file :
+        user_data = pickle.load(file)
+    if ctx.author.id in user_data.keys() :
+        e = Embed(title="You have already linked your account <:ver:1157952898362261564>" , colour=Color.green())
+        await ctx.send(embed=e)
+        await ctx.send()
+        return
+    else :
+        if tag is None or token is None :
+            await ctx.send("Please provide a tag and token correctly")
+        else :
+            sta = COC.verify(tag , token)
+            if sta[0] == 200 and sta[1]["status"] == "ok" :
+                player = COC.get_user(tag=tag)
+                e = Embed(
+                    title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
+                    color=Color.blue())
+                e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {ctx.author.mention}'
+                e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
+                await ctx.send(embed=e)
+                user_data[ctx.author.id]=tag
+                with open('userdata.pkl' , 'wb') as file :
+                    pickle.dump(user_data , file)
+            else :
+                e = Embed(title="Link Error" , color=Color.red())
+                e.description = f'{sta[0]} : {sta[1]["status"]}'
+                await ctx.send(embed=e)
+
+
+@client.command(name="profile")
+async def profile(ctx , * , target=None) :
+    with open('userdata.pkl' , 'rb') as f :
+        user_data = pickle.load(f)
+    if target is None :
+        if ctx.author.id in user_data.keys() :
+            tags = user_data[ctx.author.id]
+        else:
+            e = Embed(title="Please provide a user mention or ID." , color=Color.red())
+            await ctx.send(embed=e)
+            return
+    else :
+        if ctx.message.mentions :
+            user = ctx.message.mentions[0].id
+            tags = user_data[user]
+        else :
+            tags = target
+            tags = tags.strip('#')
+    player = COC.get_user(tag=tags)
+    url = f'https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23{player["tag"]}'
+    e = Embed(title=f"{player['name']} - {player['tag']}" , url=url , color=Color.blue())
+    e.description ="\n\n\n"
+    e.set_footer(text=f"Done by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
+    await ctx.send(embed=e)
+
+
 if __name__ == '__main__' :
     keep_alive()
-    client.run(key)
-
+    client.run(keyy)
