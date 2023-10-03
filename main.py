@@ -79,7 +79,7 @@ async def help(ctx) :
                     inline=False)
     embed.add_field(name="PLAYER COMMANDS" ,
                     value=f"`link`          - link the bot with player tag \nusage : {p}link  #**player_tag**  "
-                          f" `player_TOKEN`\n\n`profile`         - profile of player" , inline=False)
+                          f" \n\n`profile`         - profile of player" , inline=False)
 
     await ctx.send(embed=embed)
 
@@ -516,7 +516,7 @@ async def force_link(ctx , member: discord.Member = None , tag=None) :
             e = Embed(
                 title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
                 color=Color.blue())
-            e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {ctx.author.mention}'
+            e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {member.mention}'
             e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
             user_data[member.id] = tag
