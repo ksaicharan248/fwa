@@ -31,7 +31,7 @@ def get_id(th) :
     elif th == 14 :
         return "1157934828784734299"
     else:
-        return "1157934151584980993"
+        return "1158776040525680694"
 
 
 def get_role(role:str) :
