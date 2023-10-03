@@ -362,7 +362,7 @@ async def unq(ctx , member: discord.Member , * , new_nickname=None) :
     await channel.send(embed=e)
 
 
-@client.command()
+@client.command(name = 'app')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def approve(ctx , member: discord.Member , * , new_nickname=None) :
     await ctx.message.delete()
