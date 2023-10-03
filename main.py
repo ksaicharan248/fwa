@@ -362,7 +362,7 @@ async def unq(ctx , member: discord.Member , * , new_nickname=None) :
     await channel.send(embed=e)
 
 
-@client.command(name = 'app')
+@client.command(name='app')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def approve(ctx , member: discord.Member , * , new_nickname=None) :
     await ctx.message.delete()
@@ -465,17 +465,14 @@ async def emoji(ctx) :
 ''''
                                         coc
 '''
+
+
 @client.command()
-async def link(ctx , tag=None , token=None):
-    if tag is None or token is None :
-        if tag is None :
-            e = Embed(title="Please provide the player tag ." , color=Color.red())
-            await ctx.send(embed=e)
-            return
-        else :
-            e = Embed(title="Please provide the player token." , color=Color.red())
-            await ctx.send(embed=e)
-            return
+async def link(ctx , tag=None ) :
+    if tag is None:
+        e = Embed(title="Please provide the player tag ." , color=Color.red())
+        await ctx.send(embed=e)
+        return
     else :
         tag = tag.strip('#')
         with open('userdata.pkl' , 'rb') as file :
@@ -486,68 +483,46 @@ async def link(ctx , tag=None , token=None):
             await ctx.send()
             return
         else :
-            sta = COC.verify(tag , token)
-            if sta[0] == 200 and sta[1]["status"] == "ok" :
-                player = COC.get_user(tag=tag)
-                e = Embed(
-                    title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
-                    color=Color.blue())
-                e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {ctx.author.mention}'
-                e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
-                await ctx.send(embed=e)
-                user_data[ctx.author.id] = tag
-                with open('userdata.pkl' , 'wb') as file :
-                    pickle.dump(user_data , file)
-                return
-            else :
-                e = Embed(title="Link Error" , color=Color.red())
-                e.description = f'{sta[0]} : {sta[1]}'
-                await ctx.send(embed=e)
-                return
-
+            player = COC.get_user(tag=tag)
+            e = Embed(
+                title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
+                color=Color.blue())
+            e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {ctx.author.mention}'
+            e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
+            await ctx.send(embed=e)
+            user_data[ctx.author.id] = tag
+            with open('userdata.pkl' , 'wb') as file :
+                pickle.dump(user_data , file)
+            return
 
 @client.command()
-async def force_link(ctx , member: discord.Member = None , tag=None , token=None) :
-    if tag is None or token is None :
-        if tag is None :
-            e = Embed(title="Please provide the player tag ." , color=Color.red())
-            await ctx.send(embed=e)
-            return
-        else :
-            e = Embed(title="Please provide the player token." , color=Color.red())
-            await ctx.send(embed=e)
-            return
+async def force_link(ctx , member: discord.Member = None , tag=None) :
+    if tag is None :
+        e = Embed(title="Please provide the player tag ." , color=Color.red())
+        await ctx.send(embed=e)
+        return
     else :
         tag = tag.strip('#')
         with open('userdata.pkl' , 'rb') as file :
             user_data = pickle.load(file)
         if member.id in user_data.keys() :
-            e = Embed(title=f"{member.mention} have already linked his account <:ver:1157952898362261564>" , colour=Color.green())
+            e = Embed(title=f"{member.mention} have already linked his account <:ver:1157952898362261564>" ,
+                      colour=Color.green())
             await ctx.send(embed=e)
             await ctx.send()
             return
         else :
-            sta = COC.verify(tag , token)
-            if sta[0] == 200 and sta[1]["status"] == "ok" :
-                player = COC.get_user(tag=tag)
-                e = Embed(
-                    title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
-                    color=Color.blue())
-                e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {ctx.author.mention}'
-                e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
-                await ctx.send(embed=e)
-                if member is None :
-                    user_data[ctx.author.id] = tag
-                else :
-                    user_data[member.id] = tag
-                with open('userdata.pkl' , 'wb') as file :
-                    pickle.dump(user_data , file)
-                return
-            else :
-                e = Embed(title="Link Error" , color=Color.red())
-                e.description = f'{sta[0]} : {sta[1]}'
-                await ctx.send(embed=e)
-                return
+            player = COC.get_user(tag=tag)
+            e = Embed(
+                title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
+                color=Color.blue())
+            e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {ctx.author.mention}'
+            e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
+            await ctx.send(embed=e)
+            user_data[member.id] = tag
+            with open('userdata.pkl' , 'wb') as file :
+                pickle.dump(user_data , file)
+            return
 
 
 @client.command(name="profile")
@@ -572,9 +547,9 @@ async def profile(ctx , * , target=None) :
     url = f'https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23{player["tag"]}'
     e = Embed(title=f"{player['name']} - {player['tag']}" , url=url , color=Color.blue())
     emoj = discord.utils.get(ctx.guild.emojis , id=int(COC.get_id(player["townHallLevel"])))
-    ptag =player["tag"].strip('#')
+    ptag = player["tag"].strip('#')
     e.set_thumbnail(url=emoj.url)
-    e.description = f'[CCNS](https://fwa.chocolateclash.com/cc_n/member.php?tag=%23{ptag})   [COS](https://www.clashofstats.com/players/{ptag})\n'\
+    e.description = f'[CCNS](https://fwa.chocolateclash.com/cc_n/member.php?tag=%23{ptag})   [COS](https://www.clashofstats.com/players/{ptag})\n' \
                     f'\n🏆 {player["trophies"]} \n' \
                     f'[{player["clan"]["name"]}](https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{player["clan"]["tag"]}) \n' \
                     f'Role : **{COC.get_role(player["role"])}** \n'
