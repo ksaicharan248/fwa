@@ -573,7 +573,8 @@ async def profile(ctx , * , target=None) :
     e = Embed(title=f"{player['name']} - {player['tag']}" , url=url , color=Color.blue())
     emoj = discord.utils.get(ctx.guild.emojis , id=int(COC.get_id(player["townHallLevel"])))
     e.set_thumbnail(url=emoj.url)
-    e.description = f'\n🏆 {player["trophies"]} \n' \
+    e.description = f'[CCNS](https://fwa.chocolateclash.com/cc_n/member.php?tag=%23{player["tag"]})   [COS](https://www.clashofstats.com/players/{player["tag"]})\n'\
+                    f'\n🏆 {player["trophies"]} \n' \
                     f'[{player["clan"]["name"]}](https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{player["clan"]["tag"]}) \n' \
                     f'Role : **{COC.get_role(player["role"])}** \n'
     e.set_footer(text=f"Done by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
