@@ -468,8 +468,8 @@ async def emoji(ctx) :
 
 
 @client.command()
-async def link(ctx , tag=None ) :
-    if tag is None:
+async def link(ctx , tag=None) :
+    if tag is None :
         e = Embed(title="Please provide the player tag ." , color=Color.red())
         await ctx.send(embed=e)
         return
@@ -494,6 +494,29 @@ async def link(ctx , tag=None ) :
             with open('userdata.pkl' , 'wb') as file :
                 pickle.dump(user_data , file)
             return
+
+
+@client.command()
+async def unlink(ctx , member: discord.Member) :
+    with open("userdata.pkl" , "rb") as file :
+        user_data = pickle.load(file)
+
+    if member.id in user_data.keys() :
+        tag = user_data[member.id]
+        player = COC.get_user(tag=tag)
+        try :
+            del user_data[member.id]
+        except :
+            user_data.pop(member.id)
+        e = Embed(
+            title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
+            color=Color.dark_gold())
+        e.description = f'\n<:ver:1157952898362261564>  {player["tag"]} unLinked with {member.mention} '
+        e.set_footer(text=f"Unlinked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
+        await ctx.send(embed=e)
+        with open("userdata.pkl" , "wb") as file :
+            pickle.dump(user_data , file)
+
 
 @client.command()
 async def force_link(ctx , member: discord.Member = None , tag=None) :
