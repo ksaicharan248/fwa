@@ -575,7 +575,7 @@ async def profile(ctx , * , target=None) :
     e.set_thumbnail(url=emoj.url)
     e.description = f'\n🏆 {player["trophies"]} \n' \
                     f'[{player["clan"]["name"]}](https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{player["clan"]["tag"]}) \n' \
-                    f'Role : {player["role"]} !\n'
+                    f'Role : **{COC.get_role(player["role"])}** \n'
     e.set_footer(text=f"Done by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
     await ctx.send(embed=e)
 

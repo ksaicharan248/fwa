@@ -34,5 +34,16 @@ def get_id(th) :
         return "1157934151584980993"
 
 
+def get_role(role:str) :
+    if role == "leader" :
+        return "Leader"
+    elif role == "coLeader" :
+        return "Co-Leader"
+    elif role == "admin":
+        return "Elder"
+    else:
+        return "Member"
+
+
 if __name__ == '__main__' :
     print(get_user('9JVUQGYLQ'))
