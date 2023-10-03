@@ -38,6 +38,11 @@ async def on_command_error(ctx , error) :
         embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" , description="The user is not in the server." ,
                               color=discord.Color.red())
         await ctx.send(embed=embed)
+    if isinstance(error , commands.CommandInvokeError) and isinstance(error.original , discord.HTTPException) :
+        embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" , description="something is missing please check and try again." ,
+                              color=discord.Color.red())
+        await ctx.send(embed=embed)
+
     else :
         raise error
 
@@ -60,6 +65,23 @@ async def on_member_join(member) :
                             f"{client.get_channel(1055439744739315743).mention} \n\n🚨Note - We don’t recruit FWA " \
                             f"BANNED players."
         await welcome_channel.send(embed=embed)
+
+
+@client.command(name='help')
+async def help(ctx) :
+    p = client.command_prefix
+    embed = discord.Embed(
+        description=f"{p}wel                - Welome player\n{p}ping               - Show latency\n{p}help               - Show help\n{p}role                - Add role\n{p}rm                  - Remove role\n{p}changenick  - Change nickname\n{p}changenick  - remove nick name" ,
+        colour=0x1f7f5f)
+
+    embed.add_field(name="LEADER COMMANDS" ,
+                    value=f"`ts-m`         -  add player to The shield\nusage:  {p}ts-m  @mention Mb/Eld - IGN\n\n`hs-m`         - add player to HINDU SAMRAJYA\nusage:  {p}hs-m  @mention Mb/Eld - IGN\n\n`wa-m`         - add player to warning \nusage:  {p}wa-m  @mention Mb/Eld - IGN\n\n`unq`         - add player to unqualify\nusage:  {p}unq  @mention  IGN\n\n`approve`       -  approve the player\nusage -  {p}approve @mention TH - IGN\n\n`re`         - send the player to reapply \nusage : {p}re @mention  IGN\n\n`check`        - check the player with chocolate clash\nusage : {p}check playertag \nNOTE : if linked mention player" ,
+                    inline=False)
+    embed.add_field(name="PLAYER COMMANDS" ,
+                    value=f"`link`          - link the bot with player tag \nusage : {p}link  #**player_tag**  "
+                          f" `player_TOKEN`\n\n`profile`         - profile of player" , inline=False)
+
+    await ctx.send(embed=embed)
 
 
 @client.command(name='wel')
@@ -132,16 +154,6 @@ async def changenick(ctx , member: discord.Member , * , new_nickname) :
         await ctx.send("I do not have permission to change the user's nickname.")
     except discord.HTTPException :
         await ctx.send("An error occurred while changing the user's nickname.")
-
-
-@client.command()
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'TSL' , 'WAL' , 'HML')
-async def rmrole(ctx , member: discord.Member) :
-    try :
-        await member.remove_roles(discord.utils.get(ctx.guild.roles , name='red'))
-        await member.remove_roles(discord.utils.get(ctx.guild.roles , name='yellow'))
-    except commands.MissingRole :
-        await ctx.send("You don't have the required role.")
 
 
 @client.command()
@@ -223,7 +235,7 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
 
 @client.command(name='hs-m')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'HML')
-async def ts_m(ctx , member: discord.Member , * , new_nickname) :
+async def hs_m(ctx , member: discord.Member , * , new_nickname) :
     if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
         channel = client.get_channel(1063291093178916884)
@@ -276,7 +288,7 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
 
 @client.command(name='wa-m')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL')
-async def ts_m(ctx , member: discord.Member , * , new_nickname) :
+async def wa_m(ctx , member: discord.Member , * , new_nickname) :
     if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
         channel = client.get_channel(1055527254643445812)
@@ -406,7 +418,7 @@ async def check(ctx , * , target=None) :
     else :
         if ctx.message.mentions :
             user = ctx.message.mentions[0].id
-            with open('userdata.pkl','rb') as f:
+            with open('userdata.pkl' , 'rb') as f :
                 data = pickle.load(f)
             tags = data[user]
         else :
@@ -453,21 +465,26 @@ async def emoji(ctx) :
 ''''
                                         coc
 '''
-
-
 @client.command()
-async def link(ctx , tag=None , token=None) :
-    tag = tag.strip('#')
-    with open('userdata.pkl' , 'rb') as file :
-        user_data = pickle.load(file)
-    if ctx.author.id in user_data.keys() :
-        e = Embed(title="You have already linked your account <:ver:1157952898362261564>" , colour=Color.green())
-        await ctx.send(embed=e)
-        await ctx.send()
-        return
+async def link(ctx , tag=None , token=None):
+    if tag is None or token is None :
+        if tag is None :
+            e = Embed(title="Please provide the player tag ." , color=Color.red())
+            await ctx.send(embed=e)
+            return
+        else :
+            e = Embed(title="Please provide the player token." , color=Color.red())
+            await ctx.send(embed=e)
+            return
     else :
-        if tag is None or token is None :
-            await ctx.send("Please provide a tag and token correctly")
+        tag = tag.strip('#')
+        with open('userdata.pkl' , 'rb') as file :
+            user_data = pickle.load(file)
+        if ctx.author.id in user_data.keys() :
+            e = Embed(title="You have already linked your account <:ver:1157952898362261564>" , colour=Color.green())
+            await ctx.send(embed=e)
+            await ctx.send()
+            return
         else :
             sta = COC.verify(tag , token)
             if sta[0] == 200 and sta[1]["status"] == "ok" :
@@ -478,13 +495,59 @@ async def link(ctx , tag=None , token=None) :
                 e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {ctx.author.mention}'
                 e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
                 await ctx.send(embed=e)
-                user_data[ctx.author.id]=tag
+                user_data[ctx.author.id] = tag
                 with open('userdata.pkl' , 'wb') as file :
                     pickle.dump(user_data , file)
+                return
             else :
                 e = Embed(title="Link Error" , color=Color.red())
-                e.description = f'{sta[0]} : {sta[1]["status"]}'
+                e.description = f'{sta[0]} : {sta[1]}'
                 await ctx.send(embed=e)
+                return
+
+
+@client.command()
+async def force_link(ctx , member: discord.Member = None , tag=None , token=None) :
+    if tag is None or token is None :
+        if tag is None :
+            e = Embed(title="Please provide the player tag ." , color=Color.red())
+            await ctx.send(embed=e)
+            return
+        else :
+            e = Embed(title="Please provide the player token." , color=Color.red())
+            await ctx.send(embed=e)
+            return
+    else :
+        tag = tag.strip('#')
+        with open('userdata.pkl' , 'rb') as file :
+            user_data = pickle.load(file)
+        if member.id in user_data.keys() :
+            e = Embed(title=f"{member.mention} have already linked his account <:ver:1157952898362261564>" , colour=Color.green())
+            await ctx.send(embed=e)
+            await ctx.send()
+            return
+        else :
+            sta = COC.verify(tag , token)
+            if sta[0] == 200 and sta[1]["status"] == "ok" :
+                player = COC.get_user(tag=tag)
+                e = Embed(
+                    title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
+                    color=Color.blue())
+                e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {ctx.author.mention}'
+                e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
+                await ctx.send(embed=e)
+                if member is None :
+                    user_data[ctx.author.id] = tag
+                else :
+                    user_data[member.id] = tag
+                with open('userdata.pkl' , 'wb') as file :
+                    pickle.dump(user_data , file)
+                return
+            else :
+                e = Embed(title="Link Error" , color=Color.red())
+                e.description = f'{sta[0]} : {sta[1]}'
+                await ctx.send(embed=e)
+                return
 
 
 @client.command(name="profile")
@@ -494,7 +557,7 @@ async def profile(ctx , * , target=None) :
     if target is None :
         if ctx.author.id in user_data.keys() :
             tags = user_data[ctx.author.id]
-        else:
+        else :
             e = Embed(title="Please provide a user mention or ID." , color=Color.red())
             await ctx.send(embed=e)
             return
@@ -510,9 +573,9 @@ async def profile(ctx , * , target=None) :
     e = Embed(title=f"{player['name']} - {player['tag']}" , url=url , color=Color.blue())
     emoj = discord.utils.get(ctx.guild.emojis , id=int(COC.get_id(player["townHallLevel"])))
     e.set_thumbnail(url=emoj.url)
-    e.description =f'\n🏆 {player["trophies"]} \n'\
-                   f'[{player["clan"]["name"]}](https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{player["clan"]["tag"]}) \n' \
-                   f'Role : {player["role"]} !\n'
+    e.description = f'\n🏆 {player["trophies"]} \n' \
+                    f'[{player["clan"]["name"]}](https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{player["clan"]["tag"]}) \n' \
+                    f'Role : {player["role"]} !\n'
     e.set_footer(text=f"Done by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
     await ctx.send(embed=e)
 
