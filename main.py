@@ -554,7 +554,7 @@ async def profile(ctx , * , target=None) :
         user_data = pickle.load(f)
     if target is None :
         if ctx.author.id in user_data.keys() :
-            tags = user_data[ctx.author.id]
+            tags = user_data[ctx.author.id].strip('#')
         else :
             e = Embed(title="Please provide a user mention or ID." , color=Color.red())
             await ctx.send(embed=e)
@@ -562,10 +562,15 @@ async def profile(ctx , * , target=None) :
     else :
         if ctx.message.mentions :
             user = ctx.message.mentions[0].id
-            tags = user_data[user]
+            if user in user_data :
+                tags = user_data[user].strip('#')
+            else :
+                e = Embed(title="User not found " , color=Color.red())
+                await ctx.send(embed=e)
+                return
         else :
-            tags = target
-            tags = tags.strip('#')
+            tags = target.strip('#')
+
     player = COC.get_user(tag=tags)
     url = f'https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23{player["tag"]}'
     e = Embed(title=f"{player['name']} - {player['tag']}" , url=url , color=Color.blue())
