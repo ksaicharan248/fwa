@@ -497,6 +497,7 @@ async def link(ctx , tag=None) :
 
 
 @client.command()
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML')
 async def unlink(ctx , member: discord.Member) :
     with open("userdata.pkl" , "rb") as file :
         user_data = pickle.load(file)
@@ -519,6 +520,7 @@ async def unlink(ctx , member: discord.Member) :
 
 
 @client.command()
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML')
 async def force_link(ctx , member: discord.Member = None , tag=None) :
     if tag is None :
         e = Embed(title="Please provide the player tag ." , color=Color.red())
