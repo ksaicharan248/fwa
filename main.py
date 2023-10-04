@@ -75,7 +75,7 @@ async def help(ctx) :
         colour=0x1f7f5f)
 
     embed.add_field(name="LEADER COMMANDS" ,
-                    value=f"`ts-m`         -  add player to The shield\nusage:  {p}ts-m  @mention Mb/Eld - IGN\n\n`hs-m`         - add player to HINDU SAMRAJYA\nusage:  {p}hs-m  @mention Mb/Eld - IGN\n\n`wa-m`         - add player to warning \nusage:  {p}wa-m  @mention Mb/Eld - IGN\n\n`unq`         - add player to unqualify\nusage:  {p}unq  @mention  IGN\n\n`approve`       -  approve the player\nusage -  {p}approve @mention TH - IGN\n\n`re`         - send the player to reapply \nusage : {p}re @mention  IGN\n\n`check`        - check the player with chocolate clash\nusage : {p}check playertag \nNOTE : if linked mention player" ,
+                    value=f"`ts-m`         -  add player to The shield\nusage:  {p}ts-m  @mention Mb/Eld - IGN\n\n`hs-m`         - add player to HINDU SAMRAJYA\nusage:  {p}hs-m  @mention Mb/Eld - IGN\n\n`wa-m`         - add player to warning \nusage:  {p}wa-m  @mention Mb/Eld - IGN\n\n`unq`         - add player to unqualify\nusage:  {p}unq  @mention  IGN\n\n`app`       -  approve the player\nusage -  {p}app @mention TH - IGN\n\n`re`         - send the player to reapply \nusage : {p}re @mention  IGN\n\n`check`        - check the player with chocolate clash\nusage : {p}check playertag \nNOTE : if linked mention player \n\n `force_link`        - link any other player with tag \nusage :||{p}force_link   @mention   #player_tag`||" ,
                     inline=False)
     embed.add_field(name="PLAYER COMMANDS" ,
                     value=f"`link`          - link the bot with player tag \nusage : {p}link  #**player_tag**  "
@@ -212,7 +212,7 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
             flag2 = False
 
         if flag1 and flag2 :
-            await channel.send(f"{member.mention} is the member of THE SHIELD")
+            await channel.send(f"{member.mention} is now a member of **THE SHIELD**")
             embed3 = Embed(color=Color.green())
             embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
                                   "\n"
@@ -265,7 +265,7 @@ async def hs_m(ctx , member: discord.Member , * , new_nickname) :
             flag2 = False
 
         if flag1 and flag2 :
-            await channel.send(f"{member.mention} is the member of HINDU SAMRAJYA")
+            await channel.send(f"{member.mention} is now a member of **HINDU SAMRAJYA**")
             embed3 = Embed(color=Color.green())
             embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
                                   "\n"
@@ -318,7 +318,7 @@ async def wa_m(ctx , member: discord.Member , * , new_nickname) :
             flag2 = False
 
         if flag1 and flag2 :
-            await channel.send(f"{member.mention} is the member of ♠️WARNING♠️")
+            await channel.send(f"{member.mention} is now a member of **♤WARNING♤**")
             embed3 = Embed(color=Color.green())
             embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
                                   "\n"
