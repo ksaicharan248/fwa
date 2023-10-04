@@ -588,15 +588,18 @@ async def profile(ctx , * , target=None) :
 
 
 @client.command()
-async def server_list(ctx):
+async def server_list(ctx) :
     with open('userdata.pkl' , 'rb') as f :
         user_data = pickle.load(f)
+    user_text = ""
     e = Embed(title="Server List" , color=Color.blue())
     for i in user_data.keys() :
         user_name = await client.fetch_user(int(i))
-        e.description += f'{user_name}  : {user_data[i]} \n'
+        user_text += f'{user_name}  : {user_data[i]} \n'
+    e.description = user_text
     e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
     await ctx.send(embed=e)
+
 
 if __name__ == '__main__' :
     keep_alive()
