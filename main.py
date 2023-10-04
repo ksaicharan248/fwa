@@ -512,7 +512,7 @@ async def unlink(ctx , member: discord.Member) :
         e = Embed(
             title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
             color=Color.dark_gold())
-        e.description = f'\n<:ver:1157952898362261564>  {player["tag"]} Unlinked with {member.mention}  !'
+        e.description = f'\n<:ver:1157952898362261564>  {player["tag"]} Unlinked with {member.mention}  '
         e.set_footer(text=f"Unlinked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
         await ctx.send(embed=e)
         with open("userdata.pkl" , "wb") as file :
