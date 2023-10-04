@@ -587,6 +587,16 @@ async def profile(ctx , * , target=None) :
     await ctx.send(embed=e)
 
 
+@client.command()
+async def server_list(ctx):
+    with open('userdata.pkl' , 'rb') as f :
+        user_data = pickle.load(f)
+    e = Embed(title="Server List" , color=Color.blue())
+    for i in user_data.keys() :
+        e.description += f'{i.name}  : {user_data[i]} \n'
+    e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
+    await ctx.send(embed=e)
+
 if __name__ == '__main__' :
     keep_alive()
     client.run(keyy)
