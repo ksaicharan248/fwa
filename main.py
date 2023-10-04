@@ -593,7 +593,8 @@ async def server_list(ctx):
         user_data = pickle.load(f)
     e = Embed(title="Server List" , color=Color.blue())
     for i in user_data.keys() :
-        e.description += f'{i.name}  : {user_data[i]} \n'
+        user_name = await client.fetch_user(int(i))
+        e.description += f'{user_name}  : {user_data[i]} \n'
     e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
     await ctx.send(embed=e)
 
