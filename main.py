@@ -656,7 +656,7 @@ async def clan(ctx , target=None) :
                     f'💎 [**FWA**]({fwa})\n' \
                     f'<:see:1159496511701385297> [**CCNS**]({ccns})\n' \
                     f'⚔️ [**CWL**]({cwl})\n\n' \
-                    f'<:saw:1159496168347291698> **Lead**  : \n<@{lead[clt["tag"].strip("#")]}>'
+                    f'<:saw:1159496168347291698> **Lead**  : \n<@{lead[clt["tag"].strip("#")]}> !'
     await ctx.send(embed=e)
 
 
