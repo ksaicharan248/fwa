@@ -607,23 +607,23 @@ async def clan(ctx , target=None) :
     random_colr = COC.get_random_color()
     clantag = None
     tags = None
-    clanroles = ['WAL' , 'TSL' , 'HML' ,'WAC','TSC','HMC']
-    lead ={'2Q8URCU88': 1034730502701203467 , 'U0LPRYL2' : 775168480969621586 , '9JYC9QU9' : 405705743967453184}
+    clanroles = ['WAL' , 'TSL' , 'HML' , 'WAC' , 'TSC' , 'HMC']
+    lead = {'2Q8URCU88' : 1034730502701203467 , 'U0LPRYL2' : 775168480969621586 , '9JYC9QU9' : 405705743967453184}
     if target is None or ctx.message.mentions :
         with open('userdata.pkl' , 'rb') as f :
             user_data = pickle.load(f)
         if ctx.message.mentions :
             idd = ctx.message.mentions[0].id
-        else:
+        else :
             idd = ctx.author.id
         if idd in user_data.keys() :
             tags = user_data[idd]
-        elif any(role.name in clanroles for role in ctx.author.roles):
-            if ctx.author.roles in ["WAC",'WAL']:
+        elif any(role.name in clanroles for role in ctx.author.roles) :
+            if ctx.author.roles in ["WAC" , 'WAL'] :
                 clantag = "2Q8URCU88"
-            elif ctx.author.roles in ["TSC",'TSL']:
+            elif ctx.author.roles in ["TSC" , 'TSL'] :
                 clantag = "U0LPRYL2"
-            elif ctx.author.roles in ["HMC",'HML']:
+            elif ctx.author.roles in ["HMC" , 'HML'] :
                 clantag = "9JYC9QU9"
             else :
                 e = Embed(title="Please provide a user mention or ID." , color=Color.red())
@@ -643,18 +643,20 @@ async def clan(ctx , target=None) :
     if clantag is None and tags is not None :
         clantag = COC.get_user(tag=tags)["clan"]["tag"]
 
-    clt= COC.getclan(tag=clantag)
-    e=Embed(title=f"{clt['name']} - {clt['tag']}" ,url=f'https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{clt["tag"].strip("#")}', color=random_colr)
+    clt = COC.getclan(tag=clantag)
+    e = Embed(title=f'{clt["name"]} - {clt["tag"]}' ,
+              url=f'https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{clt["tag"].strip("#")}' ,
+              color=random_colr)
     e.set_thumbnail(url=clt["badgeUrls"]["large"])
-    ccns = f"https://fwa.chocolateclash.com/cc_n/clan.php?tag={clt['tag'].strip('#')}"
+    ccns = f'https://fwa.chocolateclash.com/cc_n/clan.php?tag={clt["tag"].strip("#")}'
     fwa = "https://sites.google.com/site/fwaguide/"
     cwl = "https://clashofclans.fandom.com/wiki/Clan_War_Leagues"
-    cos = f"https://www.clashofstats.com/clans/{clt['tag'].strip('#')}"
-    e.description= f'**Info** :\n<:ccns:1159494607760003132> [Clash of stats]({cos})\n'\
-                   f'💎[FWA]({fwa})\n💎'\
-                   f'<:see:1159496511701385297>[CCNS]({ccns})\n'\
-                   f'⚔️[CWL]({cwl})\n\n\n'\
-                   f'<:saw:1159496168347291698> **Lead**  : <@{lead[clt["tag"].strip("#")]}>'
+    cos = f'https://www.clashofstats.com/clans/{clt["tag"].strip("#")}'
+    e.description = f'**Info** :\n<:ccns:1159494607760003132> [Clash of stats]({cos})\n' \
+                    f'💎[FWA]({fwa})\n💎' \
+                    f'<:see:1159496511701385297>[CCNS]({ccns})\n' \
+                    f'⚔️[CWL]({cwl})\n\n\n' \
+                    f'<:saw:1159496168347291698> **Lead**  : <@{lead[clt["tag"].strip("#")]}>'
     await ctx.send(embed=e)
 
 
