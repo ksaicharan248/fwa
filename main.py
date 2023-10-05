@@ -643,7 +643,7 @@ async def clan(ctx , target=None) :
     if clantag is None and tags is not None :
         clantag = COC.get_user(tag=tags)["clan"]["tag"].strip("#")
     clt = COC.getclan(tag=clantag)
-    e = Embed(title=f'{clt["name"]} - {clt["tag"]}' ,
+    e = Embed(title=f'**{clt["name"]}** - {clt["tag"]}' ,
               url=f'https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{clt["tag"].strip("#")}' ,
               color=Color.blue())
     e.set_thumbnail(url=clt["badgeUrls"]["large"])
@@ -651,7 +651,8 @@ async def clan(ctx , target=None) :
     fwa = "https://sites.google.com/site/fwaguide/"
     cwl = "https://clashofclans.fandom.com/wiki/Clan_War_Leagues"
     cos = f'https://www.clashofstats.com/clans/{clt["tag"].strip("#")}'
-    e.description = f'**Info** :\n\n<:ccns:1159494607760003132> [**Clash of stats**]({cos})\n' \
+    e.description = f'**Info** :\n\n' \
+                    f'<:ccns:1159494607760003132> [**Clash of stats**]({cos})\n' \
                     f'💎 [**FWA**]({fwa})\n' \
                     f'<:see:1159496511701385297> [**CCNS**]({ccns})\n' \
                     f'⚔️ [**CWL**]({cwl})\n\n' \
