@@ -470,6 +470,7 @@ async def emoji(ctx) :
 
 @client.command()
 async def link(ctx , tag=None) :
+    await ctx.message.delete()
     if tag is None :
         e = Embed(title="Please provide the player tag ." , color=Color.red())
         await ctx.send(embed=e)
@@ -523,6 +524,7 @@ async def unlink(ctx , member: discord.Member) :
 @client.command()
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML')
 async def force_link(ctx , member: discord.Member = None , tag=None) :
+    await ctx.message.delete()
     if tag is None :
         e = Embed(title="Please provide the player tag ." , color=Color.red())
         await ctx.send(embed=e)
@@ -590,6 +592,7 @@ async def profile(ctx , * , target=None) :
 
 @client.command()
 async def server_list(ctx) :
+    await ctx.message.delete()
     with open('userdata.pkl' , 'rb') as f :
         user_data = pickle.load(f)
     user_text = ""
@@ -604,7 +607,7 @@ async def server_list(ctx) :
 
 @client.command("clan")
 async def clan(ctx , target=None) :
-    random_colr = COC.get_random_color()
+    await ctx.message.delete()
     clantag = None
     tags = None
     clanroles = ['WAL' , 'TSL' , 'HML' , 'WAC' , 'TSC' , 'HMC']
@@ -616,47 +619,43 @@ async def clan(ctx , target=None) :
             idd = ctx.message.mentions[0].id
         else :
             idd = ctx.author.id
+
         if idd in user_data.keys() :
             tags = user_data[idd]
+
         elif any(role.name in clanroles for role in ctx.author.roles) :
-            if ctx.author.roles in ["WAC" , 'WAL'] :
+            if any(role.name in ["WAC" , "WAL"] for role in ctx.author.roles) :
                 clantag = "2Q8URCU88"
-            elif ctx.author.roles in ["TSC" , 'TSL'] :
+            elif any(role.name in ["TSC" , "TSL"] for role in ctx.author.roles) :
                 clantag = "U0LPRYL2"
-            elif ctx.author.roles in ["HMC" , 'HML'] :
+            elif any(role.name in ["HMC" , "HML"] for role in ctx.author.roles) :
                 clantag = "9JYC9QU9"
-            else :
-                e = Embed(title="Please provide a user mention or ID." , color=Color.red())
-                await ctx.send(embed=e)
-                return
-        else :
+    else :
+        if len(target) == 1 :
+            ctags = {'w' : "2Q8URCU88" , "s" : "U0LPRYL2" , "h" : "9JYC9QU9"}
+            clantag = ctags[target]
+        elif len(target) >= 2 :
+            clantag = target.strip('#')
+        else:
             e = Embed(title="Please provide a user mention or ID." , color=Color.red())
             await ctx.send(embed=e)
             return
-    else :
-        if len(target) == 1 :
-            ctags = {'w' : "2Q8URCU88" , "s" : "U0LPRYL2"}
-            clantag = ctags[target]
-        else :
-            clantag = target.strip('#')
-
     if clantag is None and tags is not None :
-        clantag = COC.get_user(tag=tags)["clan"]["tag"]
-
+        clantag = COC.get_user(tag=tags)["clan"]["tag"].strip("#")
     clt = COC.getclan(tag=clantag)
     e = Embed(title=f'{clt["name"]} - {clt["tag"]}' ,
               url=f'https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{clt["tag"].strip("#")}' ,
-              color=random_colr)
+              color=Color.blue())
     e.set_thumbnail(url=clt["badgeUrls"]["large"])
     ccns = f'https://fwa.chocolateclash.com/cc_n/clan.php?tag={clt["tag"].strip("#")}'
     fwa = "https://sites.google.com/site/fwaguide/"
     cwl = "https://clashofclans.fandom.com/wiki/Clan_War_Leagues"
     cos = f'https://www.clashofstats.com/clans/{clt["tag"].strip("#")}'
-    e.description = f'**Info** :\n<:ccns:1159494607760003132> [Clash of stats]({cos})\n' \
-                    f'💎[FWA]({fwa})\n💎' \
-                    f'<:see:1159496511701385297>[CCNS]({ccns})\n' \
-                    f'⚔️[CWL]({cwl})\n\n\n' \
-                    f'<:saw:1159496168347291698> **Lead**  : <@{lead[clt["tag"].strip("#")]}>'
+    e.description = f'**Info** :\n\n<:ccns:1159494607760003132> [**Clash of stats**]({cos})\n' \
+                    f'💎 [**FWA**]({fwa})\n' \
+                    f'<:see:1159496511701385297> [**CCNS**]({ccns})\n' \
+                    f'⚔️ [**CWL**]({cwl})\n\n' \
+                    f'<:saw:1159496168347291698> **Lead**  : \n<@{lead[clt["tag"].strip("#")]}>'
     await ctx.send(embed=e)
 
 
