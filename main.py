@@ -1,7 +1,4 @@
 import io
-from PIL import Image , ImageOps
-import requests
-from io import BytesIO
 import discord
 from discord.ext import commands
 import COC
@@ -11,7 +8,7 @@ from webser import keep_alive
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import pickle
-import random
+
 
 # Define the intents
 intents = discord.Intents.all()
