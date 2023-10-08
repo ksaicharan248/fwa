@@ -59,4 +59,6 @@ def get_role(role: str) :
 
 
 if __name__ == '__main__' :
-    print(get_user('9JVUQGYLQ'))
+    n =getclan(tag="U0LPRYL2")
+    p = n["name"]
+    print(p)
