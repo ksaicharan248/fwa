@@ -1,4 +1,7 @@
 import io
+from PIL import Image , ImageOps
+import requests
+from io import BytesIO
 import discord
 from discord.ext import commands
 import COC
@@ -217,8 +220,8 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
             embed3 = Embed(color=Color.green())
             embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
                                   "\n"
-                                  "『📢』**clan-announcements** - For important clan announcements\n"
-                                  "『⚠』**war-instructions** - For war rules and instructions\n"
+                                  "『📢』**<#1055531962774868038>** - For important clan announcements\n"
+                                  "『⚠』**<#1054439098342969425>** - For war rules and instructions\n"
                                   "\n"
                                   "Note - Make Sure To Maintain This In Clan\n"
                                   "✅ Donate\n"
@@ -323,8 +326,8 @@ async def wa_m(ctx , member: discord.Member , * , new_nickname) :
             embed3 = Embed(color=Color.green())
             embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
                                   "\n"
-                                  "『📢』**clan-announcements** - For important clan announcements\n"
-                                  "『⚠』**war-instructions** - For war rules and instructions\n"
+                                  "『📢』**<#1055532032626806804>** - For important clan announcements\n"
+                                  "『⚠』**<#1054439098342969425>** - For war rules and instructions\n"
                                   "\n"
                                   "Note - Make Sure To Maintain This In Clan\n"
                                   "✅ Donate\n"
@@ -584,7 +587,7 @@ async def profile(ctx , * , target=None) :
     x = f'[{player["clan"]["name"]}](https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{player["clan"]["tag"]}) \n Role : **{COC.get_role(player["role"])}**' if "clan" in player else "NO clan"
     e.set_thumbnail(url=emoj.url)
     e.description = f'[CCNS](https://fwa.chocolateclash.com/cc_n/member.php?tag=%23{ptag})   [COS](https://www.clashofstats.com/players/{ptag})\n' \
-                    f'\n🏆 {player["trophies"]} \n{x}' \
+                    f'\n🏆 {player["trophies"]} \n{x}'
 
     e.set_footer(text=f"Done by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
     await ctx.send(embed=e)
@@ -636,7 +639,7 @@ async def clan(ctx , target=None) :
             clantag = ctags[target]
         elif len(target) >= 2 :
             clantag = target.strip('#')
-        else:
+        else :
             e = Embed(title="Please provide a user mention or ID." , color=Color.red())
             await ctx.send(embed=e)
             return
@@ -658,6 +661,41 @@ async def clan(ctx , target=None) :
                     f'⚔️ [**CWL**]({cwl})\n\n' \
                     f'<:saw:1159496168347291698> **Lead**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}> '
     await ctx.send(embed=e)
+
+
+@client.command()
+async def war(ctx , target=None) :
+    cid = ctx.channel.category.id
+    cidinfo = {1054453503084482580 : "U0LPRYL2" , 1054458642541334599 : "2Q8URCU88"}
+    await ctx.message.delete()
+    if cid in cidinfo.keys() :
+        clani = COC.getclan(tag=f"{cidinfo[cid]}/currentwar")
+        clan_link = COC.getcoc(tag=clani['clan']['tag'])
+        opponent_link = COC.getcoc(tag=clani['opponent']['tag'])
+    else :
+        e = Embed(title="This command wont work here" , color=Color.red())
+        await ctx.send(embed=e)
+        return
+    if target is None :
+        e = Embed(title="Check and try again" , color=Color.red())
+        await ctx.send(embed=e)
+        return
+    else :
+        if target.startswith(("w" , "W")) :
+            e = Embed(title="🍻✌️WIN WAR✌️🍻 \n" , color=Color.green())
+            e.description=f'\n[__**{clani["clan"]["name"].upper()}**__]({clan_link})    vs    [__**{clani["opponent"]["name"].upper()}**__]({opponent_link})\n\n**__WAR  INSTRUCTIONS__ :**\n⚔️1st attack on mirror (opposite same base) for **__3 stars__**🌟( must )\n\n⚔️2nd attack on BASE-1 for**__ 1 star__**🌟(After no. 1 take his mirror)\n\n🧹Clean up :  In last 12 hr. all bases are open for 3 stars🌟'
+            e.set_footer(text=f"{clani['clan']['name'].upper()}" , icon_url=clani["clan"]["badgeUrls"]["large"])
+            await ctx.send(embed=e)
+        elif target.startswith(("l" , "L")) :
+            embed = discord.Embed(title="LOOSE WAR 🏳️ \n" , colour=0xe60000)
+            embed.description = f'\n[__**{clani["clan"]["name"].upper()}**__]({clan_link})    vs    [__**{clani["opponent"]["name"].upper()}**__]({opponent_link})\n\n**__WAR  INSTRUCTIONS __:**\n\n⚔️1st attack on mirror (opposite same base) for **__2 STARS__**🌟( Compulsory )\n\n⚔️2nd attack on BASE-1 for **__1 STAR__**🌟(After no. 1 take his mirror)\n\n🧹Clean up : In last 12 hr. all bases are open for 2 stars🌟'
+            embed.set_footer(text=f"{clani['clan']['name'].upper()}" , icon_url=clani["clan"]["badgeUrls"]["large"])
+            await ctx.send(embed=embed)
+
+        else :
+            e = Embed(title="Please provide a user mention or ID." , color=Color.red())
+            await ctx.send(embed=e)
+            return
 
 
 if __name__ == '__main__' :

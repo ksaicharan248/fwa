@@ -57,8 +57,13 @@ def get_role(role: str) :
     else :
         return "Member"
 
+def getcoc(tag):
+    link = f"https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{tag}"
+    return link
+
 
 if __name__ == '__main__' :
-    n =getclan(tag="U0LPRYL2")
-    p = n["name"]
-    print(p)
+    tah =  {2456 : "U0LPRYL2"}
+    n =getclan(tag=f"{tah[2456]}/currentwar")
+
+    print(n)
