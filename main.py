@@ -9,7 +9,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import pickle
 
-
 # Define the intents
 intents = discord.Intents.all()
 intents.message_content = True
@@ -680,7 +679,7 @@ async def war(ctx , target=None) :
     else :
         if target.startswith(("w" , "W")) :
             e = Embed(title="🍻✌️WIN WAR✌️🍻 \n" , color=Color.green())
-            e.description=f'\n[__**{clani["clan"]["name"].upper()}**__]({clan_link})    vs    [__**{clani["opponent"]["name"].upper()}**__]({opponent_link})\n\n**__WAR  INSTRUCTIONS__ :**\n\n⚔️1st attack on mirror (opposite same base) for **__3 stars__**🌟( must )\n\n⚔️2nd attack on BASE-1 for**__ 1 star__**🌟(After no. 1 take his mirror)\n\n🧹Clean up :  In last 12 hr. all bases are open for 3 stars🌟'
+            e.description = f'\n[__**{clani["clan"]["name"].upper()}**__]({clan_link})    vs    [__**{clani["opponent"]["name"].upper()}**__]({opponent_link})\n\n**__WAR  INSTRUCTIONS__ :**\n\n⚔️1st attack on mirror (opposite same base) for **__3 stars__**🌟( must )\n\n⚔️2nd attack on BASE-1 for**__ 1 star__**🌟(After no. 1 take his mirror)\n\n🧹Clean up :  In last 12 hr. all bases are open for 3 stars🌟'
             e.set_footer(text=f"{clani['clan']['name'].upper()}" , icon_url=clani["clan"]["badgeUrls"]["large"])
             await ctx.send(embed=e)
         elif target.startswith(("l" , "L")) :
@@ -693,6 +692,23 @@ async def war(ctx , target=None) :
             e = Embed(title="Please provide a user mention or ID." , color=Color.red())
             await ctx.send(embed=e)
             return
+
+
+@client.command()
+async def cwl(ctx , tag=None) :
+    await ctx.message.delete()
+    if tag is None :
+        e = Embed(title="Please provide a tag." , color=Color.red())
+        await ctx.send(embed=e)
+        return
+    else :
+        clt = COC.getclan(tag=tag)
+        e = Embed(title=f'**{clt["name"]}** - {clt["tag"]}' ,
+                  url=f'https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{clt["tag"].strip("#")}' ,
+                  color=Color.blue())
+        e.set_thumbnail(url=COC.leaugeid(clt["warLeague"]["id"]))
+        e.description = f'**Info** :\n\n{clt["description"]}'
+        await ctx.send(embed=e)
 
 
 if __name__ == '__main__' :

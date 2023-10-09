@@ -61,6 +61,27 @@ def getcoc(tag):
     link = f"https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{tag}"
     return link
 
+def leaugeid(id):
+    if id == 48000010 :
+        return "https://static.wikia.nocookie.net/clashofclans/images/c/c9/WarCrystalIII.png/revision/latest/scale-to-width-down/30?cb=20181024140227"
+    elif id == 48000011 :
+        return "https://static.wikia.nocookie.net/clashofclans/images/5/5a/WarCrystalII.png/revision/latest/scale-to-width-down/30?cb=20181024140227"
+    elif id == 48000012 :
+        return "https://static.wikia.nocookie.net/clashofclans/images/8/8a/WarCrystalI.png/revision/latest/scale-to-width-down/30?cb=20181024140227"
+    elif id == 48000013 :
+        return "https://static.wikia.nocookie.net/clashofclans/images/3/39/WarMasterIII.png/revision/latest/scale-to-width-down/30?cb=20181024140227"
+    elif id == 48000014 :
+        return "https://static.wikia.nocookie.net/clashofclans/images/8/81/WarMasterII.png/revision/latest/scale-to-width-down/30?cb=20181024140227"
+    elif id == 48000015 :
+        return "https://static.wikia.nocookie.net/clashofclans/images/5/53/WarMasterI.png/revision/latest/scale-to-width-down/30?cb=20181024140227"
+    elif id == 48000016 :
+        return "https://static.wikia.nocookie.net/clashofclans/images/d/d2/WarChampionIII.png/revision/latest/scale-to-width-down/30?cb=20181024140228"
+    elif id == 48000017 :
+        return "https://static.wikia.nocookie.net/clashofclans/images/b/bd/WarChampionII.png/revision/latest/scale-to-width-down/30?cb=20181024140228"
+    elif id == 48000018 :
+        return "https://static.wikia.nocookie.net/clashofclans/images/e/e3/WarChampionI.png/revision/latest/scale-to-width-down/30?cb=20181024140228"
+
+
 
 if __name__ == '__main__' :
     tah =  {2456 : "U0LPRYL2"}
