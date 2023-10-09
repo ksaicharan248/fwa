@@ -662,10 +662,11 @@ async def clan(ctx , target=None) :
 @client.command()
 async def war(ctx , target=None) :
     cid = ctx.channel.category.id
-    cidinfo = {1054453503084482580 : "U0LPRYL2" , 1054458642541334599 : "2Q8URCU88"}
+    cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682] ,
+               1054458642541334599 : ["2Q8URCU88" , 1055418808833159189]}
     await ctx.message.delete()
     if cid in cidinfo.keys() :
-        clani = COC.getclan(tag=f"{cidinfo[cid]}/currentwar")
+        clani = COC.getclan(tag=f"{cidinfo[cid][0]}/currentwar")
         clan_link = COC.getcoc(tag=clani['clan']['tag'].strip("#"))
         opponent_link = COC.getcoc(tag=clani['opponent']['tag'].strip("#"))
     else :
@@ -677,6 +678,7 @@ async def war(ctx , target=None) :
         await ctx.send(embed=e)
         return
     else :
+        await ctx.send(f'Hey , <@&{cidinfo[cid][1]}>')
         if target.startswith(("w" , "W")) :
             e = Embed(title="🍻✌️WIN WAR✌️🍻 \n" , color=Color.green())
             e.description = f'\n[__**{clani["clan"]["name"].upper()}**__]({clan_link})    vs    [__**{clani["opponent"]["name"].upper()}**__]({opponent_link})\n\n**__WAR  INSTRUCTIONS__ :**\n\n⚔️1st attack on mirror (opposite same base) for **__3 stars__**🌟( must )\n\n⚔️2nd attack on BASE-1 for**__ 1 star__**🌟(After no. 1 take his mirror)\n\n🧹Clean up :  In last 12 hr. all bases are open for 3 stars🌟'
@@ -710,7 +712,7 @@ async def cwl(ctx , tag=None , *th) :
         ths = '\n'.join([f'TH : {thvalue}  <:th{thvalue}:{COC.get_id(int(thvalue))}>' for thvalue in th])
         print(ths)
         e.description = f'\n**Info** :\n\n{clt["description"]} '
-        e. add_field(name="\n\n**Town hall**\n",value=f' {ths}')
+        e.add_field(name="\n\n**Town hall**\n" , value=f' {ths}')
         await ctx.send(embed=e)
 
 
