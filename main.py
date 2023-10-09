@@ -666,8 +666,8 @@ async def war(ctx , target=None) :
     await ctx.message.delete()
     if cid in cidinfo.keys() :
         clani = COC.getclan(tag=f"{cidinfo[cid]}/currentwar")
-        clan_link = COC.getcoc(tag=clani['clan']['tag'])
-        opponent_link = COC.getcoc(tag=clani['opponent']['tag'])
+        clan_link = COC.getcoc(tag=clani['clan']['tag'].strip("#"))
+        opponent_link = COC.getcoc(tag=clani['opponent']['tag'].strip("#"))
     else :
         e = Embed(title="This command wont work here" , color=Color.red())
         await ctx.send(embed=e)
