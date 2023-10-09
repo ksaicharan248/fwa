@@ -696,7 +696,6 @@ async def war(ctx , target=None) :
 
 @client.command()
 async def cwl(ctx , tag=None , *th) :
-    ths = ''
     await ctx.message.delete()
     if tag is None :
         e = Embed(title="Please provide a tag." , color=Color.red())
@@ -708,9 +707,8 @@ async def cwl(ctx , tag=None , *th) :
                   url=f'https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{clt["tag"].strip("#")}' ,
                   color=Color.blue())
         e.set_thumbnail(url=COC.leaugeid(clt["warLeague"]["id"]))
-        for thvalue in th :
-            ths += f'<:th{thvalue}:{COC.get_id(thvalue)}> '
-        e.description = f'\n**Info** :\n\n{clt["description"]} \n\n {type(th)}{th}\n__**Town hall**__\n {ths}'
+        ths = ' '.join([f'<:th{thvalue}:{COC.get_id(thvalue)}>' for thvalue in th])
+        e.description = f'\n**Info** :\n\n{clt["description"]} \n\n {type(th)}{th}\n**Town hall**\n {ths}'
         await ctx.send(embed=e)
 
 
