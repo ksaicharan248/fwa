@@ -695,7 +695,7 @@ async def war(ctx , target=None) :
 
 
 @client.command()
-async def cwl(ctx , tag=None , *,th) :
+async def cwl(ctx , tag=None , *th) :
     ths = ''
     await ctx.message.delete()
     if tag is None :
@@ -710,7 +710,7 @@ async def cwl(ctx , tag=None , *,th) :
         e.set_thumbnail(url=COC.leaugeid(clt["warLeague"]["id"]))
         for thvalue in th :
             ths += f'<:th{thvalue}:{COC.get_id(thvalue)}> '
-        e.description = f'\n**Info** :\n\n{clt["description"]} \n\n {type(th)}{th}\n"**Town hall**"\n {ths}'
+        e.description = f'\n**Info** :\n\n{clt["description"]} \n\n {type(th)}{th}\n__**Town hall**__\n {ths}'
         await ctx.send(embed=e)
 
 
