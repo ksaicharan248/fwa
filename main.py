@@ -695,7 +695,7 @@ async def war(ctx , target=None) :
 
 
 @client.command()
-async def cwl(ctx , tag=None , *th) :
+async def cwl(ctx , tag=None , *,th) :
     await ctx.message.delete()
     if tag is None :
         e = Embed(title="Please provide a tag." , color=Color.red())
