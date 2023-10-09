@@ -72,7 +72,7 @@ async def help(ctx) :
     p = client.command_prefix
     embed = discord.Embed(
         description=f"{p}wel                - Welome player\n{p}ping               - Show latency\n{p}help               - Show help\n{p}role                - Add role\n{p}rm                  - Remove role\n{p}changenick  - Change nickname\n{p}changenick  - remove nick name" ,
-        colour=0x1f7f5f)
+        colour=Color.random())
 
     embed.add_field(name="LEADER COMMANDS" ,
                     value=f"`ts-m`         -  add player to The shield\nusage:  {p}ts-m  @mention Mb/Eld - IGN\n\n`hs-m`         - add player to HINDU SAMRAJYA\nusage:  {p}hs-m  @mention Mb/Eld - IGN\n\n`wa-m`         - add player to warning \nusage:  {p}wa-m  @mention Mb/Eld - IGN\n\n`unq`         - add player to unqualify\nusage:  {p}unq  @mention  IGN\n\n`app`       -  approve the player\nusage -  {p}app @mention TH - IGN\n\n`re`         - send the player to reapply \nusage : {p}re @mention  IGN\n\n`check`        - check the player with chocolate clash\nusage : {p}check playertag \nNOTE : if linked mention player \n\n `force_link`        - link any other player with tag \nusage :||{p}force_link   @mention   #player_tag`||" ,
@@ -87,7 +87,7 @@ async def help(ctx) :
 @client.command(name='wel')
 async def welcome(ctx , member: discord.Member) :
     await ctx.send(f'Hello, {member.mention} !')
-    embed = Embed(title=f"Welcome {member.mention} to to 🛡 — THE SHIELD —🛡 !" , color=Color.brand_green())
+    embed = Embed(title=f"Welcome {member.mention} to to 🛡 — THE SHIELD —🛡 !" , color=Color.random())
     embed.description = f"You can read our rules and details about 💎FWA💎 in {client.get_channel(1054438569378332754).mention} \n\n If you wish to " \
                         f"join one of our clans then please follow the steps below.\n\n**•Step 1** : Post your " \
                         f"PLAYER tag\n**•Step 2** : Post a picture of My Profile tab\n**•Step 3**: Post a picture " \
@@ -145,7 +145,7 @@ async def changenick(ctx , member: discord.Member , * , new_nickname) :
     try :
         # Change the user's nickname
         await member.edit(nick=new_nickname)
-        embed = Embed(title="Nickname changed" , color=Color.green())
+        embed = Embed(title="Nickname changed" , color=Color.random())
         embed.add_field(name="User" , value=member.mention , inline=False)
         embed.add_field(name="Moderator" , value=ctx.author.mention , inline=False)
 
@@ -169,7 +169,7 @@ async def removenick(ctx , member: discord.Member) :
         await member.edit(nick=None)
 
         # Create a red embedded message
-        embed = Embed(title="Nickname Removed" , color=Color.red())
+        embed = Embed(title="Nickname Removed" , color=Color.random())
         embed.add_field(name="User" , value=member.mention , inline=False)
         embed.add_field(name="Moderator" , value=ctx.author.mention , inline=False)
 
@@ -233,7 +233,7 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
         await ctx.send("MISSING permissions")
 
 
-@client.command(name='hs-m')
+@client.command(name='sn-m')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'HML')
 async def hs_m(ctx , member: discord.Member , * , new_nickname) :
     if ctx.author.guild_permissions.manage_messages :
@@ -241,7 +241,7 @@ async def hs_m(ctx , member: discord.Member , * , new_nickname) :
         channel = client.get_channel(1063291093178916884)
         try :
             await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
-            await member.add_roles(discord.utils.get(ctx.guild.roles , name='HMC'))
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='SNC'))
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
             embed = Embed(color=Color.green())
             embed.description = f"✅Changed roles for {member.name}, +HMC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
@@ -265,12 +265,12 @@ async def hs_m(ctx , member: discord.Member , * , new_nickname) :
             flag2 = False
 
         if flag1 and flag2 :
-            await channel.send(f"{member.mention} is now a member of **HINDU SAMRAJYA**")
+            await channel.send(f"{member.mention} is now a member of **SINS & SORROWS**")
             embed3 = Embed(color=Color.green())
             embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
                                   "\n"
                                   "『📢』**clan-announcements** - For important clan announcements\n"
-                                  "『⚠』**war-instructions** - For war rules and instructions\n"
+                                  "『⚠』**<#1054439098342969425>** - For war rules and instructions\n"
                                   "\n"
                                   "Note - Make Sure To Maintain This In Clan\n"
                                   "✅ Donate\n"
@@ -351,7 +351,7 @@ async def unq(ctx , member: discord.Member , * , new_nickname=None) :
     await member.add_roles(discord.utils.get(ctx.guild.roles , name='unqualified❌'))
     channel = client.get_channel(1055440018279235657)
     await channel.send(f"{member.mention} has been unqualified by {ctx.author.mention}")
-    e = Embed(title="UNQUALIFIED " , color=Color.dark_purple())
+    e = Embed(title="UNQUALIFIED " , color=Color.Color.random())
     e.description = f'⚠️ You have been placed here Because you havent Fulfill the Minimum Requirements to Apply to ' \
                     f'Join our Clans. To check our Requirements please type \n ➡️ !reqs \n\n🔍 We are always here also ' \
                     f'to Assist you.\n❌ Donot request to Join in Game unless Instructed to do so\n🏛️You may stay in ' \
@@ -374,7 +374,7 @@ async def approve(ctx , member: discord.Member , * , new_nickname=None) :
     await member.add_roles(discord.utils.get(ctx.guild.roles , name='approved✅'))
     channel = client.get_channel(1055439744739315743)
     await channel.send(f"{member.mention} has been approved by {ctx.author.mention}")
-    e = Embed(title="APPROVED " , color=Color.brand_green())
+    e = Embed(title="APPROVED " , color=Color.random())
     e.description = f'🎯 Clan spots will be posted in this {client.get_channel(1055439744739315743).mention}, make sure to check it\n' \
                     f'🎯You will be **@notified** if a spot available for your TH level.\n🎯Just make sure to reply as fast as possible to ensure your spot.\n' \
                     f'🎯Donot request to join in game unless instructed to do so.\n' \
@@ -396,7 +396,7 @@ async def re(ctx , member: discord.Member , * , new_nickname=None) :
     await member.add_roles(discord.utils.get(ctx.guild.roles , name='re - apply'))
     channel = client.get_channel(1055440286806966322)
     await channel.send(f"{member.mention} has been sent to re-apply by {ctx.author.mention}")
-    e = Embed(title="RE-APPLY \n📛You have been Placed here due to the Following Reasons📛\n" , color=Color.gold())
+    e = Embed(title="RE-APPLY \n📛You have been Placed here due to the Following Reasons📛\n" , color=Color.random())
     e.description = f'• You have been Inactive from a Long time in our Clans. \n ' \
                     f'• You Left without informing your Clans Leader/Co-Leader.\n' \
                     f'• Your Activity seems Suspicious in the Server.\n' \
@@ -412,7 +412,7 @@ async def re(ctx , member: discord.Member , * , new_nickname=None) :
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML')
 async def check(ctx , * , target=None) :
     if target is None :
-        e = Embed(title="Please provide a user mention or ID." , color=Color.red())
+        e = Embed(title="Please provide a user mention or ID." , color=Color.random())
         await ctx.send(embed=e)
         return
     else :
@@ -471,7 +471,7 @@ async def emoji(ctx) :
 async def link(ctx , tag=None) :
     await ctx.message.delete()
     if tag is None :
-        e = Embed(title="Please provide the player tag ." , color=Color.red())
+        e = Embed(title="Please provide the player tag ." , color=Color.random())
         await ctx.send(embed=e)
         return
     else :
@@ -479,7 +479,7 @@ async def link(ctx , tag=None) :
         with open('userdata.pkl' , 'rb') as file :
             user_data = pickle.load(file)
         if ctx.author.id in user_data.keys() :
-            e = Embed(title="You have already linked your account <:ver:1157952898362261564>" , colour=Color.green())
+            e = Embed(title="You have already linked your account <:ver:1157952898362261564>" , colour=Color.random())
             await ctx.send(embed=e)
             await ctx.send()
             return
@@ -487,7 +487,7 @@ async def link(ctx , tag=None) :
             player = COC.get_user(tag=tag)
             e = Embed(
                 title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
-                color=Color.blue())
+                color=Color.random())
             e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {ctx.author.mention}'
             e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
@@ -512,7 +512,7 @@ async def unlink(ctx , member: discord.Member) :
             user_data.pop(member.id)
         e = Embed(
             title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
-            color=Color.dark_gold())
+            color=Color.random())
         e.description = f'\n<:ver:1157952898362261564>  {player["tag"]} Unlinked with {member.mention}  '
         e.set_footer(text=f"Unlinked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
         await ctx.send(embed=e)
@@ -534,7 +534,7 @@ async def force_link(ctx , member: discord.Member = None , tag=None) :
             user_data = pickle.load(file)
         if member.id in user_data.keys() :
             e = Embed(title=f"{member.mention} have already linked his account <:ver:1157952898362261564>" ,
-                      colour=Color.green())
+                      colour=Color.random())
             await ctx.send(embed=e)
             await ctx.send()
             return
@@ -542,7 +542,7 @@ async def force_link(ctx , member: discord.Member = None , tag=None) :
             player = COC.get_user(tag=tag)
             e = Embed(
                 title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
-                color=Color.blue())
+                color=Color.random())
             e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {member.mention}'
             e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
@@ -577,7 +577,7 @@ async def profile(ctx , * , target=None) :
 
     player = COC.get_user(tag=tags)
     url = f'https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23{player["tag"]}'
-    e = Embed(title=f"{player['name']} - {player['tag']}" , url=url , color=Color.blue())
+    e = Embed(title=f"{player['name']} - {player['tag']}" , url=url , color=Color.random())
     emoj = discord.utils.get(ctx.guild.emojis , id=int(COC.get_id(player["townHallLevel"])))
     ptag = player["tag"].strip('#')
     x = f'[{player["clan"]["name"]}](https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{player["clan"]["tag"]}) \n Role : **{COC.get_role(player["role"])}**' if "clan" in player else "NO clan"
@@ -609,7 +609,7 @@ async def clan(ctx , target=None) :
     await ctx.message.delete()
     clantag = None
     tags = None
-    clanroles = ['WAL' , 'TSL' , 'HML' , 'WAC' , 'TSC' , 'HMC']
+    clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC' , 'SNC']
     lead = {'2Q8URCU88' : 1034730502701203467 , 'U0LPRYL2' : 775168480969621586 , '9JYC9QU9' : 405705743967453184}
     if target is None or ctx.message.mentions :
         with open('userdata.pkl' , 'rb') as f :
@@ -627,7 +627,7 @@ async def clan(ctx , target=None) :
                 clantag = "2Q8URCU88"
             elif any(role.name in ["TSC" , "TSL"] for role in ctx.author.roles) :
                 clantag = "U0LPRYL2"
-            elif any(role.name in ["HMC" , "HML"] for role in ctx.author.roles) :
+            elif any(role.name in ["SNC" , "SNL"] for role in ctx.author.roles) :
                 clantag = "9JYC9QU9"
     else :
         if len(target) == 1 :
@@ -644,7 +644,7 @@ async def clan(ctx , target=None) :
     clt = COC.getclan(tag=clantag)
     e = Embed(title=f'**{clt["name"]}** - {clt["tag"]}' ,
               url=f'https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{clt["tag"].strip("#")}' ,
-              color=Color.blue())
+              color=Color.random())
     e.set_thumbnail(url=clt["badgeUrls"]["large"])
     ccns = f'https://fwa.chocolateclash.com/cc_n/clan.php?tag={clt["tag"].strip("#")}'
     fwa = "https://sites.google.com/site/fwaguide/"
@@ -705,10 +705,12 @@ async def cwl(ctx , tag=None , *th) :
         clt = COC.getclan(tag=tag)
         e = Embed(title=f'**{clt["name"]}** - {clt["tag"]}' ,
                   url=f'https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{clt["tag"].strip("#")}' ,
-                  color=Color.blue())
+                  color=Color.random())
         e.set_thumbnail(url=COC.leaugeid(clt["warLeague"]["id"]))
-        ths = ' '.join([f'<:th{thvalue}:{COC.get_id(thvalue)}>' for thvalue in th])
-        e.description = f'\n**Info** :\n\n{clt["description"]} \n\n {type(th)}{th}\n**Town hall**\n {ths}'
+        ths = '\n'.join([f'TH : {thvalue}  <:th{thvalue}:{COC.get_id(int(thvalue))}>' for thvalue in th])
+        print(ths)
+        e.description = f'\n**Info** :\n\n{clt["description"]} '
+        e. add_field(name="\n\n**Town hall**\n",value=f' {ths}')
         await ctx.send(embed=e)
 
 
