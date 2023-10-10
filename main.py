@@ -90,7 +90,7 @@ async def help(ctx) :
         colour=Color.random())
 
     embed.add_field(name="LEADER COMMANDS" ,
-                    value=f"`ts-m`         -  add player to The shield\nusage:  {p}ts-m  @mention Mb/Eld - IGN\n\n`sn-m`         - add player to SINS & SORROWS\nusage:  {p}hs-m  @mention Mb/Eld - IGN\n\n`wa-m`         - add player to warning \nusage:  {p}wa-m  @mention Mb/Eld - IGN\n\n`unq`         - add player to unqualify\nusage:  {p}unq  @mention  IGN\n\n`app`       -  approve the player\nusage -  {p}app @mention TH - IGN\n\n`re`         - send the player to reapply \nusage : {p}re @mention  IGN\n\n`check`        - check the player with chocolate clash\nusage : {p}check playertag \nNOTE : if linked mention player \n\n `force_link`        - link any other player with tag \nusage :||{p}force_link   @mention   #player_tag`||" ,
+                    value=f"`ts-m`         -  add player to The shield\nusage:  {p}ts-m  @mention Mb/Eld - IGN\n\n`sn-m`         - add player to SINS & SORROWS\nusage:  {p}sn-m  @mention Mb/Eld - IGN\n\n`wa-m`         - add player to warning \nusage:  {p}wa-m  @mention Mb/Eld - IGN\n\n`unq`         - add player to unqualify\nusage:  {p}unq  @mention  IGN\n\n`app`       -  approve the player\nusage -  {p}app @mention TH - IGN\n\n`re`         - send the player to reapply \nusage : {p}re @mention  IGN\n\n`check`        - check the player with chocolate clash\nusage : {p}check playertag \nNOTE : if linked mention player \n\n `force_link`        - link any other player with tag \nusage :||{p}force_link   @mention   #player_tag`||" ,
                     inline=False)
     embed.add_field(name="PLAYER COMMANDS" ,
                     value=f"`link`          - link the bot with player tag \nusage : {p}link  #**player_tag**  "
@@ -444,36 +444,39 @@ async def check(ctx , * , target=None) :
             tags = target
             tags = tags.strip('#')
 
-        try :
-            opt = Options()
-            opt.add_argument('--headless')
-            opt.add_argument('--no-sandbox')
-            driver = webdriver.Chrome(options=opt)
+        if True :
             clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
             coslink = 'https://www.clashofstats.com/players/' + tags
-            driver.get(clink)
-            div_element = driver.find_element('css selector' , '#top')
-            screenshot = div_element.screenshot_as_png
-            screenshot_bytes = io.BytesIO(screenshot)
-            screenshot_bytes.seek(0)
-            driver.quit()
-            e = Embed(title="Member Check \n\n" , color=Color.blue())
-            e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
-                            f'📛 please check the palyer is **Banned** or not conform the base is correct.'
-            screenshot_file = discord.File(screenshot_bytes , filename="screenshot.png")
-            e.set_image(url="attachment://screenshot.png")
+            e = Embed(title="Member Check" , color=Color.blue())
+            e.description = f'[**CHOCOLATE CLASH**]({clink})\n\n[**CLASH OF STATS**]({coslink})\n' \
+                            f'📛 Please check and ensure the player is **Banned** or not, then confirm if the base is correct or not.'
+            e.set_footer(text=f"Requested by {ctx.author.display_name}" , icon_url=ctx.author.avatar_url)
+            initial_message = await ctx.send(embed=e)
+            try:
+                opt = Options()
+                opt.add_argument('--headless')
+                opt.add_argument('--no-sandbox')
+                driver = webdriver.Chrome(options=opt)
+                driver.get(clink)
+                div_element = driver.find_element('css selector' , '#top')
+                screenshot = div_element.screenshot_as_png
+                screenshot_bytes = io.BytesIO(screenshot)
+                screenshot_bytes.seek(0)
+                driver.quit()
 
-            e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
-            await ctx.send(embed=e , file=screenshot_file)
-        except Exception as e :
-            clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
-            coslink = 'https://www.clashofstats.com/players/' + tags
-            e = Embed(title="Member Check \n\n" , color=Color.blue())
-            e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
-                            f'📛 please check and ensure the palyer is **Banned** or not,then conform the base is correct or not.'
-
-            e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
+                e_with_image = Embed(title="Member Check" , color=Color.blue())
+                e_with_image.description = f'[**CHOCOLATE CLASH**]({clink})\n\n[**CLASH OF STATS**]({coslink})\n' \
+                                           f'📛 Please check and ensure the player is **Banned** or not, then confirm if the base is correct or not.'
+                screenshot_file = discord.File(screenshot_bytes , filename="screenshot.png")
+                e_with_image.set_image(url="attachment://screenshot.png")
+                await initial_message.edit(embed=e_with_image , file=screenshot_file)
+            except Exception as e:
+                return
+        else :
+            e= Embed(title="Member Check" , color=Color.blue())
+            e.description = f'[**CHOCOLATE CLASH**]({clink})\n\n[**CLASH OF STATS**]({coslink})\n'
             await ctx.send(embed=e)
+
 
 
 @client.command()
