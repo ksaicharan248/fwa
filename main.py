@@ -634,10 +634,10 @@ async def clan(ctx , target=None) :
                 clantag = "LLGJUPPY"
 
     else :
-        if len(target) == 1 :
+        if len(target) >= 3 :
             ctags = {'w' : "2Q8URCU88" , "ts" : "U0LPRYL2" , "sns" : "Y0YY9GUV", "sav": "LLGJUPPY"}
             clantag = ctags[target]
-        elif len(target) >= 2 :
+        elif len(target) >= 4 :
             clantag = target.strip('#')
         else :
             e = Embed(title="Please provide a clan tag or LINK your profile" , color=Color.red())
@@ -660,7 +660,7 @@ async def clan(ctx , target=None) :
                     f'<:see:1159496511701385297> [**CCNS**]({ccns})\n' \
                     f'⚔️ [**CWL**]({cwl})\n' \
                     f'players : {clt["members"]}/50\n\n' \
-                    f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"} !> '
+                    f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}>!'
     await ctx.send(embed=e)
 
 
