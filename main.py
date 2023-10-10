@@ -66,10 +66,10 @@ async def on_member_join(member) :
     if welcome_channel :
         await member.add_roles(discord.utils.get(member.guild.roles , name='🔸ENTRY🔸'))
         await welcome_channel.send(f'Hello, {member.mention} !')
-        e = Embed(title=f"Welcome {member.mention} to ⚔️TEAM ELITES⚔️ !" , color=Color.random())
+        e = Embed(title=f"Welcome to ⚔️TEAM ELITES⚔️ !" , color=Color.random())
         e.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n If you wish to " \
                         f"join one of our clans then please follow the steps below.\n\n**•Step 1** : Post your " \
-                        f"PLAYER tag\n**•Step 2** : type ```!link #**your_player_tag**``` \n\n```**•Step 3** : Post a picture of My Profile tab\n**•Step 4**: Post a picture " \
+                        f"PLAYER tag\n**•Step 2** : type ```!link #**your_player_tag**``` \n\n**•Step 3** : Post a picture of My Profile tab\n**•Step 4**: Post a picture " \
                         f"of your 💎FWA💎 base \nIf you don’t have a 💎FWA💎 base then you can trigger \n```!bases```\n(" \
                         f"Replace # with your townhall level) OR visit  " \
                         f"<#1054438501233479760>\n**•Step 5**: Have some patience, " \
@@ -100,10 +100,10 @@ async def help(ctx) :
 @client.command(name='wel')
 async def welcome(ctx , member: discord.Member) :
     await ctx.send(f'Hello, {member.mention} !')
-    embed = Embed(title=f"Welcome {member.mention} to  ⚔️TEAM ELITES⚔️!" , color=Color.random())
+    embed = Embed(title=f"Welcome  to  ⚔️TEAM ELITES⚔️!" , color=Color.random())
     embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n If you wish to " \
                         f"join one of our clans then please follow the steps below.\n\n**•Step 1** : Post your " \
-                        f"PLAYER tag\n**•Step 2** : type ```!link #**your_player_tag**``` \n\n```**•Step 3** : Post a picture of My Profile tab\n**•Step 4**: Post a picture " \
+                        f"PLAYER tag\n**•Step 2** : type ```!link #your_player_tag``` \n\n**•Step 3** : Post a picture of My Profile tab\n**•Step 4**: Post a picture " \
                         f"of your 💎FWA💎 base \nIf you don’t have a 💎FWA💎 base then you can trigger \n```!bases```\n(" \
                         f"Replace # with your townhall level) OR visit  " \
                         f"<#1054438501233479760>\n**•Step 5**: Have some patience, " \
