@@ -48,23 +48,36 @@ async def on_command_error(ctx , error) :
 
 
 @client.event
+async def on_member_leave(member) :
+    with open("userdata.pkl" , "rb") as file :
+        user_data = pickle.load(file)
+    if member.id in user_data.keys() :
+        try :
+            del user_data[member.id]
+        except :
+            user_data.pop(member.id)
+        with open("userdata.pkl" , "wb") as file :
+            pickle.dump(user_data , file)
+
+
+@client.event
 async def on_member_join(member) :
     welcome_channel = client.get_channel(1055439542863274038)
     if welcome_channel :
         await member.add_roles(discord.utils.get(member.guild.roles , name='🔸ENTRY🔸'))
         await welcome_channel.send(f'Hello, {member.mention} !')
-        embed = Embed(title=f"Welcome {member.mention} to to 🛡 — THE SHIELD —🛡 !" , color=Color.green())
-        embed.description = f"You can read our rules and details about 💎FWA💎 in {client.get_channel(1054438569378332754).mention} \n\n If you wish to " \
-                            f"join one of our clans then please follow the steps below.\n\n**•Step 1** : Post your " \
-                            f"PLAYER tag\n**•Step 2** : Post a picture of My Profile tab\n**•Step 3**: Post a picture " \
-                            f"of your 💎FWA💎 base \nIf you don’t have a 💎FWA💎 base then you can trigger \n```!th#```\n(" \
-                            f"Replace # with your townhall level) OR visit  " \
-                            f"{client.get_channel(1054438501233479760).mention}\n**•Step 4**: Have some patience, " \
-                            f"you will be assisted shortly.\n\n We may not have an instant space but **ASAP** we have " \
-                            f"a space, we will recruit you. Till then we will put you in " \
-                            f"{client.get_channel(1055439744739315743).mention} \n\n🚨Note - We don’t recruit FWA " \
-                            f"BANNED players."
-        await welcome_channel.send(embed=embed)
+        e = Embed(title=f"Welcome {member.mention} to ⚔️TEAM ELITES⚔️ !" , color=Color.random())
+        e.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n If you wish to " \
+                        f"join one of our clans then please follow the steps below.\n\n**•Step 1** : Post your " \
+                        f"PLAYER tag\n**•Step 2** : type ```!link #**your_player_tag**``` \n\n```**•Step 3** : Post a picture of My Profile tab\n**•Step 4**: Post a picture " \
+                        f"of your 💎FWA💎 base \nIf you don’t have a 💎FWA💎 base then you can trigger \n```!bases```\n(" \
+                        f"Replace # with your townhall level) OR visit  " \
+                        f"<#1054438501233479760>\n**•Step 5**: Have some patience, " \
+                        f"you will be assisted shortly.\n\n We may not have an instant space but **ASAP** we have " \
+                        f"a space, we will recruit you. Till then we will put you in " \
+                        f"<#1055439744739315743> \n\n🚨Note - We don’t recruit FWA " \
+                        f"BANNED players."
+        await welcome_channel.send(embed=e)
 
 
 @client.command(name='help')
@@ -87,16 +100,16 @@ async def help(ctx) :
 @client.command(name='wel')
 async def welcome(ctx , member: discord.Member) :
     await ctx.send(f'Hello, {member.mention} !')
-    embed = Embed(title=f"Welcome {member.mention} to to 🛡 — THE SHIELD —🛡 !" , color=Color.random())
-    embed.description = f"You can read our rules and details about 💎FWA💎 in {client.get_channel(1054438569378332754).mention} \n\n If you wish to " \
+    embed = Embed(title=f"Welcome {member.mention} to  ⚔️TEAM ELITES⚔️!" , color=Color.random())
+    embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n If you wish to " \
                         f"join one of our clans then please follow the steps below.\n\n**•Step 1** : Post your " \
-                        f"PLAYER tag\n**•Step 2** : Post a picture of My Profile tab\n**•Step 3**: Post a picture " \
-                        f"of your 💎FWA💎 base \nIf you don’t have a 💎FWA💎 base then you can trigger \n```!th#```\n(" \
+                        f"PLAYER tag\n**•Step 2** : type ```!link #**your_player_tag**``` \n\n```**•Step 3** : Post a picture of My Profile tab\n**•Step 4**: Post a picture " \
+                        f"of your 💎FWA💎 base \nIf you don’t have a 💎FWA💎 base then you can trigger \n```!bases```\n(" \
                         f"Replace # with your townhall level) OR visit  " \
-                        f"{client.get_channel(1054438501233479760).mention}\n**•Step 4**: Have some patience, " \
+                        f"<#1054438501233479760>\n**•Step 5**: Have some patience, " \
                         f"you will be assisted shortly.\n\n We may not have an instant space but **ASAP** we have " \
                         f"a space, we will recruit you. Till then we will put you in " \
-                        f"{client.get_channel(1055439744739315743).mention} \n\n🚨Note - We don’t recruit FWA " \
+                        f"<#1055439744739315743> \n\n🚨Note - We don’t recruit FWA " \
                         f"BANNED players."
 
     await ctx.send(embed=embed)
@@ -576,7 +589,7 @@ async def profile(ctx , * , target=None) :
             tags = target.strip('#')
 
     player = COC.get_user(tag=tags)
-    url = f'https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23{player["tag"]}'
+    url = f'https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23{player["tag"].strip("#")}'
     e = Embed(title=f"{player['name']} - {player['tag']}" , url=url , color=Color.random())
     emoj = discord.utils.get(ctx.guild.emojis , id=int(COC.get_id(player["townHallLevel"])))
     ptag = player["tag"].strip('#')
@@ -610,8 +623,9 @@ async def clan(ctx , target=None) :
     await ctx.message.delete()
     clantag = None
     tags = None
-    clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC' , 'SNC','SML','SMC']
-    lead = {'2Q8URCU88' : 1034730502701203467 , 'U0LPRYL2' : 775168480969621586 , 'LLGJUPPY':697865882256408726 ,'Y0YY9GUV':613736734462836738}
+    clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC' , 'SNC' , 'SML' , 'SMC']
+    lead = {'2Q8URCU88' : 1034730502701203467 , 'U0LPRYL2' : 775168480969621586 , 'LLGJUPPY' : 697865882256408726 ,
+            'Y0YY9GUV' : 613736734462836738}
     if target is None or ctx.message.mentions :
         with open('userdata.pkl' , 'rb') as f :
             user_data = pickle.load(f)
@@ -635,7 +649,7 @@ async def clan(ctx , target=None) :
 
     else :
         if len(target) >= 3 :
-            ctags = {'w' : "2Q8URCU88" , "ts" : "U0LPRYL2" , "sns" : "Y0YY9GUV", "sav": "LLGJUPPY"}
+            ctags = {'w' : "2Q8URCU88" , "ts" : "U0LPRYL2" , "sns" : "Y0YY9GUV" , "sav" : "LLGJUPPY"}
             clantag = ctags[target]
         elif len(target) >= 4 :
             clantag = target.strip('#')
@@ -659,7 +673,8 @@ async def clan(ctx , target=None) :
                     f'💎 [**FWA**]({fwa})\n' \
                     f'<:see:1159496511701385297> [**CCNS**]({ccns})\n' \
                     f'⚔️ [**CWL**]({cwl})\n' \
-                    f'players : {clt["members"]}/50\n\n' \
+                    f'<:cp:1161299634916966400> : {clt["clanCapital"]["capitalHallLevel"]}'\
+                    f'<:members:1161298479050670162> : {clt["members"]}/50\n\n' \
                     f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}>!'
     await ctx.send(embed=e)
 
@@ -719,6 +734,21 @@ async def cwl(ctx , tag=None , *th) :
         e.description = f'\n**Info** :\n\n{clt["description"]} '
         e.add_field(name="\n\n**Town hall**\n" , value=f' {ths}')
         await ctx.send(embed=e)
+
+
+@client.command(name="bases")
+async def bases(ctx ) :
+    await ctx.message.delete()
+    url15 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH15%3AWB%3AAAAAKQAAAAIPb7TMztzbem-F0y7oXluK"
+    url14 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH14%3AWB%3AAAAAQAAAAAG_WV2seLzVBV38HVTPRJCY"
+    url13 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH13%3AWB%3AAAAAKwAAAAH9cXxV00w-5lJ2qCJCm8_v"
+    url12 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH12%3AWB%3AAAAACwAAAAIzCgaxwgW1UGFUuSFMFvCu"
+    url11 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH11%3AWB%3AAAAAKgAAAAH9X8-koI5OUOzBGQx4SKwQ"
+    embed = discord.Embed(title="💎 List of all FWA bases" ,
+                          description=f"❯ Base: `TownHall 15`\n❯ Link: [Click here for TH15 FWA Base]({url15})\n\n❯ Base: `TownHall 14`\n❯ Link: [Click here for TH14 FWA Base]({url14})\n\n❯ Base: `TownHall 13`\n❯ Link: [Click here for TH13 FWA Base]({url13})\n\n❯ Base: `TownHall 12`\n❯ Link: [Click here for TH12 FWA Base]({url12})\n\n❯ Base: `TownHall 11`\n❯ Link: [Click here for TH11 FWA Base]({url11})\n\nFor detailed infos about our bases, type: !th11 - !th12 - !th13 - !th14 or !th15")
+    embed.set_thumbnail(url="https://farmwaralliance.org/wp-content/uploads/2021/08/unnamed-1-1.png")
+    await ctx.send(embed=embed)
+
 
 
 if __name__ == '__main__' :
