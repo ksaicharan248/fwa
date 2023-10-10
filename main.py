@@ -67,19 +67,19 @@ async def on_member_join(member) :
         await member.add_roles(discord.utils.get(member.guild.roles , name='🔸ENTRY🔸'))
         await welcome_channel.send(f'Hello, {member.mention} !')
         embed = Embed(title=f"Welcome  to  ⚔️TEAM ELITES⚔️!" , color=Color.random())
-        embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n  " \
+        embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n" \
                             f"If you wish to join one of our clans then please follow the steps below.\n\n" \
                             f"**•Step 1** : Post your PLAYER tag\n" \
-                            f"**•Step 2** : type ```!link #your_player_tag``` \n" \
+                            f"**•Step 2** : type this ⚠️ important ⚠️ ```!link #your_player_tag``` \n" \
                             f"**•Step 3** : Post a picture of My Profile tab\n" \
                             f"**•Step 4** : Post a picture of your 💎FWA💎 base \n" \
-                            f"If you don’t have a 💎FWA💎 base then you can type \n```!bases```\n" \
+                            f"If you don’t have a 💎FWA💎 base then you can type \n```!bases```" \
                             f" OR visit <#1054438501233479760>\n " \
                             f"**•Step 5** : Have some patience, " \
-                            f"you will be assisted shortly.\n\n We may not have an instant space but **ASAP** we have " \
+                            f"you will be assisted shortly.\n\nWe may not have an instant space but **ASAP** we have " \
                             f"a space, we will recruit you. Till then we will put you in <#1055439744739315743> " \
-                            f" \n\n🚨Note - We don’t recruit FWA BANNED players."
-        await ctx.send(embed=embed)
+                            f"\n\n🚨Note - We don’t recruit FWA BANNED players."
+        await welcome_channel.send(embed=embed)
 
 
 @client.command(name='help')
@@ -106,18 +106,18 @@ async def welcome(ctx , member: discord.Member=None) :
     else:
         await ctx.send(f'Hello, {member.mention} !')
     embed = Embed(title=f"Welcome  to  ⚔️TEAM ELITES⚔️!" , color=Color.random())
-    embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n  " \
+    embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n" \
                         f"If you wish to join one of our clans then please follow the steps below.\n\n" \
                         f"**•Step 1** : Post your PLAYER tag\n" \
-                        f"**•Step 2** : type ```!link #your_player_tag``` \n" \
+                        f"**•Step 2** : type this ⚠️ important ⚠️ ```$link #your_player_tag``` \n" \
                         f"**•Step 3** : Post a picture of My Profile tab\n" \
                         f"**•Step 4** : Post a picture of your 💎FWA💎 base \n" \
-                        f"If you don’t have a 💎FWA💎 base then you can type \n```!bases```\n" \
+                        f"If you don’t have a 💎FWA💎 base then you can type \n```!bases```" \
                         f" OR visit <#1054438501233479760>\n " \
                         f"**•Step 5** : Have some patience, " \
-                        f"you will be assisted shortly.\n\n We may not have an instant space but **ASAP** we have " \
+                        f"you will be assisted shortly.\n\nWe may not have an instant space but **ASAP** we have " \
                         f"a space, we will recruit you. Till then we will put you in <#1055439744739315743> " \
-                        f" \n\n🚨Note - We don’t recruit FWA BANNED players."
+                        f"\n\n🚨Note - We don’t recruit FWA BANNED players."
     await ctx.send(embed=embed)
 
 
