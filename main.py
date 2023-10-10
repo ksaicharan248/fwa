@@ -88,7 +88,7 @@ async def help(ctx) :
         colour=Color.random())
 
     embed.add_field(name="LEADER COMMANDS" ,
-                    value=f"`ts-m`         -  add player to The shield\nusage:  {p}ts-m  @mention Mb/Eld - IGN\n\n`hs-m`         - add player to HINDU SAMRAJYA\nusage:  {p}hs-m  @mention Mb/Eld - IGN\n\n`wa-m`         - add player to warning \nusage:  {p}wa-m  @mention Mb/Eld - IGN\n\n`unq`         - add player to unqualify\nusage:  {p}unq  @mention  IGN\n\n`app`       -  approve the player\nusage -  {p}app @mention TH - IGN\n\n`re`         - send the player to reapply \nusage : {p}re @mention  IGN\n\n`check`        - check the player with chocolate clash\nusage : {p}check playertag \nNOTE : if linked mention player \n\n `force_link`        - link any other player with tag \nusage :||{p}force_link   @mention   #player_tag`||" ,
+                    value=f"`ts-m`         -  add player to The shield\nusage:  {p}ts-m  @mention Mb/Eld - IGN\n\n`sn-m`         - add player to SINS & SORROWS\nusage:  {p}hs-m  @mention Mb/Eld - IGN\n\n`wa-m`         - add player to warning \nusage:  {p}wa-m  @mention Mb/Eld - IGN\n\n`unq`         - add player to unqualify\nusage:  {p}unq  @mention  IGN\n\n`app`       -  approve the player\nusage -  {p}app @mention TH - IGN\n\n`re`         - send the player to reapply \nusage : {p}re @mention  IGN\n\n`check`        - check the player with chocolate clash\nusage : {p}check playertag \nNOTE : if linked mention player \n\n `force_link`        - link any other player with tag \nusage :||{p}force_link   @mention   #player_tag`||" ,
                     inline=False)
     embed.add_field(name="PLAYER COMMANDS" ,
                     value=f"`link`          - link the bot with player tag \nusage : {p}link  #**player_tag**  "
@@ -248,7 +248,7 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
 
 @client.command(name='sn-m')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'HML')
-async def hs_m(ctx , member: discord.Member , * , new_nickname) :
+async def sn_m(ctx , member: discord.Member , * , new_nickname) :
     if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
         channel = client.get_channel(1063291093178916884)
