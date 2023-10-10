@@ -598,6 +598,7 @@ async def server_list(ctx) :
     e = Embed(title="Server List" , color=Color.blue())
     for i in user_data.keys() :
         user_name = await client.fetch_user(int(i))
+        user_name = user_name.display_name
         user_text += f'{user_name}  : {user_data[i]} \n'
     e.description = user_text
     e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
@@ -609,8 +610,8 @@ async def clan(ctx , target=None) :
     await ctx.message.delete()
     clantag = None
     tags = None
-    clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC' , 'SNC']
-    lead = {'2Q8URCU88' : 1034730502701203467 , 'U0LPRYL2' : 775168480969621586 , '9JYC9QU9' : 405705743967453184}
+    clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC' , 'SNC','SML','SMC']
+    lead = {'2Q8URCU88' : 1034730502701203467 , 'U0LPRYL2' : 775168480969621586 , 'LLGJUPPY':697865882256408726 ,'Y0YY9GUV':613736734462836738}
     if target is None or ctx.message.mentions :
         with open('userdata.pkl' , 'rb') as f :
             user_data = pickle.load(f)
@@ -628,15 +629,18 @@ async def clan(ctx , target=None) :
             elif any(role.name in ["TSC" , "TSL"] for role in ctx.author.roles) :
                 clantag = "U0LPRYL2"
             elif any(role.name in ["SNC" , "SNL"] for role in ctx.author.roles) :
-                clantag = "9JYC9QU9"
+                clantag = "Y0YY9GUV"
+            elif any(role.name in ["SMC" , "SML"] for role in ctx.author.roles) :
+                clantag = "LLGJUPPY"
+
     else :
         if len(target) == 1 :
-            ctags = {'w' : "2Q8URCU88" , "s" : "U0LPRYL2" , "h" : "9JYC9QU9"}
+            ctags = {'w' : "2Q8URCU88" , "ts" : "U0LPRYL2" , "sns" : "Y0YY9GUV", "sav": "LLGJUPPY"}
             clantag = ctags[target]
         elif len(target) >= 2 :
             clantag = target.strip('#')
         else :
-            e = Embed(title="Please provide a user mention or ID." , color=Color.red())
+            e = Embed(title="Please provide a clan tag or LINK your profile" , color=Color.red())
             await ctx.send(embed=e)
             return
     if clantag is None and tags is not None :
@@ -654,8 +658,9 @@ async def clan(ctx , target=None) :
                     f'<:ccns:1159494607760003132> [**Clash of stats**]({cos})\n' \
                     f'💎 [**FWA**]({fwa})\n' \
                     f'<:see:1159496511701385297> [**CCNS**]({ccns})\n' \
-                    f'⚔️ [**CWL**]({cwl})\n\n' \
-                    f'<:saw:1159496168347291698> **Lead**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}> '
+                    f'⚔️ [**CWL**]({cwl})\n' \
+                    f'players : {clt["members"]}/50\n\n' \
+                    f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}> '
     await ctx.send(embed=e)
 
 
