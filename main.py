@@ -750,7 +750,6 @@ async def bases(ctx ) :
     await ctx.send(embed=embed)
 
 
-
 if __name__ == '__main__' :
     keep_alive()
     client.run(keyy)
