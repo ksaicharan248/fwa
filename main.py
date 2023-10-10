@@ -1,3 +1,4 @@
+import asyncio
 import io
 import discord
 from discord.ext import commands
@@ -100,10 +101,10 @@ async def help(ctx) :
 
 
 @client.command(name='wel')
-async def welcome(ctx , member: discord.Member=None) :
+async def welcome(ctx , member: discord.Member = None) :
     if member is None :
         await ctx.send('welcome !')
-    else:
+    else :
         await ctx.send(f'Hello, {member.mention} !')
     embed = Embed(title=f"Welcome  to  ⚔️TEAM ELITES⚔️!" , color=Color.random())
     embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n" \
@@ -443,45 +444,63 @@ async def check(ctx , * , target=None) :
         else :
             tags = target
             tags = tags.strip('#')
+        clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
+        coslink = 'https://www.clashofstats.com/players/' + tags
+    if tags == tags :
+        e = Embed(title="Member Check" , color=Color.blue())
+        e.description = f'[**CHOCOLATE CLASH**]({clink})\n\n[**CLASH OF STATS**]({coslink})\n' \
+                        f'📛 Please check and ensure the player is **Banned** or not, then confirm if the base is correct or not.'
+        e.set_footer(text=f"Requested by {ctx.author.display_name}")
+        intial_message = await ctx.send(embed=e)
 
-        if True :
-            clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
-            coslink = 'https://www.clashofstats.com/players/' + tags
-            e = Embed(title="Member Check" , color=Color.blue())
-            e.description = f'[**CHOCOLATE CLASH**]({clink})\n\n[**CLASH OF STATS**]({coslink})\n' \
-                            f'📛 Please check and ensure the player is **Banned** or not, then confirm if the base is correct or not.'
-            e.set_footer(text=f"Requested by {ctx.author.display_name}" , icon_url=ctx.author.avatar_url)
-            initial_message = await ctx.send(embed=e)
-            try:
-                opt = Options()
-                opt.add_argument('--headless')
-                opt.add_argument('--no-sandbox')
-                driver = webdriver.Chrome(options=opt)
-                driver.get(clink)
-                div_element = driver.find_element('css selector' , '#top')
-                screenshot = div_element.screenshot_as_png
-                screenshot_bytes = io.BytesIO(screenshot)
-                screenshot_bytes.seek(0)
-                driver.quit()
+        opt = Options()
+        opt.add_argument('--headless')
+        opt.add_argument('--no-sandbox')
+        driver = webdriver.Chrome(options=opt)
+        driver.get(clink)
+        div_element = driver.find_element('css selector' , '#top')
+        screenshot = div_element.screenshot_as_png
+        screenshot_bytes = io.BytesIO(screenshot)
+        screenshot_bytes.seek(0)
+        driver.quit()
 
-                e_with_image = Embed(title="Member Check" , color=Color.blue())
-                e_with_image.description = f'[**CHOCOLATE CLASH**]({clink})\n\n[**CLASH OF STATS**]({coslink})\n' \
-                                           f'📛 Please check and ensure the player is **Banned** or not, then confirm if the base is correct or not.'
-                screenshot_file = discord.File(screenshot_bytes , filename="screenshot.png")
-                e_with_image.set_image(url="attachment://screenshot.png")
-                await initial_message.edit(embed=e_with_image , file=screenshot_file)
-            except Exception as e:
-                return
-        else :
-            e= Embed(title="Member Check" , color=Color.blue())
-            e.description = f'[**CHOCOLATE CLASH**]({clink})\n\n[**CLASH OF STATS**]({coslink})\n'
-            await ctx.send(embed=e)
+        e_with_image = Embed(title="Member Check" , color=Color.blue())
+        e_with_image.description = f'[**CHOCOLATE CLASH**]({clink})\n\n[**CLASH OF STATS**]({coslink})\n' \
+                                   f'📛 Please check and ensure the player is **Banned** or not, then confirm if the base is correct or not.'
 
+        screenshot_file = discord.File(screenshot_bytes , filename="screenshot.png")
+        e_with_image.set_image(url="attachment://screenshot.png")
+
+        # Combine the initial embed and the image in one message
+        combined_message = await ctx.send(embed=e , file=screenshot_file)
+
+        # Edit the combined message to include the image
+        await combined_message.edit(content="Here is the image:" , embed=e_with_image)
+
+    else :
+        clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
+        coslink = 'https://www.clashofstats.com/players/' + tags
+        e = Embed(title="Member Check" , color=Color.blue())
+        e.description = f'[**CHOCOLATE CLASH**]({clink})\n\n[**CLASH OF STATS**]({coslink})\n'
+        await ctx.send(embed=e)
 
 
 @client.command()
-async def emoji(ctx) :
-    await ctx.send("<:Super_bowler:1138182991877775370>")
+async def emoji(ctx):
+    # Get the interaction from the context
+    interaction = ctx.interaction
+
+    # Defer the interaction to indicate processing
+    await interaction.defer()
+
+    # Simulate some work with a delay
+    await asyncio.sleep(1)
+
+    # Send the emoji as a follow-up message
+    await interaction.followup.send("<:Super_bowler:1138182991877775370>")
+
+
+
 
 
 ''''
@@ -657,7 +676,7 @@ async def clan(ctx , target=None) :
                 clantag = "LLGJUPPY"
 
     else :
-        if len(target) >= 3 :
+        if len(target) <= 3 :
             ctags = {'w' : "2Q8URCU88" , "ts" : "U0LPRYL2" , "sns" : "Y0YY9GUV" , "sav" : "LLGJUPPY"}
             clantag = ctags[target]
         elif len(target) >= 4 :
@@ -682,7 +701,7 @@ async def clan(ctx , target=None) :
                     f'💎 [**FWA**]({fwa})\n' \
                     f'<:see:1159496511701385297> [**CCNS**]({ccns})\n' \
                     f'⚔️ [**CWL**]({cwl})\n\n' \
-                    f'<:cp:1161299634916966400> : {clt["clanCapital"]["capitalHallLevel"]} '\
+                    f'<:cp:1161299634916966400> : {clt["clanCapital"]["capitalHallLevel"]} ' \
                     f' <:members:1161298479050670162> : {clt["members"]}/50\n\n' \
                     f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}>!'
     await ctx.send(embed=e)
@@ -746,18 +765,18 @@ async def cwl(ctx , tag=None , *th) :
 
 
 @client.command(name="bases")
-async def bases(ctx ) :
+async def bases(ctx) :
     await ctx.message.delete()
-    url15 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH15%3AWB%3AAAAAKQAAAAIPb7TMztzbem-F0y7oXluK"
-    url14 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH14%3AWB%3AAAAAQAAAAAG_WV2seLzVBV38HVTPRJCY"
-    url13 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH13%3AWB%3AAAAAKwAAAAH9cXxV00w-5lJ2qCJCm8_v"
-    url12 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH12%3AWB%3AAAAACwAAAAIzCgaxwgW1UGFUuSFMFvCu"
-    url11 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH11%3AWB%3AAAAAKgAAAAH9X8-koI5OUOzBGQx4SKwQ"
+    url15 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH15%3AWB%3AAAAAKQAAAAIPb7TMztzbem-F0y7oXluK"
+    url14 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH14%3AWB%3AAAAAQAAAAAG_WV2seLzVBV38HVTPRJCY"
+    url13 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH13%3AWB%3AAAAAKwAAAAH9cXxV00w-5lJ2qCJCm8_v"
+    url12 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH12%3AWB%3AAAAACwAAAAIzCgaxwgW1UGFUuSFMFvCu"
+    url11 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH11%3AWB%3AAAAAKgAAAAH9X8-koI5OUOzBGQx4SKwQ"
     embed = discord.Embed(title="💎 List of all FWA bases" ,
                           description=f"❯ Base: `TownHall 15`\n❯ Link: [Click here for TH15 FWA Base]({url15})\n\n❯ Base: `TownHall 14`\n❯ Link: [Click here for TH14 FWA Base]({url14})\n\n❯ Base: `TownHall 13`\n❯ Link: [Click here for TH13 FWA Base]({url13})\n\n❯ Base: `TownHall 12`\n❯ Link: [Click here for TH12 FWA Base]({url12})\n\n❯ Base: `TownHall 11`\n❯ Link: [Click here for TH11 FWA Base]({url11})\n\nFor detailed infos about our bases, type: !th11 - !th12 - !th13 - !th14 or !th15")
-    embed.set_thumbnail(url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEO0d84HSbpwy1s8PGoAg3gT6ksu_MeytKAg&usqp=CAU")
+    embed.set_thumbnail(
+        url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEO0d84HSbpwy1s8PGoAg3gT6ksu_MeytKAg&usqp=CAU")
     await ctx.send(embed=embed)
-
 
 
 if __name__ == '__main__' :
