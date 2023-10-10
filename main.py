@@ -672,9 +672,9 @@ async def clan(ctx , target=None) :
                     f'<:ccns:1159494607760003132> [**Clash of stats**]({cos})\n' \
                     f'💎 [**FWA**]({fwa})\n' \
                     f'<:see:1159496511701385297> [**CCNS**]({ccns})\n' \
-                    f'⚔️ [**CWL**]({cwl})\n' \
-                    f'<:cp:1161299634916966400> : {clt["clanCapital"]["capitalHallLevel"]}'\
-                    f'<:members:1161298479050670162> : {clt["members"]}/50\n\n' \
+                    f'⚔️ [**CWL**]({cwl})\n\n' \
+                    f'<:cp:1161299634916966400> : {clt["clanCapital"]["capitalHallLevel"]} '\
+                    f' <:members:1161298479050670162> : {clt["members"]}/50\n\n' \
                     f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}>!'
     await ctx.send(embed=e)
 
