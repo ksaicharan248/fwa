@@ -64,16 +64,17 @@ async def on_member_leave(member) :
 async def on_member_join(member) :
     welcome_channel = client.get_channel(1055439542863274038)
     if welcome_channel :
+        p = client.command_prefix
         await member.add_roles(discord.utils.get(member.guild.roles , name='🔸ENTRY🔸'))
         await welcome_channel.send(f'Hello, {member.mention} !')
         embed = Embed(title=f"Welcome  to  ⚔️TEAM ELITES⚔️!" , color=Color.random())
         embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n" \
                             f"If you wish to join one of our clans then please follow the steps below.\n\n" \
                             f"**•Step 1** : Post your PLAYER tag\n" \
-                            f"**•Step 2** : type this ⚠️ important ⚠️ ```!link #your_player_tag``` \n" \
+                            f"**•Step 2** : type this ⚠️ important ⚠️ ```{p}link #your_player_tag``` \n" \
                             f"**•Step 3** : Post a picture of My Profile tab\n" \
                             f"**•Step 4** : Post a picture of your 💎FWA💎 base \n" \
-                            f"If you don’t have a 💎FWA💎 base then you can type \n```!bases```" \
+                            f"If you don’t have a 💎FWA💎 base then you can type \n```{p}bases```" \
                             f" OR visit <#1054438501233479760>\n " \
                             f"**•Step 5** : Have some patience, " \
                             f"you will be assisted shortly.\n\nWe may not have an instant space but **ASAP** we have " \
@@ -104,15 +105,17 @@ async def welcome(ctx , member: discord.Member=None) :
     if member is None :
         await ctx.send('welcome !')
     else:
+    
         await ctx.send(f'Hello, {member.mention} !')
+    p = client.command_prefix
     embed = Embed(title=f"Welcome  to  ⚔️TEAM ELITES⚔️!" , color=Color.random())
     embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n" \
                         f"If you wish to join one of our clans then please follow the steps below.\n\n" \
                         f"**•Step 1** : Post your PLAYER tag\n" \
-                        f"**•Step 2** : type this ⚠️ important ⚠️ ```$link #your_player_tag``` \n" \
+                        f"**•Step 2** : type this ⚠️ important ⚠️ ```{p}link #your_player_tag``` \n" \
                         f"**•Step 3** : Post a picture of My Profile tab\n" \
                         f"**•Step 4** : Post a picture of your 💎FWA💎 base \n" \
-                        f"If you don’t have a 💎FWA💎 base then you can type \n```!bases```" \
+                        f"If you don’t have a 💎FWA💎 base then you can type \n```{p}bases```" \
                         f" OR visit <#1054438501233479760>\n " \
                         f"**•Step 5** : Have some patience, " \
                         f"you will be assisted shortly.\n\nWe may not have an instant space but **ASAP** we have " \
@@ -654,7 +657,7 @@ async def clan(ctx , target=None) :
                 clantag = "LLGJUPPY"
 
     else :
-        if len(target) >= 3 :
+        if len(target) <= 3 :
             ctags = {'w' : "2Q8URCU88" , "ts" : "U0LPRYL2" , "sns" : "Y0YY9GUV" , "sav" : "LLGJUPPY"}
             clantag = ctags[target]
         elif len(target) >= 4 :
