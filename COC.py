@@ -60,6 +60,17 @@ def get_role(role: str) :
         return "Member"
 
 
+def get_prefix(role: str) :
+    if role == "leader" :
+        return "Lead - "
+    elif role == "coLeader" :
+        return "Co - "
+    elif role == "admin" :
+        return "Eld - "
+    else :
+        return "Mb - "
+
+
 def getcoc(tag) :
     link = f"https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{tag}"
     return link
@@ -86,8 +97,15 @@ def leaugeid(id) :
         return "https://static.wikia.nocookie.net/clashofclans/images/e/e3/WarChampionI.png/revision/latest/?cb=20181024140228"
 
 
-if __name__ == '__main__' :
-    tah = {2456 : "U0LPRYL2"}
-    n = getclan(tag=f"{tah[2456]}/currentwar")
+def hoq(target=None , *  th) :
+    ths = ""
+    if target is not None :
+        print(target)
 
-    print(n)
+    x = ""  # Initialize an empty string
+cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682] ,
+               1054458642541334599 : ["2Q8URCU88" , 1055418808833159189]}
+
+if __name__ == '__main__' :
+
+    print(cidinfo[1054453503084482580][1])

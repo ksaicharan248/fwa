@@ -101,11 +101,11 @@ async def help(ctx) :
 
 
 @client.command(name='wel')
-async def welcome(ctx , member: discord.Member=None) :
+async def welcome(ctx , member: discord.Member = None) :
     if member is None :
         await ctx.send('welcome !')
-    else:
-    
+    else :
+
         await ctx.send(f'Hello, {member.mention} !')
     p = client.command_prefix
     embed = Embed(title=f"Welcome  to  ⚔️TEAM ELITES⚔️!" , color=Color.random())
@@ -204,10 +204,19 @@ async def removenick(ctx , member: discord.Member) :
 
 @client.command(name='ts-m')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'TSL')
-async def ts_m(ctx , member: discord.Member , * , new_nickname) :
+async def ts_m(ctx , member: discord.Member) :
     if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
         channel = client.get_channel(1055527200193007626)
+        with open('userdata.pkl' , 'rb') as f :
+            data = pickle.load(f)
+        if member.id in data.keys() :
+            info = COC.get_user(data[member.id])
+        else :
+            e = Embed(title='Player data not fount' , colour=Color.red())
+            e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
+            await ctx.send(embed=e)
+            return
         try :
             await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='TSC'))
@@ -216,21 +225,22 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
             embed.description = f"✅Changed roles for {member.name}, +TSC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
             await channel.send(embed=embed)
             flag1 = True
-        except :
+        except Exception as e:
             embed = Embed(color=Color.red())
-            embed.description = f"❌Failed to change roles for {member.name} "
-            await channel.send(embed=embed)
+            embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
+            await ctx.send(embed=embed)
             flag1 = False
         try :
+            new_nickname = f'{COC.get_prefix(info["role"])}{info["name"]}'
             await member.edit(nick=new_nickname)
             embed1 = Embed(color=Color.green())
             embed1.description = f"✅Changed name for {member.name} to  {member.mention}"
             await channel.send(embed=embed1)
             flag2 = True
-        except :
+        except Exception as e :
             embed1 = Embed(color=Color.red())
-            embed1.description = f"❌Failed to change name for {member.name} "
-            await channel.send(embed=embed1)
+            embed1.description = f"❌Failed to change name for {member.name}\n Reason:{e} "
+            await ctx.send(embed=embed1)
             flag2 = False
 
         if flag1 and flag2 :
@@ -257,10 +267,19 @@ async def ts_m(ctx , member: discord.Member , * , new_nickname) :
 
 @client.command(name='sn-m')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'HML')
-async def sn_m(ctx , member: discord.Member , * , new_nickname) :
+async def sn_m(ctx , member: discord.Member ) :
     if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
         channel = client.get_channel(1063291093178916884)
+        with open('userdata.pkl' , 'rb') as f :
+            data = pickle.load(f)
+        if member.id in data.keys() :
+            info = COC.get_user(data[member.id])
+        else :
+            e = Embed(title='Player data not fount' , colour=Color.red())
+            e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
+            await ctx.send(embed=e)
+            return
         try :
             await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='SNC'))
@@ -269,21 +288,23 @@ async def sn_m(ctx , member: discord.Member , * , new_nickname) :
             embed.description = f"✅Changed roles for {member.name}, +HMC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
             await channel.send(embed=embed)
             flag1 = True
-        except :
+
+        except Exception as e:
             embed = Embed(color=Color.red())
-            embed.description = f"❌Failed to change roles for {member.name} "
-            await channel.send(embed=embed)
+            embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
+            await ctx.send(embed=embed)
             flag1 = False
         try :
+            new_nickname = f'{COC.get_prefix(info["role"])}{info["name"]}'
             await member.edit(nick=new_nickname)
             embed1 = Embed(color=Color.green())
             embed1.description = f"✅Changed name for {member.name} to  {member.mention}"
             await channel.send(embed=embed1)
             flag2 = True
-        except :
+        except Exception as e :
             embed1 = Embed(color=Color.red())
-            embed1.description = f"❌Failed to change name for {member.name} "
-            await channel.send(embed=embed1)
+            embed1.description = f"❌Failed to change name for {member.name}\n Reason:{e} "
+            await ctx.send(embed=embed1)
             flag2 = False
 
         if flag1 and flag2 :
@@ -310,10 +331,19 @@ async def sn_m(ctx , member: discord.Member , * , new_nickname) :
 
 @client.command(name='wa-m')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL')
-async def wa_m(ctx , member: discord.Member , * , new_nickname) :
+async def wa_m(ctx , member: discord.Member ) :
     if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
         channel = client.get_channel(1055527254643445812)
+        with open('userdata.pkl' , 'rb') as f :
+            data = pickle.load(f)
+        if member.id in data.keys() :
+            info = COC.get_user(data[member.id])
+        else :
+            e = Embed(title='Player data not fount',colour=Color.red())
+            e.description =f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
+            await ctx.send(embed=e)
+            return
         try :
             await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='WAC'))
@@ -322,21 +352,22 @@ async def wa_m(ctx , member: discord.Member , * , new_nickname) :
             embed.description = f"✅Changed roles for {member.name}, +WAC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
             await channel.send(embed=embed)
             flag1 = True
-        except :
+        except Exception as e:
             embed = Embed(color=Color.red())
-            embed.description = f"❌Failed to change roles for {member.name} "
-            await channel.send(embed=embed)
+            embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
+            await ctx.send(embed=embed)
             flag1 = False
         try :
+            new_nickname = f'{COC.get_prefix(info["role"])}{info["name"]}'
             await member.edit(nick=new_nickname)
             embed1 = Embed(color=Color.green())
             embed1.description = f"✅Changed name for {member.name} to  {member.mention}"
             await channel.send(embed=embed1)
             flag2 = True
-        except :
+        except Exception as e :
             embed1 = Embed(color=Color.red())
-            embed1.description = f"❌Failed to change name for {member.name} "
-            await channel.send(embed=embed1)
+            embed1.description = f"❌Failed to change name for {member.name}\n Reason:{e} "
+            await ctx.send(embed=embed1)
             flag2 = False
 
         if flag1 and flag2 :
@@ -360,6 +391,67 @@ async def wa_m(ctx , member: discord.Member , * , new_nickname) :
     else :
         await ctx.send("MISSING permissions")
 
+@client.command(name='sv-m')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL')
+async def sv_m(ctx , member: discord.Member ) :
+    if ctx.author.guild_permissions.manage_messages :
+        await ctx.message.delete()
+        channel = client.get_channel(1055527254643445812)
+        with open('userdata.pkl' , 'rb') as f :
+            data = pickle.load(f)
+        if member.id in data.keys() :
+            info = COC.get_user(data[member.id])
+        else :
+            e = Embed(title='Player data not fount',colour=Color.red())
+            e.description =f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
+            await ctx.send(embed=e)
+            return
+        try :
+            await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='SMC'))
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
+            embed = Embed(color=Color.green())
+            embed.description = f"✅Changed roles for {member.name}, +SMC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
+            await channel.send(embed=embed)
+            flag1 = True
+        except Exception as e:
+            embed = Embed(color=Color.red())
+            embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
+            await ctx.send(embed=embed)
+            flag1 = False
+        try :
+            new_nickname = f'{COC.get_prefix(info["role"])}{info["name"]}'
+            await member.edit(nick=new_nickname)
+            embed1 = Embed(color=Color.green())
+            embed1.description = f"✅Changed name for {member.name} to  {member.mention}"
+            await channel.send(embed=embed1)
+            flag2 = True
+        except Exception as e :
+            embed1 = Embed(color=Color.red())
+            embed1.description = f"❌Failed to change name for {member.name}\n Reason:{e} "
+            await ctx.send(embed=embed1)
+            flag2 = False
+
+        if flag1 and flag2 :
+            await channel.send(f"{member.mention} is now a member of **ACTIVE CLAN | —< SAVAGE >— **")
+            embed3 = Embed(color=Color.green())
+            embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
+                                  "\n"
+                                  "『📢』**<#1055532032626806804>** - For important clan announcements\n"
+                                  "『⚠』**<#1054439098342969425>** - For war rules and instructions\n"
+                                  "\n"
+                                  "Note - Make Sure To Maintain This In Clan\n"
+                                  "✅ Donate\n"
+                                  "✅ Attack in wars\n"
+                                  "✅ Follow mails\n"
+                                  "✅ 2000 in CG\n"
+                                  "✅ Participate in Clan-Capitals\n"
+                                  "❌ Don’t kick anyone")
+
+            await channel.send(embed=embed3)
+
+    else :
+        await ctx.send("MISSING permissions")
 
 @client.command()
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
@@ -386,24 +478,32 @@ async def unq(ctx , member: discord.Member , * , new_nickname=None) :
 
 @client.command(name='app')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
-async def approve(ctx , member: discord.Member , * , new_nickname=None) :
+async def approve(ctx , member: discord.Member ) :
     await ctx.message.delete()
-    if new_nickname is None :
-        await member.edit(nick=f"TH - {member.name}")
+    with open('userdata.pkl' , 'rb') as f :
+        data = pickle.load(f)
+    if member.id in data.keys() :
+        info = COC.get_user(data[member.id])
+        await member.edit(nick=f'TH {info["townHallLevel"]} - {info["name"]} ')
+        await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
+        await member.add_roles(discord.utils.get(ctx.guild.roles , name='approved✅'))
+        channel = client.get_channel(1055439744739315743)
+        await channel.send(f"{member.mention} has been approved by {ctx.author.mention}")
+        e = Embed(title="APPROVED " , color=Color.random())
+        e.description = f'🎯 Clan spots will be posted in this {client.get_channel(1055439744739315743).mention}, make sure to check it\n' \
+                        f'🎯You will be **@notified** if a spot available for your TH level.\n🎯Just make sure to reply as fast as possible to ensure your spot.\n' \
+                        f'🎯Donot request to join in game unless instructed to do so.\n' \
+                        f'🎯You may stay in your **current clan** or join a random clan while waiting for a **spot**.\n' \
+                        f'🎯Make sure to have **NO war timer** when you answer for spots.\n' \
+                        f'🎯Ask in {client.get_channel(1126856734095462511).mention} if you have any questions. \n authour : {ctx.author.mention}'
+        await channel.send(embed=e)
     else :
-        await member.edit(nick=f"{new_nickname}")
-    await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
-    await member.add_roles(discord.utils.get(ctx.guild.roles , name='approved✅'))
-    channel = client.get_channel(1055439744739315743)
-    await channel.send(f"{member.mention} has been approved by {ctx.author.mention}")
-    e = Embed(title="APPROVED " , color=Color.random())
-    e.description = f'🎯 Clan spots will be posted in this {client.get_channel(1055439744739315743).mention}, make sure to check it\n' \
-                    f'🎯You will be **@notified** if a spot available for your TH level.\n🎯Just make sure to reply as fast as possible to ensure your spot.\n' \
-                    f'🎯Donot request to join in game unless instructed to do so.\n' \
-                    f'🎯You may stay in your **current clan** or join a random clan while waiting for a **spot**.\n' \
-                    f'🎯Make sure to have **NO war timer** when you answer for spots.\n' \
-                    f'🎯Ask in {client.get_channel(1126856734095462511).mention} if you have any questions. \n authour : {ctx.author.mention}'
-    await channel.send(embed=e)
+        e = Embed(title='Player data not fount',colour=Color.red())
+        e.description =f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
+        await ctx.send(embed=e)
+        return
+
+
 
 
 @client.command()
@@ -481,7 +581,7 @@ async def check(ctx , * , target=None) :
 
 @client.command()
 async def emoji(ctx) :
-    await ctx.send("<:Super_bowler:1138182991877775370>")
+    await ctx.send("<:blueBadge:1007628410375372892>")
 
 
 ''''
@@ -634,7 +734,7 @@ async def clan(ctx , target=None) :
     tags = None
     clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC' , 'SNC' , 'SML' , 'SMC']
     lead = {'2Q8URCU88' : 1034730502701203467 , 'U0LPRYL2' : 775168480969621586 , 'LLGJUPPY' : 697865882256408726 ,
-            'Y0YY9GUV' : 613736734462836738}
+            'Y0YY9GUV' : 613736734462836738, '2LV0UJ28V': 697865882256408726}
     if target is None or ctx.message.mentions :
         with open('userdata.pkl' , 'rb') as f :
             user_data = pickle.load(f)
@@ -682,7 +782,7 @@ async def clan(ctx , target=None) :
                     f'💎 [**FWA**]({fwa})\n' \
                     f'<:see:1159496511701385297> [**CCNS**]({ccns})\n' \
                     f'⚔️ [**CWL**]({cwl})\n\n' \
-                    f'<:cp:1161299634916966400> : {clt["clanCapital"]["capitalHallLevel"]} '\
+                    f'<:cp:1161299634916966400> : {clt["clanCapital"]["capitalHallLevel"]}    ' \
                     f' <:members:1161298479050670162> : {clt["members"]}/50\n\n' \
                     f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}>!'
     await ctx.send(embed=e)
@@ -746,18 +846,18 @@ async def cwl(ctx , tag=None , *th) :
 
 
 @client.command(name="bases")
-async def bases(ctx ) :
+async def bases(ctx) :
     await ctx.message.delete()
-    url15 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH15%3AWB%3AAAAAKQAAAAIPb7TMztzbem-F0y7oXluK"
-    url14 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH14%3AWB%3AAAAAQAAAAAG_WV2seLzVBV38HVTPRJCY"
-    url13 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH13%3AWB%3AAAAAKwAAAAH9cXxV00w-5lJ2qCJCm8_v"
-    url12 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH12%3AWB%3AAAAACwAAAAIzCgaxwgW1UGFUuSFMFvCu"
-    url11 ="https://link.clashofclans.com/en?action=OpenLayout&id=TH11%3AWB%3AAAAAKgAAAAH9X8-koI5OUOzBGQx4SKwQ"
+    url15 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH15%3AWB%3AAAAAKQAAAAIPb7TMztzbem-F0y7oXluK"
+    url14 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH14%3AWB%3AAAAAQAAAAAG_WV2seLzVBV38HVTPRJCY"
+    url13 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH13%3AWB%3AAAAAKwAAAAH9cXxV00w-5lJ2qCJCm8_v"
+    url12 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH12%3AWB%3AAAAACwAAAAIzCgaxwgW1UGFUuSFMFvCu"
+    url11 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH11%3AWB%3AAAAAKgAAAAH9X8-koI5OUOzBGQx4SKwQ"
     embed = discord.Embed(title="💎 List of all FWA bases" ,
                           description=f"❯ Base: `TownHall 15`\n❯ Link: [Click here for TH15 FWA Base]({url15})\n\n❯ Base: `TownHall 14`\n❯ Link: [Click here for TH14 FWA Base]({url14})\n\n❯ Base: `TownHall 13`\n❯ Link: [Click here for TH13 FWA Base]({url13})\n\n❯ Base: `TownHall 12`\n❯ Link: [Click here for TH12 FWA Base]({url12})\n\n❯ Base: `TownHall 11`\n❯ Link: [Click here for TH11 FWA Base]({url11})\n\nFor detailed infos about our bases, type: !th11 - !th12 - !th13 - !th14 or !th15")
-    embed.set_thumbnail(url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEO0d84HSbpwy1s8PGoAg3gT6ksu_MeytKAg&usqp=CAU")
+    embed.set_thumbnail(
+        url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEO0d84HSbpwy1s8PGoAg3gT6ksu_MeytKAg&usqp=CAU")
     await ctx.send(embed=embed)
-
 
 
 if __name__ == '__main__' :
