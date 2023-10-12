@@ -523,7 +523,7 @@ async def re(ctx , member: discord.Member , * , new_nickname=None) :
                     f'• You Left without informing your Clans Leader/Co-Leader.\n' \
                     f'• Your Activity seems Suspicious in the Server.\n' \
                     f'• If you wish to reapply and join us again\n\n' \
-                    f'**Do the following**\n' \
+                    f'**Do the following**\n'  \
                     f'• Ping one of clan leaders using @thiername\n' \
                     f'• Or just type " I need help reapplying "\n' \
                     f'• We will assist you further, be kind and wait until we reply.'
