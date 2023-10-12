@@ -87,11 +87,11 @@ async def on_member_join(member) :
 async def help(ctx) :
     p = client.command_prefix
     embed = discord.Embed(
-        description=f"{p}wel                - Welome player\n{p}ping               - Show latency\n{p}help               - Show help\n{p}role                - Add role\n{p}rm                  - Remove role\n{p}changenick  - Change nickname\n{p}changenick  - remove nick name" ,
+        description=f"{p}wel                - Welome player\n{p}ping               - Show latency\n{p}help               - Show help\n{p}role                - Add role\n{p}rm                  - Remove role\n{p}changenick  - Change nickname\n{p}removenick  - remove nick name" ,
         colour=Color.random())
 
     embed.add_field(name="LEADER COMMANDS" ,
-                    value=f"`ts-m`         -  add player to The shield\nusage:  {p}ts-m  @mention Mb/Eld - IGN\n\n`sn-m`         - add player to SINS & SORROWS\nusage:  {p}hs-m  @mention Mb/Eld - IGN\n\n`wa-m`         - add player to warning \nusage:  {p}wa-m  @mention Mb/Eld - IGN\n\n`unq`         - add player to unqualify\nusage:  {p}unq  @mention  IGN\n\n`app`       -  approve the player\nusage -  {p}app @mention TH - IGN\n\n`re`         - send the player to reapply \nusage : {p}re @mention  IGN\n\n`check`        - check the player with chocolate clash\nusage : {p}check playertag \nNOTE : if linked mention player \n\n `force_link`        - link any other player with tag \nusage :||{p}force_link   @mention   #player_tag`||" ,
+                    value=f"`ts-m`         -  add player to The shield\nusage:  {p}ts-m  @mention\n\n`sn-m`         - add player to SINS & SORROWS\nusage:  {p}hs-m  @mention \n\n`wa-m`         - add player to warning \nusage:  {p}wa-m  @mention \n\n`unq`         - add player to unqualify\nusage:  {p}unq  @mention  IGN\n\n`app`       -  approve the player\nusage -  {p}app @mention \n\n`re`         - send the player to reapply \nusage : {p}re @mention  IGN\n\n`check`        - check the player with chocolate clash\nusage : {p}check playertag \nNOTE : if linked mention player \n\n `force_link`        - link any other player with tag \nusage :  || {p}force_link   @mention   #player_tag ||" ,
                     inline=False)
     embed.add_field(name="PLAYER COMMANDS" ,
                     value=f"`link`          - link the bot with player tag \nusage : {p}link  #**player_tag**  "
