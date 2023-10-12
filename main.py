@@ -91,7 +91,7 @@ async def help(ctx) :
         colour=Color.random())
 
     embed.add_field(name="LEADER COMMANDS" ,
-                    value=f"`ts-m`         -  add player to The shield\nusage:  {p}ts-m  @mention\n\n`sn-m`         - add player to SINS & SORROWS\nusage:  {p}hs-m  @mention \n\n`wa-m`         - add player to warning \nusage:  {p}wa-m  @mention \n\n`unq`         - add player to unqualify\nusage:  {p}unq  @mention  IGN\n\n`app`       -  approve the player\nusage -  {p}app @mention \n\n`re`         - send the player to reapply \nusage : {p}re @mention  IGN\n\n`check`        - check the player with chocolate clash\nusage : {p}check playertag \nNOTE : if linked mention player \n\n `force_link`        - link any other player with tag \nusage :  || {p}force_link   @mention   #player_tag ||" ,
+                    value=f"`ts-m`         -  add player to The shield\nusage:  {p}ts-m  @mention\n\n`sn-m`         - add player to SINS & SORROWS\nusage:  {p}sn-m  @mention \n\n`wa-m`         - add player to warning \nusage:  {p}wa-m  @mention \n\n`sv-m`         - add player to ACTIVE CLAN | —< SAVAGE >—  \nusage:  {p}sv-m  @mention \n\n`unq`         - add player to unqualify\nusage:  {p}unq  @mention  IGN\n\n`app`       -  approve the player\nusage:   {p}app @mention \n\n`re`         - send the player to reapply \nusage : {p}re @mention  IGN\n\n`check`        - check the player with chocolate clash\nusage : {p}check playertag \nNOTE : if linked mention player \n\n `force_link`        - link any other player with tag \nusage :  || {p}force_link   @mention   #player_tag ||" ,
                     inline=False)
     embed.add_field(name="PLAYER COMMANDS" ,
                     value=f"`link`          - link the bot with player tag \nusage : {p}link  #**player_tag**  "
