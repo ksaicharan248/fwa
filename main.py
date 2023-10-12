@@ -225,7 +225,7 @@ async def ts_m(ctx , member: discord.Member) :
             embed.description = f"✅Changed roles for {member.name}, +TSC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
             await channel.send(embed=embed)
             flag1 = True
-        except Exception as e:
+        except Exception as e :
             embed = Embed(color=Color.red())
             embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
             await ctx.send(embed=embed)
@@ -267,7 +267,7 @@ async def ts_m(ctx , member: discord.Member) :
 
 @client.command(name='sn-m')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'HML')
-async def sn_m(ctx , member: discord.Member ) :
+async def sn_m(ctx , member: discord.Member) :
     if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
         channel = client.get_channel(1063291093178916884)
@@ -289,7 +289,7 @@ async def sn_m(ctx , member: discord.Member ) :
             await channel.send(embed=embed)
             flag1 = True
 
-        except Exception as e:
+        except Exception as e :
             embed = Embed(color=Color.red())
             embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
             await ctx.send(embed=embed)
@@ -331,7 +331,7 @@ async def sn_m(ctx , member: discord.Member ) :
 
 @client.command(name='wa-m')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL')
-async def wa_m(ctx , member: discord.Member ) :
+async def wa_m(ctx , member: discord.Member) :
     if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
         channel = client.get_channel(1055527254643445812)
@@ -340,8 +340,8 @@ async def wa_m(ctx , member: discord.Member ) :
         if member.id in data.keys() :
             info = COC.get_user(data[member.id])
         else :
-            e = Embed(title='Player data not fount',colour=Color.red())
-            e.description =f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
+            e = Embed(title='Player data not fount' , colour=Color.red())
+            e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
             await ctx.send(embed=e)
             return
         try :
@@ -352,7 +352,7 @@ async def wa_m(ctx , member: discord.Member ) :
             embed.description = f"✅Changed roles for {member.name}, +WAC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
             await channel.send(embed=embed)
             flag1 = True
-        except Exception as e:
+        except Exception as e :
             embed = Embed(color=Color.red())
             embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
             await ctx.send(embed=embed)
@@ -391,19 +391,20 @@ async def wa_m(ctx , member: discord.Member ) :
     else :
         await ctx.send("MISSING permissions")
 
+
 @client.command(name='sv-m')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL')
-async def sv_m(ctx , member: discord.Member ) :
+async def sv_m(ctx , member: discord.Member) :
     if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
-        channel = client.get_channel(1055527254643445812)
+        channel = client.get_channel(1056605645836656791)
         with open('userdata.pkl' , 'rb') as f :
             data = pickle.load(f)
         if member.id in data.keys() :
             info = COC.get_user(data[member.id])
         else :
-            e = Embed(title='Player data not fount',colour=Color.red())
-            e.description =f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
+            e = Embed(title='Player data not fount' , colour=Color.red())
+            e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
             await ctx.send(embed=e)
             return
         try :
@@ -414,7 +415,7 @@ async def sv_m(ctx , member: discord.Member ) :
             embed.description = f"✅Changed roles for {member.name}, +SMC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
             await channel.send(embed=embed)
             flag1 = True
-        except Exception as e:
+        except Exception as e :
             embed = Embed(color=Color.red())
             embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
             await ctx.send(embed=embed)
@@ -453,6 +454,7 @@ async def sv_m(ctx , member: discord.Member ) :
     else :
         await ctx.send("MISSING permissions")
 
+
 @client.command()
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def unq(ctx , member: discord.Member , * , new_nickname=None) :
@@ -478,7 +480,7 @@ async def unq(ctx , member: discord.Member , * , new_nickname=None) :
 
 @client.command(name='app')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
-async def approve(ctx , member: discord.Member ) :
+async def approve(ctx , member: discord.Member) :
     await ctx.message.delete()
     with open('userdata.pkl' , 'rb') as f :
         data = pickle.load(f)
@@ -498,12 +500,10 @@ async def approve(ctx , member: discord.Member ) :
                         f'🎯Ask in {client.get_channel(1126856734095462511).mention} if you have any questions. \n authour : {ctx.author.mention}'
         await channel.send(embed=e)
     else :
-        e = Embed(title='Player data not fount',colour=Color.red())
-        e.description =f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
+        e = Embed(title='Player data not fount' , colour=Color.red())
+        e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
         await ctx.send(embed=e)
         return
-
-
 
 
 @client.command()
@@ -734,7 +734,7 @@ async def clan(ctx , target=None) :
     tags = None
     clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC' , 'SNC' , 'SML' , 'SMC']
     lead = {'2Q8URCU88' : 1034730502701203467 , 'U0LPRYL2' : 775168480969621586 , 'LLGJUPPY' : 697865882256408726 ,
-            'Y0YY9GUV' : 613736734462836738, '2LV0UJ28V': 697865882256408726}
+            'Y0YY9GUV' : 613736734462836738 , '2LV0UJ28V' : 697865882256408726}
     if target is None or ctx.message.mentions :
         with open('userdata.pkl' , 'rb') as f :
             user_data = pickle.load(f)
