@@ -550,7 +550,7 @@ class Myview(View) :
 
     async def interaction_check(self , interaction) -> bool :
         if interaction.user != self.ctx.author :
-            await interaction.response.send_message("hey no " , ephemeral=True)
+            await interaction.response.send_message(f"only {self.ctx.author.mention} can approve this " , ephemeral=True)
             return False
         else :
             return True
