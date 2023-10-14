@@ -534,7 +534,7 @@ async def re(ctx , member: discord.Member , * , new_nickname=None) :
 
 
 class Myview(View) :
-    def __init__(self , ctx ) :
+    def __init__(self , ctx) :
         super().__init__(timeout=40)
         self.ctx = ctx
 
@@ -545,7 +545,7 @@ class Myview(View) :
         if self.ctx.message.mentions :
             await approve(self.ctx , self.ctx.message.mentions[0])
             await self.ctx.send(f'Moved to <#1055439744739315743> ')
-        else:
+        else :
             await self.ctx.send(f'succefully checked')
 
     async def interaction_check(self , interaction) -> bool :
@@ -588,7 +588,7 @@ async def check(ctx , * , target=None) :
             driver.quit()
             e = Embed(title=f'  #{tags} \n\n' , color=Color.blue())
             e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
-                            f'📛 please check the palyer is **Banned** or not conform the base is correct.'
+                            f'**.** Check the palyer is **Banned** or not ,then confirm the base is correct.'
             screenshot_file = discord.File(screenshot_bytes , filename="screenshot.png")
             e.set_image(url="attachment://screenshot.png")
             e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
@@ -906,8 +906,6 @@ async def bases(ctx) :
     embed.set_thumbnail(
         url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEO0d84HSbpwy1s8PGoAg3gT6ksu_MeytKAg&usqp=CAU")
     await ctx.send(embed=embed)
-
-
 
 
 if __name__ == '__main__' :
