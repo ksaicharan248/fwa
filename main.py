@@ -911,5 +911,5 @@ async def bases(ctx) :
 
 
 if __name__ == '__main__' :
-    # keep_alive()
+    keep_alive()
     client.run(keyy)
