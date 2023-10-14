@@ -1,5 +1,9 @@
 import io
 import discord
+from discord.ui import Button , View
+from PIL import Image , ImageDraw , ImageFont
+import requests
+from io import BytesIO
 from discord.ext import commands
 import COC
 from discord import Embed , Color
@@ -265,9 +269,9 @@ async def ts_m(ctx , member: discord.Member) :
         await ctx.send("MISSING permissions")
 
 
-@client.command(name='sn-m')
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'HML')
-async def sn_m(ctx , member: discord.Member) :
+@client.command(name='mn-m')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'MSL')
+async def mo_m(ctx , member: discord.Member) :
     if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
         channel = client.get_channel(1063291093178916884)
@@ -282,7 +286,7 @@ async def sn_m(ctx , member: discord.Member) :
             return
         try :
             await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
-            await member.add_roles(discord.utils.get(ctx.guild.roles , name='SNC'))
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='MSC'))
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
             embed = Embed(color=Color.green())
             embed.description = f"✅Changed roles for {member.name}, +HMC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
@@ -308,7 +312,7 @@ async def sn_m(ctx , member: discord.Member) :
             flag2 = False
 
         if flag1 and flag2 :
-            await channel.send(f"{member.mention} is now a member of **SINS & SORROWS**")
+            await channel.send(f"{member.mention} is now a member of **☬M̷O̷N̷S̷T̷E̷R☬**")
             embed3 = Embed(color=Color.green())
             embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
                                   "\n"
@@ -481,7 +485,6 @@ async def unq(ctx , member: discord.Member , * , new_nickname=None) :
 @client.command(name='app')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def approve(ctx , member: discord.Member) :
-    await ctx.message.delete()
     with open('userdata.pkl' , 'rb') as f :
         data = pickle.load(f)
     if member.id in data.keys() :
@@ -523,11 +526,34 @@ async def re(ctx , member: discord.Member , * , new_nickname=None) :
                     f'• You Left without informing your Clans Leader/Co-Leader.\n' \
                     f'• Your Activity seems Suspicious in the Server.\n' \
                     f'• If you wish to reapply and join us again\n\n' \
-                    f'**Do the following**\n'  \
+                    f'**Do the following**\n' \
                     f'• Ping one of clan leaders using @thiername\n' \
                     f'• Or just type " I need help reapplying "\n' \
                     f'• We will assist you further, be kind and wait until we reply.'
     await channel.send(embed=e)
+
+
+class Myview(View) :
+    def __init__(self , ctx ) :
+        super().__init__(timeout=40)
+        self.ctx = ctx
+
+    @discord.ui.button(style=discord.ButtonStyle.secondary , emoji='✅')
+    async def button_callback(self , interaction: discord.Interaction , button: discord.ui.button) :
+        self.clear_items()
+        await interaction.response.edit_message(view=self)
+        if self.ctx.message.mentions :
+            await approve(self.ctx , self.ctx.message.mentions[0])
+            await self.ctx.send(f'Moved to <#1055439744739315743> ')
+        else:
+            await self.ctx.send(f'succefully checked')
+
+    async def interaction_check(self , interaction) -> bool :
+        if interaction.user != self.ctx.author :
+            await interaction.response.send_message("hey no " , ephemeral=True)
+            return False
+        else :
+            return True
 
 
 @client.command()
@@ -560,20 +586,21 @@ async def check(ctx , * , target=None) :
             screenshot_bytes = io.BytesIO(screenshot)
             screenshot_bytes.seek(0)
             driver.quit()
-            e = Embed(title="Member Check \n\n" , color=Color.blue())
+            e = Embed(title=f'  #{tags} \n\n' , color=Color.blue())
             e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
                             f'📛 please check the palyer is **Banned** or not conform the base is correct.'
             screenshot_file = discord.File(screenshot_bytes , filename="screenshot.png")
             e.set_image(url="attachment://screenshot.png")
-
             e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
-            await ctx.send(embed=e , file=screenshot_file)
+
+            await ctx.send(embed=e , file=screenshot_file , view=Myview(ctx))
+
         except Exception as e :
             clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
             coslink = 'https://www.clashofstats.com/players/' + tags
             e = Embed(title="Member Check \n\n" , color=Color.blue())
             e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
-                            f'📛 please check and ensure the palyer is **Banned** or not,then conform the base is correct or not.'
+                            f'**.** please check and ensure the palyer is **Banned** or not,then conform the base is correct or not.\n{e}'
 
             e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
@@ -808,19 +835,40 @@ async def war(ctx , target=None) :
         return
     else :
         await ctx.send(f'Hey , <@&{cidinfo[cid][1]}>')
+        your_clan_image_url = clani["clan"]["badgeUrls"]["medium"]
+        opponents_clan_image_url = clani["opponent"]["badgeUrls"]["medium"]
+        vs_url = "https://upload.wikimedia.org/wikipedia/commons/7/70/Street_Fighter_VS_logo.png"
+        your_clan_image = Image.open(BytesIO(requests.get(your_clan_image_url).content))
+        opponents_clan_image = Image.open(BytesIO(requests.get(opponents_clan_image_url).content))
+        vs_image = Image.open(BytesIO(requests.get(vs_url).content))
+        clan_width , clan_height = your_clan_image.size
+        banner = Image.new("RGBA" , (600 , 200) , color=(0 , 0 , 0 , 0))
+        clan_y = (banner.height - clan_height) // 2
+        banner.paste(your_clan_image , (0 , clan_y))
+        banner.paste(opponents_clan_image , (400 , clan_y))
+        vs_size = (50 , 50)
+        vs_x = (banner.width - vs_size[0]) // 2
+        vs_y = (banner.height - vs_size[1]) // 2
+        vs_image = vs_image.resize(vs_size)
+        banner.paste(vs_image , (vs_x , vs_y))
+        image_bytes = BytesIO()
+        banner.save(image_bytes , format="PNG")
+        image_bytes.seek(0)
         if target.startswith(("w" , "W")) :
             e = Embed(title="🍻✌️WIN WAR✌️🍻 \n" , color=Color.green())
             e.description = f'\n[__**{clani["clan"]["name"].upper()}**__]({clan_link})    vs    [__**{clani["opponent"]["name"].upper()}**__]({opponent_link})\n\n**__WAR  INSTRUCTIONS__ :**\n\n⚔️1st attack on mirror (opposite same base) for **__3 stars__**🌟( must )\n\n⚔️2nd attack on BASE-1 for**__ 1 star__**🌟(After no. 1 take his mirror)\n\n🧹Clean up :  In last 12 hr. all bases are open for 3 stars🌟'
+            e.set_image(url="attachment://banner.png")
             e.set_footer(text=f"{clani['clan']['name'].upper()}" , icon_url=clani["clan"]["badgeUrls"]["large"])
-            await ctx.send(embed=e)
+            await ctx.send(embed=e , file=discord.File(image_bytes , filename="banner.png"))
+
         elif target.startswith(("l" , "L")) :
             embed = discord.Embed(title="LOOSE WAR 🏳️ \n" , colour=0xe60000)
+            embed.set_image(url="attachment://banner.png")
             embed.description = f'\n[__**{clani["clan"]["name"].upper()}**__]({clan_link})    vs    [__**{clani["opponent"]["name"].upper()}**__]({opponent_link})\n\n**__WAR  INSTRUCTIONS __:**\n\n⚔️1st attack on mirror (opposite same base) for **__2 STARS__**🌟( Compulsory )\n\n⚔️2nd attack on BASE-1 for **__1 STAR__**🌟(After no. 1 take his mirror)\n\n🧹Clean up : In last 12 hr. all bases are open for 2 stars🌟'
             embed.set_footer(text=f"{clani['clan']['name'].upper()}" , icon_url=clani["clan"]["badgeUrls"]["large"])
-            await ctx.send(embed=embed)
-
+            await ctx.send(embed=embed , file=discord.File(image_bytes , filename="banner.png"))
         else :
-            e = Embed(title="Please provide a user mention or ID." , color=Color.red())
+            e = Embed(title="Nothing found" , color=Color.red())
             await ctx.send(embed=e)
             return
 
@@ -860,6 +908,8 @@ async def bases(ctx) :
     await ctx.send(embed=embed)
 
 
+
+
 if __name__ == '__main__' :
-    keep_alive()
+    # keep_alive()
     client.run(keyy)
