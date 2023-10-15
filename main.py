@@ -598,15 +598,14 @@ async def check(ctx , * , target=None) :
             else:
                 raise Exception('Not in correct channel ?')
 
-        except Exception as e :
+        except Exception as er :
             clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
             coslink = 'https://www.clashofstats.com/players/' + tags
-            e = Embed(title="Member Check \n\n" , color=Color.blue())
-            e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
-                            f'**.** please check and ensure the palyer is **Banned** or not,then conform the base is correct or not.\n{e}'
-
+            e = Embed(title=f"{tags} \n\n" , color=Color.blue())
+            e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink})  \n' \
             e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
+            return
 
 
 @client.command()
