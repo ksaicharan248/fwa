@@ -596,7 +596,7 @@ async def check(ctx , * , target=None) :
                 await ctx.send(embed=e , file=screenshot_file , view=Myview(ctx))
 
             else:
-                raise Exception('Not in correct channel')
+                raise Exception('Not in correct channel ?')
 
         except Exception as e :
             clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
