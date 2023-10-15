@@ -574,7 +574,7 @@ async def check(ctx , * , target=None) :
             tags = tags.strip('#')
 
         try :
-            if ctx.channel.id == 1055440286806966322:
+            if ctx.channel.id == 1055439542863274038:
                 opt = Options()
                 opt.add_argument('--headless')
                 opt.add_argument('--no-sandbox')
