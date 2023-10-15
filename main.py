@@ -52,7 +52,7 @@ async def on_command_error(ctx , error) :
 
 
 @client.event
-async def on_member_leave(member) :
+async def on_member_remove(member) :
     with open("userdata.pkl" , "rb") as file :
         user_data = pickle.load(file)
     if member.id in user_data.keys() :
