@@ -602,7 +602,7 @@ async def check(ctx , * , target=None) :
             clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
             coslink = 'https://www.clashofstats.com/players/' + tags
             e = Embed(title=f"{tags} \n\n" , color=Color.blue())
-            e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink})  \n' \
+            e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink})  \n'
             e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
             return
