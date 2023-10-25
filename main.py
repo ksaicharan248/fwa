@@ -42,7 +42,7 @@ async def on_command_error(ctx , error) :
         embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" , description="The user is not in the server." ,
                               color=discord.Color.red())
         await ctx.send(embed=embed)
-    if isinstance(error , commands.CommandInvokeError) and isinstance(error.original , discord.HTTPException) :
+    elif isinstance(error , commands.CommandInvokeError) and isinstance(error.original , discord.HTTPException) :
         embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" , description="something is missing please check and try again." ,
                               color=discord.Color.red())
         await ctx.send(embed=embed)
@@ -416,10 +416,10 @@ async def wfx_m(ctx , member: discord.Member) :
             return
         try :
             await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
-            await member.add_roles(discord.utils.get(ctx.guild.roles , name='SMC'))
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='WFC'))
             await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
             embed = Embed(color=Color.green())
-            embed.description = f"✅Changed roles for {member.name}, +SMC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
+            embed.description = f"✅Changed roles for {member.name}, +WFC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
             await channel.send(embed=embed)
             flag1 = True
         except Exception as e :
