@@ -108,4 +108,4 @@ cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682] ,
 
 if __name__ == '__main__' :
 
-    print(cidinfo[1054453503084482580][1])
+    print(get_user("9JVUQGYLQ"))

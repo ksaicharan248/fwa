@@ -248,6 +248,7 @@ async def ts_m(ctx , member: discord.Member) :
             flag2 = False
 
         if flag1 and flag2 :
+            await ctx.send(f"{member.nick} moved to  **THE SHIELD** 🚀")
             await channel.send(f"{member.mention} is now a member of **THE SHIELD**")
             embed3 = Embed(color=Color.green())
             embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
@@ -312,7 +313,8 @@ async def mo_m(ctx , member: discord.Member) :
             flag2 = False
 
         if flag1 and flag2 :
-            await channel.send(f"{member.mention} is now a member of **☬M̷O̷N̷S̷T̷E̷R☬**")
+            await ctx.send(f"{member.nick} moved to  **☬M̷O̷N̷S̷T̷E̷R☬**")
+            await channel.send(f"{member.mention} is now a member of **☬M̷O̷N̷S̷T̷E̷R☬** 🚀")
             embed3 = Embed(color=Color.green())
             embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
                                   "\n"
@@ -375,6 +377,7 @@ async def wa_m(ctx , member: discord.Member) :
             flag2 = False
 
         if flag1 and flag2 :
+            await ctx.send(f"{member.nick} moved to  **♤WARNING♤** 🚀")
             await channel.send(f"{member.mention} is now a member of **♤WARNING♤**")
             embed3 = Embed(color=Color.green())
             embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
@@ -396,9 +399,9 @@ async def wa_m(ctx , member: discord.Member) :
         await ctx.send("MISSING permissions")
 
 
-@client.command(name='sv-m')
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL')
-async def sv_m(ctx , member: discord.Member) :
+@client.command(name='wfx-m')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WFL')
+async def wfx_m(ctx , member: discord.Member) :
     if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
         channel = client.get_channel(1056605645836656791)
@@ -438,7 +441,8 @@ async def sv_m(ctx , member: discord.Member) :
             flag2 = False
 
         if flag1 and flag2 :
-            await channel.send(f"{member.mention} is now a member of **ACTIVE CLAN | —< SAVAGE >— **")
+            await ctx.send(f"{member.nick} is now a member of **War Farmers x44** 🚀")
+            await channel.send(f"{member.mention} is now a member of **War Farmers x44**")
             embed3 = Embed(color=Color.green())
             embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
                                   "\n"
@@ -471,13 +475,13 @@ async def unq(ctx , member: discord.Member , * , new_nickname=None) :
     await member.add_roles(discord.utils.get(ctx.guild.roles , name='unqualified❌'))
     channel = client.get_channel(1055440018279235657)
     await channel.send(f"{member.mention} has been unqualified by {ctx.author.mention}")
-    e = Embed(title="UNQUALIFIED " , color=Color.Color.random())
+    e = Embed(title="UNQUALIFIED " , color=Color.random())
     e.description = f'⚠️ You have been placed here Because you havent Fulfill the Minimum Requirements to Apply to ' \
                     f'Join our Clans. To check our Requirements please type \n ➡️ !reqs \n\n🔍 We are always here also ' \
                     f'to Assist you.\n❌ Donot request to Join in Game unless Instructed to do so\n🏛️You may stay in ' \
                     f'your current Clan or join a Random Clan while upgrading your base to Meet our Clan Requirements. ' \
                     f'But do not join any FWA Blacklisted clans.\n ✅When your requirements are met, type !wel \n ' \
-                    f'\n**please follow all the instructions** \n authour : {ctx.author.mention}'
+                    f'\n**please follow all the instructions** \nauthour : {ctx.author.mention}'
 
     await channel.send(embed=e)
 
@@ -550,7 +554,8 @@ class Myview(View) :
 
     async def interaction_check(self , interaction) -> bool :
         if interaction.user != self.ctx.author :
-            await interaction.response.send_message(f"only {self.ctx.author.mention} can approve this " , ephemeral=True)
+            await interaction.response.send_message(f"only {self.ctx.author.mention} can approve this " ,
+                                                    ephemeral=True)
             return False
         else :
             return True
@@ -574,7 +579,7 @@ async def check(ctx , * , target=None) :
             tags = tags.strip('#')
 
         try :
-            if ctx.channel.id == 1055439542863274038:
+            if ctx.channel.id == 1055439542863274038 :
                 opt = Options()
                 opt.add_argument('--headless')
                 opt.add_argument('--no-sandbox')
@@ -595,7 +600,7 @@ async def check(ctx , * , target=None) :
                 e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
                 await ctx.send(embed=e , file=screenshot_file , view=Myview(ctx))
 
-            else:
+            else :
                 raise Exception('Not in correct channel ?')
 
         except Exception as er :
@@ -752,6 +757,7 @@ async def server_list(ctx) :
         user_name = user_name.display_name
         user_text += f'{user_name}  : {user_data[i]} \n'
     e.description = user_text
+    e.add_field(name="Server Count" , value=len(user_data) , inline=False)
     e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
     await ctx.send(embed=e)
 
@@ -820,13 +826,11 @@ async def clan(ctx , target=None) :
 @client.command()
 async def war(ctx , target=None) :
     cid = ctx.channel.category.id
-    cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682] ,
-               1054458642541334599 : ["2Q8URCU88" , 1055418808833159189]}
+    cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682 , 'THE SHIELD'] ,
+               1054458642541334599 : ["2Q8URCU88" , 1055418808833159189 , 'WARNING']}
     await ctx.message.delete()
     if cid in cidinfo.keys() :
         clani = COC.getclan(tag=f"{cidinfo[cid][0]}/currentwar")
-        clan_link = COC.getcoc(tag=clani['clan']['tag'].strip("#"))
-        opponent_link = COC.getcoc(tag=clani['opponent']['tag'].strip("#"))
     else :
         e = Embed(title="This command wont work here" , color=Color.red())
         await ctx.send(embed=e)
@@ -836,43 +840,40 @@ async def war(ctx , target=None) :
         await ctx.send(embed=e)
         return
     else :
-        await ctx.send(f'Hey , <@&{cidinfo[cid][1]}>')
         your_clan_image_url = clani["clan"]["badgeUrls"]["medium"]
         opponents_clan_image_url = clani["opponent"]["badgeUrls"]["medium"]
-        vs_url = "https://upload.wikimedia.org/wikipedia/commons/7/70/Street_Fighter_VS_logo.png"
         your_clan_image = Image.open(BytesIO(requests.get(your_clan_image_url).content))
         opponents_clan_image = Image.open(BytesIO(requests.get(opponents_clan_image_url).content))
-        vs_image = Image.open(BytesIO(requests.get(vs_url).content))
-        clan_width , clan_height = your_clan_image.size
-        banner = Image.new("RGBA" , (600 , 200) , color=(0 , 0 , 0 , 0))
-        clan_y = (banner.height - clan_height) // 2
-        banner.paste(your_clan_image , (0 , clan_y))
-        banner.paste(opponents_clan_image , (400 , clan_y))
-        vs_size = (50 , 50)
-        vs_x = (banner.width - vs_size[0]) // 2
-        vs_y = (banner.height - vs_size[1]) // 2
-        vs_image = vs_image.resize(vs_size)
-        banner.paste(vs_image , (vs_x , vs_y))
-        image_bytes = BytesIO()
-        banner.save(image_bytes , format="PNG")
-        image_bytes.seek(0)
         if target.startswith(("w" , "W")) :
-            e = Embed(title="🍻✌️WIN WAR✌️🍻 \n" , color=Color.green())
-            e.description = f'\n[__**{clani["clan"]["name"].upper()}**__]({clan_link})    vs    [__**{clani["opponent"]["name"].upper()}**__]({opponent_link})\n\n**__WAR  INSTRUCTIONS__ :**\n\n⚔️1st attack on mirror (opposite same base) for **__3 stars__**🌟( must )\n\n⚔️2nd attack on BASE-1 for**__ 1 star__**🌟(After no. 1 take his mirror)\n\n🧹Clean up :  In last 12 hr. all bases are open for 3 stars🌟'
-            e.set_image(url="attachment://banner.png")
-            e.set_footer(text=f"{clani['clan']['name'].upper()}" , icon_url=clani["clan"]["badgeUrls"]["large"])
-            await ctx.send(embed=e , file=discord.File(image_bytes , filename="banner.png"))
-
+            path = r'templates/win.png'
         elif target.startswith(("l" , "L")) :
-            embed = discord.Embed(title="LOOSE WAR 🏳️ \n" , colour=0xe60000)
-            embed.set_image(url="attachment://banner.png")
-            embed.description = f'\n[__**{clani["clan"]["name"].upper()}**__]({clan_link})    vs    [__**{clani["opponent"]["name"].upper()}**__]({opponent_link})\n\n**__WAR  INSTRUCTIONS __:**\n\n⚔️1st attack on mirror (opposite same base) for **__2 STARS__**🌟( Compulsory )\n\n⚔️2nd attack on BASE-1 for **__1 STAR__**🌟(After no. 1 take his mirror)\n\n🧹Clean up : In last 12 hr. all bases are open for 2 stars🌟'
-            embed.set_footer(text=f"{clani['clan']['name'].upper()}" , icon_url=clani["clan"]["badgeUrls"]["large"])
-            await ctx.send(embed=embed , file=discord.File(image_bytes , filename="banner.png"))
+            path = r'templates/loose.png'
+        elif target.startswith(("m" , "M")) :
+            path = r'templates/mis.png'
+        elif target.startswith(("b" , "B")) :
+            path = r'templates/bl.png'
         else :
             e = Embed(title="Nothing found" , color=Color.red())
             await ctx.send(embed=e)
             return
+        template = Image.open(path)
+        template.paste(your_clan_image , (80 , 50) , mask=your_clan_image)
+        template.paste(opponents_clan_image , (1000 , 50) , mask=opponents_clan_image)
+        draw = ImageDraw.Draw(template)
+        font = ImageFont.truetype(r'timm.ttf' , 45)
+        text = [cidinfo[cid][2] , clani["opponent"]["name"]]
+        x = [86 , 697]
+        for i in range(len(x)) :
+            box_x , box_y , box_width , box_height = x[i] , 300 , 495 , 52
+            text_bbox = draw.textbbox((box_x , box_y) , text[i] , font=font)
+            text_x = box_x + 10 + (box_width - (text_bbox[2] - text_bbox[0])) // 2
+            text_y = box_y + 10 + (box_height - (text_bbox[3] - text_bbox[1])) // 2
+            draw.text((text_x , text_y) , text[i] , fill=(0 , 0 , 0) , font=font)
+        image_bytes = BytesIO()
+        template.save(image_bytes , format="PNG")
+        image_bytes.seek(0)
+        await ctx.send(f'Hey , <@&{cidinfo[cid][1]}>')
+        await ctx.send(file=discord.File(image_bytes , filename="template.png"))
 
 
 @client.command()
@@ -908,6 +909,34 @@ async def bases(ctx) :
     embed.set_thumbnail(
         url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEO0d84HSbpwy1s8PGoAg3gT6ksu_MeytKAg&usqp=CAU")
     await ctx.send(embed=embed)
+
+
+@client.command()
+async def mope(ctx) :
+    your_clan_image_url = "https://api-assets.clashofclans.com/badges/200/h4etl6xNbZuLCXRFD3JD90vz3a1K4hjCyEZ9ihu_RI0.png"
+    opponents_clan_image_url = "https://api-assets.clashofclans.com/badges/200/cEeszHOqS6gS-L5sBUi8I6bDjBl8u_fKioOZ2I7ARK4.png"
+    your_clan_image = Image.open(BytesIO(requests.get(your_clan_image_url).content))
+    opponents_clan_image = Image.open(BytesIO(requests.get(opponents_clan_image_url).content))
+    template = Image.open('kakd.png')
+    template.paste(your_clan_image , (80 , 50) , mask=your_clan_image)
+    template.paste(opponents_clan_image , (1000 , 50) , mask=opponents_clan_image)
+    draw = ImageDraw.Draw(template)
+    font = ImageFont.truetype(r'timm.ttf' , 30 + 10)
+    text = ["THE SHIELD" , "! ALPHA-Ω-END !"]
+    x = [86 , 697]
+    for i in range(len(x)) :
+        box_x , box_y , box_width , box_height = x[i] , 300 , 495 , 52
+        text_width , text_height = draw.textsize(text[i] , font=font)
+        text_height += int(text_height * 0.1)
+        text_x = box_x + (box_width - text_width) // 2
+        text_y = (box_y + (box_height - text_height) // 2) + 7
+        draw.text((text_x , text_y) , text[i] , fill=(0 , 0 , 0) , font=font)
+    image_bytes = BytesIO()
+    template.save(image_bytes , format="PNG")
+    image_bytes.seek(0)
+    e = Embed(title="THE SHIELD" , color=Color.random())
+    e.set_image(url="attachment://template.png")
+    await ctx.send(embed=e , file=discord.File(image_bytes , filename="template.png"))
 
 
 if __name__ == '__main__' :
