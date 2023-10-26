@@ -913,15 +913,16 @@ async def bases(ctx) :
 
 
 @client.command(name="bl-support")
-async def bl_support(ctx) :
+async def bl_support(ctx, member : discord.Member = None) :
     clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC' ]
-    if ctx.message.mentions:
+    if member is not None :
         if not any(role in clanroles for role in ctx.author.roles):
-            return
+            await ctx.send(f'{member.name} \n moved to blacklist support 🚀')
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='bl-war'))
+
         else :
-            mentioned_user = ctx.message.mentions[0]
-            await ctx.send(f'{mentioned_user.name} \n moved to blacklist support 🚀')
-            await mentioned_user.add_roles(discord.utils.get(ctx.guild.roles , name='bl-war'))
+            return
+
     else:
         await ctx.send(f'{ctx.author.name} \n moved to blacklist support 🚀')
         await ctx.author.add_roles(discord.utils.get(ctx.guild.roles , name='bl-war'))
