@@ -912,32 +912,33 @@ async def bases(ctx) :
     await ctx.send(embed=embed)
 
 
-@client.command()
-async def mope(ctx) :
-    your_clan_image_url = "https://api-assets.clashofclans.com/badges/200/h4etl6xNbZuLCXRFD3JD90vz3a1K4hjCyEZ9ihu_RI0.png"
-    opponents_clan_image_url = "https://api-assets.clashofclans.com/badges/200/cEeszHOqS6gS-L5sBUi8I6bDjBl8u_fKioOZ2I7ARK4.png"
-    your_clan_image = Image.open(BytesIO(requests.get(your_clan_image_url).content))
-    opponents_clan_image = Image.open(BytesIO(requests.get(opponents_clan_image_url).content))
-    template = Image.open('kakd.png')
-    template.paste(your_clan_image , (80 , 50) , mask=your_clan_image)
-    template.paste(opponents_clan_image , (1000 , 50) , mask=opponents_clan_image)
-    draw = ImageDraw.Draw(template)
-    font = ImageFont.truetype(r'timm.ttf' , 30 + 10)
-    text = ["THE SHIELD" , "! ALPHA-Ω-END !"]
-    x = [86 , 697]
-    for i in range(len(x)) :
-        box_x , box_y , box_width , box_height = x[i] , 300 , 495 , 52
-        text_width , text_height = draw.textsize(text[i] , font=font)
-        text_height += int(text_height * 0.1)
-        text_x = box_x + (box_width - text_width) // 2
-        text_y = (box_y + (box_height - text_height) // 2) + 7
-        draw.text((text_x , text_y) , text[i] , fill=(0 , 0 , 0) , font=font)
-    image_bytes = BytesIO()
-    template.save(image_bytes , format="PNG")
-    image_bytes.seek(0)
-    e = Embed(title="THE SHIELD" , color=Color.random())
-    e.set_image(url="attachment://template.png")
-    await ctx.send(embed=e , file=discord.File(image_bytes , filename="template.png"))
+@client.command(name="bl-support")
+async def bl_support(ctx) :
+    clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC' ]
+    if ctx.message.mentions:
+        if not any(role in clanroles for role in ctx.author.roles):
+            return
+        else :
+            mentioned_user = ctx.message.mentions[0]
+            await ctx.send(f'{mentioned_user.name} \n moved to blacklist support 🚀')
+            await mentioned_user.add_roles(discord.utils.get(ctx.guild.roles , name='bl-war'))
+    else:
+        await ctx.send(f'{ctx.author.name} \n moved to blacklist support 🚀')
+        await ctx.author.add_roles(discord.utils.get(ctx.guild.roles , name='bl-war'))
+
+@client.command(name="revoke")
+async def revokee(ctx) :
+    if isinstance(ctx.channel , discord.TextChannel) :
+        role = discord.utils.get(ctx.guild.roles , name='bl-war')
+        for member in ctx.channel.members :
+            if role in member.roles :
+                await member.remove_roles(role)
+                await member.send(f'Thanks for your support in the blacklist war  🫡')
+
+
+
+
+
 
 
 if __name__ == '__main__' :
