@@ -917,13 +917,13 @@ async def bl_support(ctx) :
     clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC' ]
     if ctx.message.mentions:
         if not any(role in clanroles for role in ctx.author.roles):
-            return
-        else :
             mentioned_user = ctx.message.mentions[0]
-            await ctx.send(f'{mentioned_user.name} \n moved to blacklist support 🚀')
+            await ctx.send(f'{mentioned_user.nick} \nmoved to blacklist support 🚀')
             await mentioned_user.add_roles(discord.utils.get(ctx.guild.roles , name='bl-war'))
+        else :
+            return
     else:
-        await ctx.send(f'{ctx.author.name} \n moved to blacklist support 🚀')
+        await ctx.send(f'{ctx.author.nick} \nmoved to blacklist support 🚀')
         await ctx.author.add_roles(discord.utils.get(ctx.guild.roles , name='bl-war'))
 
 @client.command(name="revoke")
