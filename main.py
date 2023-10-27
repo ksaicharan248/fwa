@@ -504,7 +504,7 @@ async def approve(ctx , member: discord.Member) :
         channel = client.get_channel(info[ctx.guild.id][1])
         await channel.send(f"{member.mention} has been approved by {ctx.author.mention}")
         e = Embed(title="APPROVED " , color=Color.random())
-        e.description = f'❯ Clan spots will be posted in this {client.get_channel(info[ctx.guild.id][2]).mention}, make sure to check it\n' \
+        e.description = f'❯ Clan spots will be posted in this {client.get_channel(info[ctx.guild.id][1]).mention}, make sure to check it\n' \
                         f'❯ You will be **@notified** if a spot available for your TH level.\n' \
                         f'❯ Just make sure to reply as fast as possible to ensure your spot.\n' \
                         f'❯ Donot request to join in game unless instructed to do so.\n' \
