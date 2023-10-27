@@ -504,13 +504,13 @@ async def approve(ctx , member: discord.Member) :
         channel = client.get_channel(info[ctx.guild.id][1])
         await channel.send(f"{member.mention} has been approved by {ctx.author.mention}")
         e = Embed(title="APPROVED " , color=Color.random())
-        e.description = f'❯Clan spots will be posted in this @#{info[ctx.guild.id][1]}, make sure to check it\n' \
-                        f'❯You will be **@notified** if a spot available for your TH level.\n' \
-                        f'❯Just make sure to reply as fast as possible to ensure your spot.\n' \
-                        f'❯Donot request to join in game unless instructed to do so.\n' \
-                        f'❯You may stay in your **current clan** or join a random clan while waiting for a **spot**.\n' \
-                        f'❯Make sure to have **NO war timer** when you answer for spots.\n' \
-                        f'❯Ask in {client.get_channel(info[ctx.guild.id][2]).mention} if you have any questions. \nauthour : {ctx.author.mention}'
+        e.description = f'❯ Clan spots will be posted in this {client.get_channel(info[ctx.guild.id][2]).mention}, make sure to check it\n' \
+                        f'❯ You will be **@notified** if a spot available for your TH level.\n' \
+                        f'❯ Just make sure to reply as fast as possible to ensure your spot.\n' \
+                        f'❯ Donot request to join in game unless instructed to do so.\n' \
+                        f'❯ You may stay in your **current clan** or join a random clan while waiting for a **spot**.\n' \
+                        f'❯ Make sure to have **NO war timer** when you answer for spots.\n' \
+                        f'❯ Ask in {client.get_channel(info[ctx.guild.id][2]).mention} if you have any questions. \nauthour : {ctx.author.mention}'
         await channel.send(embed=e)
     else :
         e = Embed(title='Player data not fount' , colour=Color.red())
