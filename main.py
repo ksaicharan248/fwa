@@ -861,8 +861,8 @@ async def war(ctx , target=None) :
         template.paste(your_clan_image , (80 , 50) , mask=your_clan_image)
         template.paste(opponents_clan_image , (1000 , 50) , mask=opponents_clan_image)
         draw = ImageDraw.Draw(template)
-        font = ImageFont.truetype(r'timr45w.ttf' , 45)
-        text = [cidinfo[cid][2] , clani["opponent"]["name"]]
+        font = ImageFont.truetype(r'ArialUnicodeMS.ttf' , 40)
+        text = [ clani["clan"]["name"] , clani["opponent"]["name"]]
         x = [86 , 697]
         for i in range(len(x)) :
             box_x , box_y , box_width , box_height = x[i] , 300 , 495 , 52
