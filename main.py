@@ -556,7 +556,9 @@ class Myview(View) :
         await interaction.response.edit_message(view=self)
         if self.ctx.message.mentions :
             await approve(self.ctx , self.ctx.message.mentions[0])
-            await self.ctx.send(f'Moved to <#1055439744739315743> ')
+            info = {1054435038881665024 :  1055439744739315743 ,
+                    1152220160028057660 :  1167482592254238740 }
+            await self.ctx.send(f'Moved to <#{info[self.ctx.guild.id]}> ')
         else :
             await self.ctx.send(f'succefully checked')
 
