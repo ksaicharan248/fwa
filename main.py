@@ -19,7 +19,6 @@ intents.message_content = True
 
 client = commands.Bot(command_prefix="$" , intents=intents)
 
-
 client.remove_command('help')
 
 
@@ -467,14 +466,17 @@ async def wfx_m(ctx , member: discord.Member) :
 @client.command()
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def unq(ctx , member: discord.Member , * , new_nickname=None) :
+    gid = ctx.guild.id
     await ctx.message.delete()
     if new_nickname is None :
         await member.edit(nick=f"unq - {member.name}")
     else :
         await member.edit(nick=f"{new_nickname}")
     await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
-    await member.add_roles(discord.utils.get(ctx.guild.roles , name='unqualified❌'))
-    channel = client.get_channel(1055440018279235657)
+    info = {1054435038881665024 : ['unqualified❌' , 1055440018279235657] ,
+            1152220160028057660 : ['UN-Qualified' , 1152228011798700092]}
+    await member.add_roles(discord.utils.get(ctx.guild.roles , name=info[gid][0]))
+    channel = client.get_channel(info[gid][1])
     await channel.send(f"{member.mention} has been unqualified by {ctx.author.mention}")
     e = Embed(title="UNQUALIFIED " , color=Color.random())
     e.description = f'⚠️ You have been placed here Because you havent Fulfill the Minimum Requirements to Apply to ' \
@@ -488,7 +490,7 @@ async def unq(ctx , member: discord.Member , * , new_nickname=None) :
 
 
 @client.command(name='app')
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
 async def approve(ctx , member: discord.Member) :
     with open('userdata.pkl' , 'rb') as f :
         data = pickle.load(f)
@@ -496,16 +498,19 @@ async def approve(ctx , member: discord.Member) :
         info = COC.get_user(data[member.id])
         await member.edit(nick=f'TH {info["townHallLevel"]} - {info["name"]} ')
         await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
-        await member.add_roles(discord.utils.get(ctx.guild.roles , name='approved✅'))
-        channel = client.get_channel(1055439744739315743)
+        info = {1054435038881665024 : ['approved✅' , 1055439744739315743 , 1126856734095462511] ,  # elites
+                1152220160028057660 : ['approved✅' , 1167482592254238740 , 1152229286305079307]}  # jigg
+        await member.add_roles(discord.utils.get(ctx.guild.roles , name=info[ctx.guild.id][0]))
+        channel = client.get_channel(info[ctx.guild.id][1])
         await channel.send(f"{member.mention} has been approved by {ctx.author.mention}")
         e = Embed(title="APPROVED " , color=Color.random())
-        e.description = f'🎯 Clan spots will be posted in this {client.get_channel(1055439744739315743).mention}, make sure to check it\n' \
-                        f'🎯You will be **@notified** if a spot available for your TH level.\n🎯Just make sure to reply as fast as possible to ensure your spot.\n' \
-                        f'🎯Donot request to join in game unless instructed to do so.\n' \
-                        f'🎯You may stay in your **current clan** or join a random clan while waiting for a **spot**.\n' \
-                        f'🎯Make sure to have **NO war timer** when you answer for spots.\n' \
-                        f'🎯Ask in {client.get_channel(1126856734095462511).mention} if you have any questions. \n authour : {ctx.author.mention}'
+        e.description = f'❯Clan spots will be posted in this @#{info[ctx.guild.id][1]}, make sure to check it\n' \
+                        f'❯You will be **@notified** if a spot available for your TH level.\n' \
+                        f'❯Just make sure to reply as fast as possible to ensure your spot.\n' \
+                        f'❯Donot request to join in game unless instructed to do so.\n' \
+                        f'❯You may stay in your **current clan** or join a random clan while waiting for a **spot**.\n' \
+                        f'❯Make sure to have **NO war timer** when you answer for spots.\n' \
+                        f'❯Ask in {client.get_channel(info[ctx.guild.id][2]).mention} if you have any questions. \nauthour : {ctx.author.mention}'
         await channel.send(embed=e)
     else :
         e = Embed(title='Player data not fount' , colour=Color.red())
@@ -515,7 +520,7 @@ async def approve(ctx , member: discord.Member) :
 
 
 @client.command()
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
 async def re(ctx , member: discord.Member , * , new_nickname=None) :
     await ctx.message.delete()
     if new_nickname is None :
@@ -523,10 +528,12 @@ async def re(ctx , member: discord.Member , * , new_nickname=None) :
     else :
         await member.edit(nick=f"{new_nickname}")
     await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
-    await member.add_roles(discord.utils.get(ctx.guild.roles , name='re - apply'))
-    channel = client.get_channel(1055440286806966322)
+    info = {1054435038881665024 : ['re - apply' , 1055440286806966322] ,
+            1152220160028057660 : ['UN-Qualified' , 1152228011798700092]}
+    await member.add_roles(discord.utils.get(ctx.guild.roles , name=info[ctx.guild.id][0]))
+    channel = client.get_channel(info[ctx.guild.id][1])
     await channel.send(f"{member.mention} has been sent to re-apply by {ctx.author.mention}")
-    e = Embed(title="RE-APPLY \n📛You have been Placed here due to the Following Reasons📛\n" , color=Color.random())
+    e = Embed(title="RE-APPLY \nYou have been Placed here due to the Following Reasons\n" , color=Color.random())
     e.description = f'• You have been Inactive from a Long time in our Clans. \n ' \
                     f'• You Left without informing your Clans Leader/Co-Leader.\n' \
                     f'• Your Activity seems Suspicious in the Server.\n' \
@@ -563,7 +570,7 @@ class Myview(View) :
 
 
 @client.command()
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML' , 'Staff')
 async def check(ctx , * , target=None) :
     if target is None :
         e = Embed(title="Please provide a user mention or ID." , color=Color.random())
@@ -580,7 +587,7 @@ async def check(ctx , * , target=None) :
             tags = tags.strip('#')
 
         try :
-            if ctx.channel.id == 1055439542863274038 :
+            if ctx.channel.id in [1055439542863274038 , 1165189096214368257] :
                 opt = Options()
                 opt.add_argument('--headless')
                 opt.add_argument('--no-sandbox')
@@ -655,7 +662,7 @@ async def link(ctx , tag=None) :
 
 
 @client.command()
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML','Staff')
 async def unlink(ctx , member: discord.Member) :
     with open("userdata.pkl" , "rb") as file :
         user_data = pickle.load(file)
@@ -678,7 +685,7 @@ async def unlink(ctx , member: discord.Member) :
 
 
 @client.command()
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML','Staff')
 async def force_link(ctx , member: discord.Member = None , tag=None) :
     await ctx.message.delete()
     if tag is None :
@@ -862,13 +869,13 @@ async def war(ctx , target=None) :
         template.paste(opponents_clan_image , (1000 , 50) , mask=opponents_clan_image)
         draw = ImageDraw.Draw(template)
         font = ImageFont.truetype(r'ArialUnicodeMS.ttf' , 40)
-        text = [ clani["clan"]["name"] , clani["opponent"]["name"]]
+        text = [clani["clan"]["name"] , clani["opponent"]["name"]]
         x = [86 , 697]
         for i in range(len(x)) :
             box_x , box_y , box_width , box_height = x[i] , 300 , 495 , 52
             text_bbox = draw.textbbox((box_x , box_y) , text[i] , font=font)
-            text_x = box_x - 7 + (box_width - (text_bbox[2] - text_bbox[0])) // 2
-            text_y = box_y - 7  + (box_height - (text_bbox[3] - text_bbox[1])) // 2
+            text_x = box_x - 10 + (box_width - (text_bbox[2] - text_bbox[0])) // 2
+            text_y = box_y - 10 + (box_height - (text_bbox[3] - text_bbox[1])) // 2
             draw.text((text_x , text_y) , text[i] , fill=(0 , 0 , 0) , font=font)
         image_bytes = BytesIO()
         template.save(image_bytes , format="PNG")
@@ -914,17 +921,18 @@ async def bases(ctx) :
 
 @client.command(name="bl-support")
 async def bl_support(ctx) :
-    clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC' ]
-    if ctx.message.mentions:
-        if not any(role in clanroles for role in ctx.author.roles):
+    clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC']
+    if ctx.message.mentions :
+        if not any(role in clanroles for role in ctx.author.roles) :
             mentioned_user = ctx.message.mentions[0]
             await ctx.send(f'{mentioned_user.nick} \nmoved to blacklist support 🚀')
             await mentioned_user.add_roles(discord.utils.get(ctx.guild.roles , name='bl-war'))
         else :
             return
-    else:
+    else :
         await ctx.send(f'{ctx.author.nick} \nmoved to blacklist support 🚀')
         await ctx.author.add_roles(discord.utils.get(ctx.guild.roles , name='bl-war'))
+
 
 @client.command(name="revoke")
 async def revokee(ctx) :
@@ -934,11 +942,6 @@ async def revokee(ctx) :
             if role in member.roles :
                 await member.remove_roles(role)
                 await member.send(f'Thanks for your support in the blacklist war  🫡')
-
-
-
-
-
 
 
 if __name__ == '__main__' :

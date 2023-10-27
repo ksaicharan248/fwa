@@ -37,8 +37,10 @@ def get_id(th) :
         return "1157933611337666620"
     elif th == 14 :
         return "1157934828784734299"
-    else :
+    elif th == 15 :
         return "1158776040525680694"
+    else:
+        return "1157932788683653170"
 
 
 def get_random_color() :
