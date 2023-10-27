@@ -861,8 +861,8 @@ async def war(ctx , target=None) :
         template.paste(your_clan_image , (80 , 50) , mask=your_clan_image)
         template.paste(opponents_clan_image , (1000 , 50) , mask=opponents_clan_image)
         draw = ImageDraw.Draw(template)
-        font = ImageFont.truetype(r'ArialUnicodeMS.ttf' , 40)
-        text = [clani["clan"]["name"] , clani["opponent"]["name"]]
+        font = ImageFont.truetype(r'timr45w.ttf' , 45)
+        text = [cidinfo[cid][2] , clani["opponent"]["name"]]
         x = [86 , 697]
         for i in range(len(x)) :
             box_x , box_y , box_width , box_height = x[i] , 300 , 495 , 52
@@ -913,18 +913,17 @@ async def bases(ctx) :
 
 
 @client.command(name="bl-support")
-async def bl_support(ctx, member : discord.Member = None) :
+async def bl_support(ctx) :
     clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC' ]
-    if member is not None :
+    if ctx.message.mentions:
         if not any(role in clanroles for role in ctx.author.roles):
-            await ctx.send(f'{member.name} \n moved to blacklist support 🚀')
-            await member.add_roles(discord.utils.get(ctx.guild.roles , name='bl-war'))
-
+            mentioned_user = ctx.message.mentions[0]
+            await ctx.send(f'{mentioned_user.nick} \nmoved to blacklist support 🚀')
+            await mentioned_user.add_roles(discord.utils.get(ctx.guild.roles , name='bl-war'))
         else :
             return
-
     else:
-        await ctx.send(f'{ctx.author.name} \n moved to blacklist support 🚀')
+        await ctx.send(f'{ctx.author.nick} \nmoved to blacklist support 🚀')
         await ctx.author.add_roles(discord.utils.get(ctx.guild.roles , name='bl-war'))
 
 @client.command(name="revoke")
