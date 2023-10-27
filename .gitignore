@@ -1,1 +1,10 @@
 setke.py
+# Ignore the __pycache__ directory and its contents
+__pycache__/
+
+# Ignore the specific files
+chrome-linux64.zip
+#datareader.py
+git_push.sh
+nohup.out
+setkey.py
