@@ -597,7 +597,7 @@ async def check(ctx , * , target=None) :
                 clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
                 coslink = 'https://www.clashofstats.com/players/' + tags
                 driver.get(clink)
-                div_element = driver.find_element('css selector' , '#top')
+                div_element = driver.find_element('css selector' ,'#top')
                 screenshot = div_element.screenshot_as_png
                 screenshot_bytes = io.BytesIO(screenshot)
                 screenshot_bytes.seek(0)
