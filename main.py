@@ -746,19 +746,23 @@ async def profile(ctx , * , target=None) :
         else :
             tags = target.strip('#')
 
-    player = COC.get_user(tag=tags)
-    url = f'https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23{player["tag"].strip("#")}'
-    e = Embed(title=f"{player['name']} - {player['tag']}" , url=url , color=Color.random())
-    emoj = discord.utils.get(ctx.guild.emojis , id=int(COC.get_id(player["townHallLevel"])))
-    ptag = player["tag"].strip('#')
-    x = f'[{player["clan"]["name"]}](https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{player["clan"]["tag"]}) \n Role : **{COC.get_role(player["role"])}**' if "clan" in player else "NO clan"
-    e.set_thumbnail(url=emoj.url)
-    e.description = f'[CCNS](https://fwa.chocolateclash.com/cc_n/member.php?tag=%23{ptag})   [COS](https://www.clashofstats.com/players/{ptag})\n' \
-                    f'\n🏆 {player["trophies"]} \n{x}'
+    try :
+        player = COC.get_user(tag=tags)
+        url = f'https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23{player["tag"].strip("#")}'
+        e = Embed(title=f"{player['name']} - {player['tag']}" , url=url , color=Color.random())
+        emoj = discord.utils.get(ctx.guild.emojis , id=int(COC.get_id(player["townHallLevel"])))
+        ptag = player["tag"].strip('#')
+        x = f'[{player["clan"]["name"]}](https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{player["clan"]["tag"]}) \n Role : **{COC.get_role(player["role"])}**' if "clan" in player else "NO clan"
+        e.set_thumbnail(url=emoj.url)
+        e.description = f'[CCNS](https://fwa.chocolateclash.com/cc_n/member.php?tag=%23{ptag})   [COS](https://www.clashofstats.com/players/{ptag})\n' \
+                        f'\n🏆 {player["trophies"]} \n{x}'
 
-    e.set_footer(text=f"Done by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
-    await ctx.send(embed=e)
-
+        e.set_footer(text=f"Done by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
+        await ctx.send(embed=e)
+    except Exception as e :
+        e = Embed(title="Error while fe tching" , color=Color.red())
+        e.description = str(e)
+        await ctx.send(embed=e)
 
 @client.command(name='server_list' , aliases=['sl' , 'server-list'] ,
                 help='Shows the list of servers linked to the bot' , usage=f'{p}server_list' , hidden=True)
