@@ -67,25 +67,26 @@ async def on_member_remove(member) :
 
 @client.event
 async def on_member_join(member) :
-    welcome_channel = client.get_channel(1055439542863274038)
-    if welcome_channel :
-        p = client.command_prefix
-        await member.add_roles(discord.utils.get(member.guild.roles , name='🔸ENTRY🔸'))
-        await welcome_channel.send(f'Hello, {member.mention} !')
-        embed = Embed(title=f"Welcome  to  ⚔️TEAM ELITES⚔️!" , color=Color.random())
-        embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n" \
-                            f"If you wish to join one of our clans then please follow the steps below.\n\n" \
-                            f"**•Step 1** : Post your PLAYER tag\n" \
-                            f"**•Step 2** : type this ⚠️ important ⚠️ ```{p}link #your_player_tag``` \n" \
-                            f"**•Step 3** : Post a picture of My Profile tab\n" \
-                            f"**•Step 4** : Post a picture of your 💎FWA💎 base \n" \
-                            f"If you don’t have a 💎FWA💎 base then you can type \n```{p}bases```" \
-                            f" OR visit <#1054438501233479760>\n " \
-                            f"**•Step 5** : Have some patience, " \
-                            f"you will be assisted shortly.\n\nWe may not have an instant space but **ASAP** we have " \
-                            f"a space, we will recruit you. Till then we will put you in <#1055439744739315743> " \
-                            f"\n\n🚨Note - We don’t recruit FWA BANNED players."
-        await welcome_channel.send(embed=embed)
+    if member.guild.id == 1054435038881665024 :
+        welcome_channel = client.get_channel(1055439542863274038)
+        if welcome_channel :
+            p = client.command_prefix
+            await member.add_roles(discord.utils.get(member.guild.roles , name='🔸ENTRY🔸'))
+            await welcome_channel.send(f'Hello, {member.mention} !')
+            embed = Embed(title=f"Welcome  to  ⚔️TEAM ELITES⚔️!" , color=Color.random())
+            embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n" \
+                                f"If you wish to join one of our clans then please follow the steps below.\n\n" \
+                                f"**•Step 1** : Post your PLAYER tag\n" \
+                                f"**•Step 2** : type this ⚠️ important ⚠️ ```{p}link #your_player_tag``` \n" \
+                                f"**•Step 3** : Post a picture of My Profile tab\n" \
+                                f"**•Step 4** : Post a picture of your 💎FWA💎 base \n" \
+                                f"If you don’t have a 💎FWA💎 base then you can type \n```{p}bases```" \
+                                f" OR visit <#1054438501233479760>\n " \
+                                f"**•Step 5** : Have some patience, " \
+                                f"you will be assisted shortly.\n\nWe may not have an instant space but **ASAP** we have " \
+                                f"a space, we will recruit you. Till then we will put you in <#1055439744739315743> " \
+                                f"\n\n🚨Note - We don’t recruit FWA BANNED players."
+            await welcome_channel.send(embed=embed)
 
 
 @client.command(name='help')
@@ -336,7 +337,7 @@ async def mo_m(ctx , member: discord.Member) :
         await ctx.send("MISSING permissions")
 
 
-@client.command(name='wa-m',aliases=['wam'],help='Move member to WARNING' , usage=f'{p}wa-m <@mention>')
+@client.command(name='wa-m' , aliases=['wam'] , help='Move member to WARNING' , usage=f'{p}wa-m <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL')
 async def wa_m(ctx , member: discord.Member) :
     if ctx.author.guild_permissions.manage_messages :
@@ -464,7 +465,7 @@ async def wfx_m(ctx , member: discord.Member) :
         await ctx.send("MISSING permissions")
 
 
-@client.command(name="unq" , aliases=["unqualified"],help='Move a member to unqualifed ' , usage=f'{p}unq <@mention>')
+@client.command(name="unq" , aliases=["unqualified"] , help='Move a member to unqualifed ' , usage=f'{p}unq <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def unq(ctx , member: discord.Member , * , new_nickname=None) :
     gid = ctx.guild.id
@@ -490,7 +491,8 @@ async def unq(ctx , member: discord.Member , * , new_nickname=None) :
     await channel.send(embed=e)
 
 
-@client.command(name='app',aliases=['approve'],help='Move a member to Approved channel',usage=f'{p}approve @member')
+@client.command(name='app' , aliases=['approve'] , help='Move a member to Approved channel' ,
+                usage=f'{p}approve @member')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
 async def approve(ctx , member: discord.Member) :
     with open('userdata.pkl' , 'rb') as f :
@@ -520,7 +522,8 @@ async def approve(ctx , member: discord.Member) :
         return
 
 
-@client.command(name="re", aliases=['re-apply'],help="Move player to reapply ",usage="re <member-mention> [new_nickname] \n\tor\t\n re <member-mention>")
+@client.command(name="re" , aliases=['re-apply'] , help="Move player to reapply " ,
+                usage="re <member-mention> [new_nickname] \n\tor\t\n re <member-mention>")
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
 async def re(ctx , member: discord.Member , * , new_nickname=None) :
     await ctx.message.delete()
@@ -597,7 +600,7 @@ async def check(ctx , * , target=None) :
                 clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
                 coslink = 'https://www.clashofstats.com/players/' + tags
                 driver.get(clink)
-                div_element = driver.find_element('css selector' ,'#top')
+                div_element = driver.find_element('css selector' , '#top')
                 screenshot = div_element.screenshot_as_png
                 screenshot_bytes = io.BytesIO(screenshot)
                 screenshot_bytes.seek(0)
@@ -763,6 +766,7 @@ async def profile(ctx , * , target=None) :
         e = Embed(title="Error while fe tching" , color=Color.red())
         e.description = str(e)
         await ctx.send(embed=e)
+
 
 @client.command(name='server_list' , aliases=['sl' , 'server-list'] ,
                 help='Shows the list of servers linked to the bot' , usage=f'{p}server_list' , hidden=True)
