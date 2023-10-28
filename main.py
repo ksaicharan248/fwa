@@ -18,8 +18,9 @@ intents = discord.Intents.all()
 intents.message_content = True
 
 client = commands.Bot(command_prefix="$" , intents=intents)
+client.remove_command("help")
 
-client.remove_command('help')
+p = client.command_prefix
 
 
 @client.event
@@ -104,7 +105,7 @@ async def help(ctx) :
     await ctx.send(embed=embed)
 
 
-@client.command(name='wel')
+@client.command(name='wel' , help='Welome player')
 async def welcome(ctx , member: discord.Member = None) :
     if member is None :
         await ctx.send('welcome !')
@@ -206,7 +207,7 @@ async def removenick(ctx , member: discord.Member) :
         await ctx.send("An error occurred while removing the user's nickname.")
 
 
-@client.command(name='ts-m')
+@client.command(name='ts-m' , aliases=['tsm'] , help=f'add player to The shield ' , usage=f'{p}ts-m <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'TSL')
 async def ts_m(ctx , member: discord.Member) :
     if ctx.author.guild_permissions.manage_messages :
@@ -335,7 +336,7 @@ async def mo_m(ctx , member: discord.Member) :
         await ctx.send("MISSING permissions")
 
 
-@client.command(name='wa-m')
+@client.command(name='wa-m',aliases=['wam'],help='Move member to WARNING' , usage=f'{p}wa-m <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL')
 async def wa_m(ctx , member: discord.Member) :
     if ctx.author.guild_permissions.manage_messages :
@@ -463,7 +464,7 @@ async def wfx_m(ctx , member: discord.Member) :
         await ctx.send("MISSING permissions")
 
 
-@client.command()
+@client.command(name="unq" , aliases=["unqualified"],help='Move a member to unqualifed ' , usage=f'{p}unq <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def unq(ctx , member: discord.Member , * , new_nickname=None) :
     gid = ctx.guild.id
@@ -489,7 +490,7 @@ async def unq(ctx , member: discord.Member , * , new_nickname=None) :
     await channel.send(embed=e)
 
 
-@client.command(name='app')
+@client.command(name='app',aliases=['approve'],help='Move a member to Approved channel',usage=f'{p}approve @member')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
 async def approve(ctx , member: discord.Member) :
     with open('userdata.pkl' , 'rb') as f :
@@ -519,7 +520,7 @@ async def approve(ctx , member: discord.Member) :
         return
 
 
-@client.command()
+@client.command(name="re", aliases=['re-apply'],help="Move player to reapply ",usage="re <member-mention> [new_nickname] \n\tor\t\n re <member-mention>")
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
 async def re(ctx , member: discord.Member , * , new_nickname=None) :
     await ctx.message.delete()
@@ -556,8 +557,7 @@ class Myview(View) :
         await interaction.response.edit_message(view=self)
         if self.ctx.message.mentions :
             await approve(self.ctx , self.ctx.message.mentions[0])
-            info = {1054435038881665024 :  1055439744739315743 ,
-                    1152220160028057660 :  1167482592254238740 }
+            info = {1054435038881665024 : 1055439744739315743 , 1152220160028057660 : 1167482592254238740}
             await self.ctx.send(f'Moved to <#{info[self.ctx.guild.id]}> ')
         else :
             await self.ctx.send(f'succefully checked')
@@ -571,7 +571,7 @@ class Myview(View) :
             return True
 
 
-@client.command()
+@client.command(name='check' , help='check the player with chocolate clash' , usage=f'{p}check <@mention> or <#tag>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML' , 'Staff')
 async def check(ctx , * , target=None) :
     if target is None :
@@ -604,7 +604,7 @@ async def check(ctx , * , target=None) :
                 driver.quit()
                 e = Embed(title=f'  #{tags} \n\n' , color=Color.blue())
                 e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
-                                f'**.** Check the palyer is **Banned** or not ,then confirm the base is correct.'
+                                f'\n**❯** Check the palyer is **Banned** or not ,then confirm the base is correct.'
                 screenshot_file = discord.File(screenshot_bytes , filename="screenshot.png")
                 e.set_image(url="attachment://screenshot.png")
                 e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
@@ -633,7 +633,8 @@ async def emoji(ctx) :
 '''
 
 
-@client.command()
+@client.command(name='link' , help='To link your clash of clans account with your discord account' ,
+                usage=f'{p}link <#player_tag> \nexample : {p}link #2UVH89FH')
 async def link(ctx , tag=None) :
     await ctx.message.delete()
     if tag is None :
@@ -663,8 +664,9 @@ async def link(ctx , tag=None) :
             return
 
 
-@client.command()
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML','Staff')
+@client.command(name='unlink' , help='To unlink your clash of clans account with your discord account' ,
+                usage=f'{p}unlink <none> or <@mention>')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML' , 'Staff')
 async def unlink(ctx , member: discord.Member) :
     with open("userdata.pkl" , "rb") as file :
         user_data = pickle.load(file)
@@ -686,8 +688,10 @@ async def unlink(ctx , member: discord.Member) :
             pickle.dump(user_data , file)
 
 
-@client.command()
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML','Staff')
+@client.command(name='force_link' , aliases=['fl' , 'force-link' , 'force'] ,
+                help='To  link a player clash of clans account with a discord account' ,
+                usage=f'{p}force_link <@mention> <#player_tag> \nexample : {p}force_link @moon #JJ0Y71L2' , hidden=True)
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML' , 'Staff')
 async def force_link(ctx , member: discord.Member = None , tag=None) :
     await ctx.message.delete()
     if tag is None :
@@ -718,7 +722,8 @@ async def force_link(ctx , member: discord.Member = None , tag=None) :
             return
 
 
-@client.command(name="profile")
+@client.command(name="profile" , help="Shows the profile of the user" ,
+                usage=f"{p}profile <none> or <user> \nexample: {p}profile @user")
 async def profile(ctx , * , target=None) :
     with open('userdata.pkl' , 'rb') as f :
         user_data = pickle.load(f)
@@ -755,7 +760,8 @@ async def profile(ctx , * , target=None) :
     await ctx.send(embed=e)
 
 
-@client.command()
+@client.command(name='server_list' , aliases=['sl' , 'server-list'] ,
+                help='Shows the list of servers linked to the bot' , usage=f'{p}server_list' , hidden=True)
 async def server_list(ctx) :
     await ctx.message.delete()
     with open('userdata.pkl' , 'rb') as f :
@@ -772,7 +778,8 @@ async def server_list(ctx) :
     await ctx.send(embed=e)
 
 
-@client.command("clan")
+@client.command(name="clan" , help="shows the information of the clan" ,
+                usage=f"{p}clan <none> optionol : <clan_tag> \nexample : {p}clan #2Q8URCU88")
 async def clan(ctx , target=None) :
     await ctx.message.delete()
     clantag = None
@@ -833,7 +840,9 @@ async def clan(ctx , target=None) :
     await ctx.send(embed=e)
 
 
-@client.command()
+@client.command(name='war' , help="war announcement either win or loose or mis match or blacklist clan war" ,
+                usage=f"{p}war <win/loose/mismatch/bl> \nexample : {p}war win ,{p}war loose")
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML' , 'Staff')
 async def war(ctx , target=None) :
     cid = ctx.channel.category.id
     cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682 , 'THE SHIELD'] ,
@@ -886,7 +895,8 @@ async def war(ctx , target=None) :
         await ctx.send(file=discord.File(image_bytes , filename="template.png"))
 
 
-@client.command()
+@client.command(name="cwl" , help="get clan war league clan info" ,
+                usage=f"{p}cwl <tag> <th level> \neg :{p}cwl #2Q8URCU88 12 13 14")
 async def cwl(ctx , tag=None , *th) :
     await ctx.message.delete()
     if tag is None :
@@ -894,6 +904,7 @@ async def cwl(ctx , tag=None , *th) :
         await ctx.send(embed=e)
         return
     else :
+        tag = tag.strip("#")
         clt = COC.getclan(tag=tag)
         e = Embed(title=f'**{clt["name"]}** - {clt["tag"]}' ,
                   url=f'https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{clt["tag"].strip("#")}' ,
@@ -906,7 +917,7 @@ async def cwl(ctx , tag=None , *th) :
         await ctx.send(embed=e)
 
 
-@client.command(name="bases")
+@client.command(name="bases" , help="offical fwa bases" , usage=f"{p}bases")
 async def bases(ctx) :
     await ctx.message.delete()
     url15 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH15%3AWB%3AAAAAKQAAAAIPb7TMztzbem-F0y7oXluK"
@@ -944,6 +955,17 @@ async def revokee(ctx) :
             if role in member.roles :
                 await member.remove_roles(role)
                 await member.send(f'Thanks for your support in the blacklist war  🫡')
+
+
+@client.command(name='usage' , aliases=['u'])
+async def usage(ctx , command_name: str) :
+    await ctx.message.delete()
+    command = client.get_command(command_name)
+    if command :
+        help_info = f"```command : {ctx.prefix}{command.name}\nabout  : {command.help}\n\nusage  : {command.usage}```"
+        await ctx.send(help_info)
+    else :
+        await ctx.send("Command not found. Please provide a valid command name.")
 
 
 if __name__ == '__main__' :
