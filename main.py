@@ -50,7 +50,7 @@ async def on_command_error(ctx , error) :
     elif isinstance(error , commands.CommandNotFound) :
         return
     else :
-        raise error
+        return
 
 
 @client.event
