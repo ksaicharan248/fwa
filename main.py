@@ -976,30 +976,36 @@ async def usage(ctx , command_name: str) :
         await ctx.send("Command not found. Please provide a valid command name.")
 
 
-
-
-@client.command(name='link-leader', aliases=['ll'],help="link a clan tag to a leader dicord account",usage=f"{p}link-leader <@metion user> <tag>\n =eg : {p}link-leader @user #2Q8URCU88")
+@client.command(name='link-leader' , aliases=['ll'] , help="link a clan tag to a leader discord account" ,usage=f"{p}link-leader <@metion user> <tag>\n =eg : {p}link-leader @user #2Q8URCU88")
 @commands.has_any_role('🔰ADMIN🔰')
-async def link_leader(ctx, user: discord.Member, tag: str) :
+async def link_leader(ctx , user: discord.Member , tag: str) :
     await ctx.message.delete()
     clantag = tag.strip("#")
     clan = COC.getclan(tag=clantag)
     if clan :
         with open('leader_userdata.pkl' , 'rb') as f :
             leader_data = pickle.load(f)
-        leader_data[clantag] = user.id
-        with open('leader_userdata.pkl' , 'wb') as f :
-            pickle.dump(leader_data , f)
-        await ctx.send(f'{clan["name"]} Leader account is now linked to {user.mention}')
-    else:
+        if clantag in leader_data.keys() :
+            await ctx.send(f'{clan["name"]} Leader account is already linked to {user.mention}')
+            return
+        else:
+            leader_data[clantag] = user.id
+            with open('leader_userdata.pkl' , 'wb') as f :
+                pickle.dump(leader_data , f)
+            e = discord.Embed(title=f"{user.mention} is linked to {clan['name']}")
+            e.description = f'{clan["name"]} Leader account is now linked to {user.mention}'
+            e.set_thumbnail(url=clan['badgeUrls']['medium'])
+            await ctx.send(embed=e)
+    else :
         await ctx.send('Please provide a valid clan tag.')
 
 
-@client.command(name='unlink-leader', aliases=['ull'],help="unlink a clan tag to a leader dicord account",usage=f"{p}unlink-leader <@metion user> or <tag>\n =eg : {p}link-leader @user or #2Q8URCU88")
+@client.command(name='unlink-leader' , aliases=['ull'] , help="unlink a clan tag to a leader discord account" ,
+                usage=f"{p}unlink-leader <@metion user> or <tag>\neg : {p}link-leader @user or #2Q8URCU88")
 @commands.has_any_role('🔰ADMIN🔰')
-async def unlink_leader(ctx,tags: str = None) :
+async def unlink_leader(ctx , tags: str = None) :
     await ctx.message.delete()
-    with open('leader_userdata.pkl', 'rb') as f :
+    with open('leader_userdata.pkl' , 'rb') as f :
         leader_user_data = pickle.load(f)
     if ctx.member.mention[0].id in leader_user_data.values() :
         n = list(leader_user_data.keys())[list(leader_user_data.values()).index(ctx.member.mention[0].id)]
@@ -1009,17 +1015,16 @@ async def unlink_leader(ctx,tags: str = None) :
             leader_user_data.pop(n)
         await ctx.send(f'{n} leader account is unlinked.')
     elif tags is not None :
-        try:
+        try :
             del leader_user_data[tags.strip("#")]
-        except:
+        except :
             leader_user_data.pop(tags.strip("#"))
 
-    else:
+    else :
         await ctx.send('Nothing happend as you wondered.')
 
     with open('leader_userdata.pkl' , 'wb') as f :
         pickle.dump(leader_user_data , f)
-
 
 
 if __name__ == '__main__' :
