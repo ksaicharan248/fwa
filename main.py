@@ -133,7 +133,6 @@ async def welcome(ctx , member: discord.Member = None) :
 
 @client.command()
 async def ping(ctx) :
-    print(ctx)
     await ctx.send(f'Pong! {round(client.latency * 1000)}ms')
 
 
