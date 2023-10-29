@@ -1007,8 +1007,8 @@ async def unlink_leader(ctx , tags: str = None) :
     await ctx.message.delete()
     with open('leader_userdata.pkl' , 'rb') as f :
         leader_user_data = pickle.load(f)
-    if ctx.member.mention[0].id in leader_user_data.values() :
-        n = list(leader_user_data.keys())[list(leader_user_data.values()).index(ctx.member.mention[0].id)]
+    if ctx.message.mentions[0].id in leader_user_data.values() :
+        n = list(leader_user_data.keys())[list(leader_user_data.values()).index(ctx.message.mentions[0].id)]
         try :
             del leader_user_data[n]
         except :
