@@ -47,7 +47,8 @@ async def on_command_error(ctx , error) :
         embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" , description="something is missing please check and try again." ,
                               color=discord.Color.red())
         await ctx.send(embed=embed)
-
+    elif isinstance(error , commands.CommandNotFound) :
+        return
     else :
         raise error
 
