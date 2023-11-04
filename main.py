@@ -401,7 +401,7 @@ async def wa_m(ctx , member: discord.Member) :
         await ctx.send("MISSING permissions")
 
 
-@client.command(name='wfx-m')
+@client.command(name='wfx-m', aliases=['wfxm'] , help='Move member to War Farmers x44' , usage=f'{p}wfx-m <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WFL')
 async def wfx_m(ctx , member: discord.Member) :
     if ctx.author.guild_permissions.manage_messages :
