@@ -1,10 +1,6 @@
-import asyncio
-from math import ceil
 import io
 import discord
-import typing
-
-from discord.ui import Button , View , Select
+from discord.ui import Button , View
 from PIL import Image , ImageDraw , ImageFont
 import requests
 from io import BytesIO
@@ -30,7 +26,6 @@ p = client.command_prefix
 @client.event
 async def on_ready() :
     print('We have logged in as {0.user}'.format(client))
-    await client.tree.sync()
 
 
 @client.event
@@ -95,12 +90,31 @@ async def on_member_join(member) :
             await welcome_channel.send(embed=embed)
 
 
-@client.command(name='wel' , help='Welcome a player')
+@client.command(name='help')
+async def help(ctx) :
+    p = client.command_prefix
+    embed = discord.Embed(
+        description=f"{p}wel                - Welome player\n{p}ping               - Show latency\n{p}help               - Show help\n{p}role                - Add role\n{p}rm                  - Remove role\n{p}changenick  - Change nickname\n{p}removenick  - remove nick name" ,
+        colour=Color.random())
+
+    embed.add_field(name="LEADER COMMANDS" ,
+                    value=f"`ts-m`         -  add player to The shield\nusage:  {p}ts-m  @mention\n\n`mn-m`         - add player to Monsters\nusage:  {p}mn-m  @mention \n\n`wa-m`         - add player to warning \nusage:  {p}wa-m  @mention \n\n`sv-m`         - add player to ACTIVE CLAN | —< SAVAGE >—  \nusage:  {p}sv-m  @mention \n\n`unq`         - add player to unqualify\nusage:  {p}unq  @mention  IGN\n\n`app`       -  approve the player\nusage:   {p}app @mention \n\n`re`         - send the player to reapply \nusage : {p}re @mention  IGN\n\n`check`        - check the player with chocolate clash\nusage : {p}check playertag \nNOTE : if linked mention player \n\n `force_link`        - link any other player with tag \nusage :  || {p}force_link   @mention   #player_tag ||" ,
+                    inline=False)
+    embed.add_field(name="PLAYER COMMANDS" ,
+                    value=f"`link`          - link the bot with player tag \nusage : {p}link  #**player_tag**  "
+                          f" \n\n`profile`         - profile of player" , inline=False)
+
+    await ctx.send(embed=embed)
+
+
+@client.command(name='wel' , help='Welome player')
 async def welcome(ctx , member: discord.Member = None) :
     if member is None :
         await ctx.send('welcome !')
     else :
+
         await ctx.send(f'Hello, {member.mention} !')
+    p = client.command_prefix
     embed = Embed(title=f"Welcome  to  ⚔️TEAM ELITES⚔️!" , color=Color.random())
     embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n" \
                         f"If you wish to join one of our clans then please follow the steps below.\n\n" \
@@ -119,10 +133,10 @@ async def welcome(ctx , member: discord.Member = None) :
 
 @client.command()
 async def ping(ctx) :
-    await ctx.send(f'Pong! {round(client.latency * 1000)}ms')
+    await ctx.send(f'Pong! {round(client.latency * 1000 )}ms')
 
 
-@client.command(name='role' , help='Add a role to a user' , usage=f"{p}role <user> <@roles>")
+@client.command()
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def role(ctx , user: discord.Member , *roles: discord.Role) :
     if ctx.author.guild_permissions.manage_roles :
@@ -135,7 +149,7 @@ async def role(ctx , user: discord.Member , *roles: discord.Role) :
         await ctx.send('You do not have permission to manage roles.')
 
 
-@client.command(name="rm" , help="Remove a role from a user" , usage=f"{p}rm <user> <@roles>")
+@client.command(name="rm")
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def rm_role(ctx , user: discord.Member , *roles: discord.Role) :
     if ctx.author.guild_permissions.manage_roles :
@@ -148,14 +162,16 @@ async def rm_role(ctx , user: discord.Member , *roles: discord.Role) :
         await ctx.send('You do not have permission to manage roles.')
 
 
-@client.command(name='changenick' , aliases=['nick' , 'cnick'] , help='Change the nickname of a user' ,
-                usage=f"{p}changenick <user> <new_nickname>")
+@client.command()
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'TSL' , 'WAL' , 'HML')
 async def changenick(ctx , member: discord.Member , * , new_nickname) :
+    # Check if the bot has the necessary permissions and role hierarchy to change nicknames
     if not ctx.me.top_role > member.top_role :
         await ctx.send("Insufficient permissions or role hierarchy to change the user's nickname.")
         return
+
     try :
+        # Change the user's nickname
         await member.edit(nick=new_nickname)
         embed = Embed(title="Nickname changed" , color=Color.random())
         embed.add_field(name="User" , value=member.mention , inline=False)
@@ -171,27 +187,26 @@ async def changenick(ctx , member: discord.Member , * , new_nickname) :
 @client.command()
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'TSL' , 'WAL' , 'HML')
 async def removenick(ctx , member: discord.Member) :
+    # Check if the bot has the necessary permissions and role hierarchy to change nicknames
     if not ctx.me.top_role > member.top_role :
         await ctx.send("Insufficient permissions or role hierarchy to remove the user's nickname.")
         return
+
     try :
+        # Remove the user's nickname by setting it to None
         await member.edit(nick=None)
+
+        # Create a red embedded message
         embed = Embed(title="Nickname Removed" , color=Color.random())
         embed.add_field(name="User" , value=member.mention , inline=False)
         embed.add_field(name="Moderator" , value=ctx.author.mention , inline=False)
+
         await ctx.send(embed=embed)
     except discord.Forbidden :
         await ctx.send("I do not have permission to remove the user's nickname.")
     except discord.HTTPException :
         await ctx.send("An error occurred while removing the user's nickname.")
 
-
-@client.command(name='kick' , aliases=['k'] , help='Kick a user' , usage=f'{p}kick <user> <reason>')
-@commands.has_any_role('🔰ADMIN🔰' ,  '☘️CO-ADMIN☘️')
-async def kick(ctx , member: discord.Member , * , reason=None) :
-    await member.kick(reason=reason)
-    await ctx.send(f'{member.nick} has been flew from the server 🍃')
-    await member.send(f"You have been kicked from {ctx.guild.name} for {reason}")
 
 @client.command(name='ts-m' , aliases=['tsm'] , help=f'add player to The shield ' , usage=f'{p}ts-m <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'TSL')
@@ -257,7 +272,7 @@ async def ts_m(ctx , member: discord.Member) :
         await ctx.send("MISSING permissions")
 
 
-@client.command(name='mn-m' , aliases=['mnm'] , help=f'add player to Monster clan' , usage=f'{p}mn-m <@mention>')
+@client.command(name='mn-m')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'MSL')
 async def mo_m(ctx , member: discord.Member) :
     if ctx.author.guild_permissions.manage_messages :
@@ -322,7 +337,7 @@ async def mo_m(ctx , member: discord.Member) :
         await ctx.send("MISSING permissions")
 
 
-@client.command(name='wa-m' , aliases=['wam'] , help='add a member to WARNING clan' , usage=f'{p}wa-m <@mention>')
+@client.command(name='wa-m' , aliases=['wam'] , help='Move member to WARNING' , usage=f'{p}wa-m <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL')
 async def wa_m(ctx , member: discord.Member) :
     if ctx.author.guild_permissions.manage_messages :
@@ -386,11 +401,10 @@ async def wa_m(ctx , member: discord.Member) :
         await ctx.send("MISSING permissions")
 
 
-@client.command(name='wfx-m' , aliases=['wfxm'] , help='add a member to WAR FARMERS X44   clan' ,
-                usage=f'{p}wfx-m <@mention>')
+@client.command(name='wfx-m', aliases=['wfxm'] , help='Move member to War Farmers x44' , usage=f'{p}wfx-m <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WFL')
 async def wfx_m(ctx , member: discord.Member) :
-    if member in ctx.guild.members :
+    if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
         channel = client.get_channel(1056605645836656791)
         with open('userdata.pkl' , 'rb') as f :
@@ -448,7 +462,7 @@ async def wfx_m(ctx , member: discord.Member) :
             await channel.send(embed=embed3)
 
     else :
-        await ctx.send("MISSING SOMETHING .....🔍")
+        await ctx.send("MISSING permissions")
 
 
 @client.command(name="unq" , aliases=["unqualified"] , help='Move a member to unqualifed ' , usage=f'{p}unq <@mention>')
@@ -537,7 +551,7 @@ async def re(ctx , member: discord.Member , * , new_nickname=None) :
 
 class Myview(View) :
     def __init__(self , ctx) :
-        super().__init__(timeout=100)
+        super().__init__(timeout=40)
         self.ctx = ctx
 
     @discord.ui.button(style=discord.ButtonStyle.secondary , emoji='✅')
@@ -560,52 +574,44 @@ class Myview(View) :
             return True
 
 
-@client.hybrid_command(name='check' , help='check the player with chocolate clash' ,
-                       usage=f'{p}check <@mention> or <#tag>' , brief='leader')
+@client.command(name='check' , help='check the player with chocolate clash' , usage=f'{p}check <@mention> or <#tag>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML' , 'Staff')
-async def check(ctx , member: typing.Optional[discord.Member] = None , player_tag: typing.Optional[str] = None) :
-    await ctx.defer()
-    if player_tag is None and member is None :
+async def check(ctx , * , target=None) :
+    if target is None :
         e = Embed(title="Please provide a user mention or ID." , color=Color.random())
         await ctx.send(embed=e)
         return
     else :
-        user = member.id if member else (ctx.message.mentions[0].id if ctx.message.mentions else None)
-        if user is not None :
+        if ctx.message.mentions :
+            user = ctx.message.mentions[0].id
             with open('userdata.pkl' , 'rb') as f :
                 data = pickle.load(f)
             tags = data[user]
-        elif player_tag is not None :
-            tags = player_tag.strip('#')
         else :
-            e = Embed(title="Member you are trying to  check doesnot have any proper profile tag" ,
-                      color=Color.random())
-            await ctx.reply(embed=e)
-            return
+            tags = target
+            tags = tags.strip('#')
+
         try :
-            if ctx.channel.id in [1055439542863274038 , 1165189096214368257 , 1157946757309804604] :
-                if ctx.message.mentions or member :
-                    opt = Options()
-                    opt.add_argument('--headless')
-                    opt.add_argument('--no-sandbox')
-                    driver = webdriver.Chrome(options=opt)
-                    clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
-                    coslink = 'https://www.clashofstats.com/players/' + tags
-                    driver.get(clink)
-                    div_element = driver.find_element('css selector' , '#top')
-                    screenshot = div_element.screenshot_as_png
-                    screenshot_bytes = io.BytesIO(screenshot)
-                    screenshot_bytes.seek(0)
-                    driver.quit()
-                    e = Embed(title=f'  #{tags} \n\n' , color=Color.blue())
-                    e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
-                                    f'\n**❯** Check the palyer is **Banned** or not ,then confirm the base is correct.'
-                    screenshot_file = discord.File(screenshot_bytes , filename="screenshot.png")
-                    e.set_image(url="attachment://screenshot.png")
-                    e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
-                    await ctx.reply(embed=e , file=screenshot_file , view=Myview(ctx))
-                else :
-                    raise Exception("not mentioned user")
+            if ctx.channel.id in [1055439542863274038 , 1165189096214368257] :
+                opt = Options()
+                opt.add_argument('--headless')
+                opt.add_argument('--no-sandbox')
+                driver = webdriver.Chrome(options=opt)
+                clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
+                coslink = 'https://www.clashofstats.com/players/' + tags
+                driver.get(clink)
+                div_element = driver.find_element('css selector' , '#top')
+                screenshot = div_element.screenshot_as_png
+                screenshot_bytes = io.BytesIO(screenshot)
+                screenshot_bytes.seek(0)
+                driver.quit()
+                e = Embed(title=f'  #{tags} \n\n' , color=Color.blue())
+                e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
+                                f'\n**❯** Check the palyer is **Banned** or not ,then confirm the base is correct.'
+                screenshot_file = discord.File(screenshot_bytes , filename="screenshot.png")
+                e.set_image(url="attachment://screenshot.png")
+                e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
+                await ctx.send(embed=e , file=screenshot_file , view=Myview(ctx))
 
             else :
                 raise Exception('Not in correct channel ?')
@@ -616,8 +622,7 @@ async def check(ctx , member: typing.Optional[discord.Member] = None , player_ta
             e = Embed(title=f"{tags} \n\n" , color=Color.blue())
             e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink})  \n'
             e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
-            await ctx.reply(embed=e)
-            print(er)
+            await ctx.send(embed=e)
             return
 
 
@@ -965,14 +970,13 @@ async def usage(ctx , command_name: str) :
     await ctx.message.delete()
     command = client.get_command(command_name)
     if command :
-        help_info = f"```command : {ctx.prefix}{command.name}\nabout  : {command.help}\n\nusage  : {command.usage}``` \n "
+        help_info = f"```command : {ctx.prefix}{command.name}\nabout  : {command.help}\n\nusage  : {command.usage}```"
         await ctx.send(help_info)
     else :
         await ctx.send("Command not found. Please provide a valid command name.")
 
 
-@client.command(name='link-leader' , aliases=['ll'] , help="link a clan tag to a leader discord account" ,
-                usage=f"{p}link-leader <@metion user> <tag>\n =eg : {p}link-leader @user #2Q8URCU88")
+@client.command(name='link-leader' , aliases=['ll'] , help="link a clan tag to a leader discord account" ,usage=f"{p}link-leader <@metion user> <tag>\n =eg : {p}link-leader @user #2Q8URCU88")
 @commands.has_any_role('🔰ADMIN🔰')
 async def link_leader(ctx , user: discord.Member , tag: str) :
     await ctx.message.delete()
@@ -984,7 +988,7 @@ async def link_leader(ctx , user: discord.Member , tag: str) :
         if clantag in leader_data.keys() :
             await ctx.send(f'{clan["name"]} Leader account is already linked to {user.mention}')
             return
-        else :
+        else:
             leader_data[clantag] = user.id
             with open('leader_userdata.pkl' , 'wb') as f :
                 pickle.dump(leader_data , f)
@@ -1021,64 +1025,6 @@ async def unlink_leader(ctx , tags: str = None) :
 
     with open('leader_userdata.pkl' , 'wb') as f :
         pickle.dump(leader_user_data , f)
-
-
-class Selectmenu(discord.ui.View) :
-    def __init__(self) :
-        super().__init__(timeout=50)
-
-    optoins = [discord.SelectOption(label='MOD COMMANDS🧑‍🔧' , value='1') ,
-               discord.SelectOption(label='LEADER COMMANDS 🌿' , value='2') ,
-               discord.SelectOption(label='PLAYER COMMANDS 🌙' , value='3')]
-
-    @discord.ui.select(placeholder='Select an option' , options=optoins , min_values=1 , max_values=1)
-    async def select(self , interaction: discord.Interaction , select) :
-        try:
-            if select.values[0] == '1' :
-                embed1 = discord.Embed(title='MOD COMMANDS' , colour=Color.random())
-                embed1.description = f"{p}wel         - Welome a player\n" \
-                                     f"{p}role        - Add a role to member\n" \
-                                     f"{p}rm          - Remove roles\n" \
-                                     f"{p}changenick  - Change nickname \n" \
-                                     f"{p}removenick  - remove nick name\n" \
-                                     f"{p}kick        - kick a member from the server" \
-                                     f"\n\nfor more info type ```{p}usage <command name>```"
-                await interaction.message.edit(embed=embed1)
-                await interaction.response.defer()
-            elif select.values[0] == '2' :
-                embed2 = discord.Embed(title='LEADER COMMANDS' , colour=Color.random())
-                embed2.description =f"`{p}ts-m`        - add player to THE SHIELD \n" \
-                                    f"`{p}mn-m`        - add player to MONSTERS\n" \
-                                    f"`{p}wa-m`        - add player to WARNING \n" \
-                                    f"`{p}wfx-m`       - add player to WAR FARMER X44\n" \
-                                    f"`{p}unq`         - add player to unqualified\n" \
-                                    f"`{p}app`         - approve the player\n" \
-                                    f"`{p}re`          - send the player to reapply \n" \
-                                    f"`{p}check`       - check the player with CCNS\n" \
-                                    f"`{p}war`         - send war updates\n" \
-                                    f"`{p}force_link`     - link any other player with tag " \
-                                    f"\n\nfor more info type ```{p}usage <command name>```"
-
-                await interaction.message.edit(embed=embed2)
-                await interaction.response.defer()
-            elif select.values[0] == '3' :
-                embed3 = discord.Embed(title='PLAYER COMMANDS' , colour=Color.random())
-                embed3.description = f"`{p}ping`         - Show latency\n" \
-                                     f"`{p}link`       - link the bot with player tag \n" \
-                                     f"`{p}profile`    - profile of player\n" \
-                                     f"`{p}clan`       - clan info\n\nfor more info type " \
-                                     f"```{p}usage <command name>```"
-
-                await interaction.message.edit(embed=embed3)
-                await interaction.response.defer()
-        except Exception as e :
-            pass
-
-
-@client.hybrid_command(name='help' , help='help')
-async def help(ctx) :
-    await ctx.defer()
-    await ctx.send(content='HELP COMMAND', view=Selectmenu())
 
 
 if __name__ == '__main__' :
