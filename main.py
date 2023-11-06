@@ -965,7 +965,7 @@ async def usage(ctx , command_name: str) :
     await ctx.message.delete()
     command = client.get_command(command_name)
     if command :
-        help_info = f"```command : {ctx.prefix}{command.name}\nabout  : {command.help}\n\nusage  : {command.usage}``` \n {command.brief}"
+        help_info = f"```command : {ctx.prefix}{command.name}\nabout  : {command.help}\n\nusage  : {command.usage}``` \n "
         await ctx.send(help_info)
     else :
         await ctx.send("Command not found. Please provide a valid command name.")
