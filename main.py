@@ -49,7 +49,7 @@ async def on_command_error(ctx , error) :
                               color=discord.Color.red())
         await ctx.send(embed=embed)
     elif isinstance(error , commands.CommandInvokeError) and isinstance(error.original , discord.HTTPException) :
-        print("error while error , commands.CommandInvokeError,error.original , discord.HTTPException")
+        print("error while error , commands.CommandInvokeError,error.original , discord.HTTPException ")
     elif isinstance(error , commands.CommandNotFound) :
         return
     else :
