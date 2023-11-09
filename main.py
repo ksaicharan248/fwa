@@ -49,9 +49,7 @@ async def on_command_error(ctx , error) :
                               color=discord.Color.red())
         await ctx.send(embed=embed)
     elif isinstance(error , commands.CommandInvokeError) and isinstance(error.original , discord.HTTPException) :
-        embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" , description="something is missing please check and try again." ,
-                              color=discord.Color.red())
-        await ctx.send(embed=embed)
+        print("error while error , commands.CommandInvokeError,error.original , discord.HTTPException")
     elif isinstance(error , commands.CommandNotFound) :
         return
     else :
@@ -189,9 +187,10 @@ async def removenick(ctx , member: discord.Member) :
 @client.command(name='kick' , aliases=['k'] , help='Kick a user' , usage=f'{p}kick <user> <reason>')
 @commands.has_any_role('🔰ADMIN🔰' ,  '☘️CO-ADMIN☘️')
 async def kick(ctx , member: discord.Member , * , reason=None) :
-    await member.kick(reason=reason)
     await ctx.send(f'{member.nick} has been flew from the server 🍃')
     await member.send(f"You have been kicked from {ctx.guild.name} for {reason}")
+    await unlink(member)
+    await member.kick(reason=reason)
 
 @client.command(name='ts-m' , aliases=['tsm'] , help=f'add player to The shield ' , usage=f'{p}ts-m <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'TSL')
