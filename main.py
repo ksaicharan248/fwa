@@ -685,35 +685,35 @@ async def unlink(ctx , member: discord.Member) :
             pickle.dump(user_data , file)
 
 
-@client.command(name='force_link' , aliases=['fl' , 'force-link' , 'force'] ,
+@client.hybrid_command(name='force-link' , aliases=['fl' , 'force_link' , 'force'] ,
                 help='To  link a player clash of clans account with a discord account' ,
                 usage=f'{p}force_link <@mention> <#player_tag> \nexample : {p}force_link @moon #JJ0Y71L2' , hidden=True)
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML' , 'Staff')
-async def force_link(ctx , member: discord.Member = None , tag=None) :
+async def force_link(ctx , user_mention: discord.Member = None , player_tag=None) :
     await ctx.message.delete()
-    if tag is None :
+    if player_tag is None :
         e = Embed(title="Please provide the player tag ." , color=Color.red())
         await ctx.send(embed=e)
         return
     else :
-        tag = tag.strip('#')
+        player_tag = player_tag.strip('#')
         with open('userdata.pkl' , 'rb') as file :
             user_data = pickle.load(file)
-        if member.id in user_data.keys() :
-            e = Embed(title=f"{member.mention} have already linked his account <:ver:1157952898362261564>" ,
+        if user_mention.id in user_data.keys() :
+            e = Embed(title=f"{user_mention.mention} have already linked his account <:ver:1157952898362261564>" ,
                       colour=Color.random())
             await ctx.send(embed=e)
             await ctx.send()
             return
         else :
-            player = COC.get_user(tag=tag)
+            player = COC.get_user(tag=player_tag)
             e = Embed(
                 title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
                 color=Color.random())
-            e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {member.mention}'
+            e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {user_mention.mention}'
             e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
-            user_data[member.id] = tag
+            user_data[user_mention.id] = player_tag
             with open('userdata.pkl' , 'wb') as file :
                 pickle.dump(user_data , file)
             return
