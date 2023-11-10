@@ -117,7 +117,7 @@ async def welcome(ctx , member: discord.Member = None) :
 
 @client.command()
 async def ping(ctx) :
-    await ctx.send(f'Pong! {round(client.latency * 1000 )}ms')
+    await ctx.send(f'Pong! {round(client.latency * 1000)}ms')
 
 
 @client.command(name='role' , help='Add a role to a user' , usage=f"{p}role <user> <@roles>")
@@ -185,12 +185,13 @@ async def removenick(ctx , member: discord.Member) :
 
 
 @client.command(name='kick' , aliases=['k'] , help='Kick a user' , usage=f'{p}kick <user> <reason>')
-@commands.has_any_role('🔰ADMIN🔰' ,  '☘️CO-ADMIN☘️')
+@commands.has_any_role('🔰ADMIN🔰' , '☘️CO-ADMIN☘️')
 async def kick(ctx , member: discord.Member , * , reason=None) :
     await ctx.send(f'{member.nick} has been flew from the server 🍃')
     await member.send(f"You have been kicked from {ctx.guild.name} for {reason}")
     await unlink(member)
     await member.kick(reason=reason)
+
 
 @client.command(name='ts-m' , aliases=['tsm'] , help=f'add player to The shield ' , usage=f'{p}ts-m <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'TSL')
@@ -385,8 +386,7 @@ async def wa_m(ctx , member: discord.Member) :
         await ctx.send("MISSING permissions")
 
 
-
-@client.command(name='wfx-m', aliases=['wfxm'] , help='Move member to War Farmers x44' , usage=f'{p}wfx-m <@mention>')
+@client.command(name='wfx-m' , aliases=['wfxm'] , help='Move member to War Farmers x44' , usage=f'{p}wfx-m <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WFL')
 async def wfx_m(ctx , member: discord.Member) :
     if member in ctx.guild.members :
@@ -630,16 +630,16 @@ async def emoji(ctx) :
 '''
 
 
-@client.command(name='link' , help='To link your clash of clans account with your discord account' ,
-                usage=f'{p}link <#player_tag> \nexample : {p}link #2UVH89FH')
-async def link(ctx , tag=None) :
+@client.hybrid_command(name='link' , help='To link your clash of clans account with your discord account' ,
+                usage=f'{p}link <#player_tag> \nexample : {p}link #2UVH89FH\n/link #2UVH89FH' )
+async def link(ctx , player_tag=None) :
     await ctx.message.delete()
-    if tag is None :
+    if player_tag is None :
         e = Embed(title="Please provide the player tag ." , color=Color.random())
         await ctx.send(embed=e)
         return
     else :
-        tag = tag.strip('#')
+        player_tag = player_tag.strip('#')
         with open('userdata.pkl' , 'rb') as file :
             user_data = pickle.load(file)
         if ctx.author.id in user_data.keys() :
@@ -648,14 +648,14 @@ async def link(ctx , tag=None) :
             await ctx.send()
             return
         else :
-            player = COC.get_user(tag=tag)
+            player = COC.get_user(tag=player_tag)
             e = Embed(
                 title=f'<:th{str(player["townHallLevel"])}:{COC.get_id(player["townHallLevel"])}>  {player["name"]} -{player["tag"]}' ,
                 color=Color.random())
             e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {ctx.author.mention}'
             e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
-            user_data[ctx.author.id] = tag
+            user_data[ctx.author.id] = player_tag
             with open('userdata.pkl' , 'wb') as file :
                 pickle.dump(user_data , file)
             return
@@ -719,29 +719,33 @@ async def force_link(ctx , member: discord.Member = None , tag=None) :
             return
 
 
-@client.command(name="profile" , help="Shows the profile of the user" ,
+@client.hybrid_command(name="profile" , help="Shows the profile of the user" ,
                 usage=f"{p}profile <none> or <user> \nexample: {p}profile @user")
-async def profile(ctx , * , target=None) :
+async def profile(ctx , player_tag=None ,user: discord.Member = None) :
     with open('userdata.pkl' , 'rb') as f :
         user_data = pickle.load(f)
-    if target is None :
+    if player_tag is None and user is None :
         if ctx.author.id in user_data.keys() :
             tags = user_data[ctx.author.id].strip('#')
         else :
-            e = Embed(title="Please provide a user mention or ID." , color=Color.red())
+            e = Embed(title="No data exists on this profile" , color=Color.red())
             await ctx.send(embed=e)
             return
     else :
-        if ctx.message.mentions :
-            user = ctx.message.mentions[0].id
+        if user is not None :
+            user = user.id
             if user in user_data :
                 tags = user_data[user].strip('#')
             else :
                 e = Embed(title="User not found " , color=Color.red())
                 await ctx.send(embed=e)
                 return
-        else :
-            tags = target.strip('#')
+        elif player_tag is not None :
+            tags = player_tag.strip('#')
+        else:
+            e = Embed(description="No player tag is found on this profile",  color=Color.red())
+            await ctx.send(embed=e)
+            return
 
     try :
         player = COC.get_user(tag=tags)
@@ -753,11 +757,22 @@ async def profile(ctx , * , target=None) :
         e.set_thumbnail(url=emoj.url)
         e.description = f'[CCNS](https://fwa.chocolateclash.com/cc_n/member.php?tag=%23{ptag})   [COS](https://www.clashofstats.com/players/{ptag})\n' \
                         f'\n🏆 {player["trophies"]} \n{x}'
+        heros = []
+        for hero in player["heroes"] :
+            hero_id = COC.get_hero_id(hero["name"])
+            if hero_id is not None :
+                emoji_declartion = f'<:{str(hero["name"]).replace(" " , "")}:{hero_id}> {hero["level"]}'
+                heros.append(emoji_declartion)
+        e.add_field(value=f'{" ".join(heros)}' , name="Heroes")
+
+
+
+
 
         e.set_footer(text=f"Done by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
         await ctx.send(embed=e)
     except Exception as e :
-        e = Embed(title="Error while fe tching" , color=Color.red())
+        e = Embed(title="Error while fetching" , color=Color.red())
         e.description = str(e)
         await ctx.send(embed=e)
 
@@ -919,7 +934,7 @@ async def cwl(ctx , tag=None , *th) :
         await ctx.send(embed=e)
 
 
-@client.command(name="bases" , help="offical fwa bases" , usage=f"{p}bases")
+@client.hybrid_command(name="bases" , help="offical fwa bases" , usage=f"{p}bases")
 async def bases(ctx) :
     await ctx.message.delete()
     url15 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH15%3AWB%3AAAAAKQAAAAIPb7TMztzbem-F0y7oXluK"
@@ -1032,7 +1047,7 @@ class Selectmenu(discord.ui.View) :
 
     @discord.ui.select(placeholder='Select an option' , options=optoins , min_values=1 , max_values=1)
     async def select(self , interaction: discord.Interaction , select) :
-        try:
+        try :
             if select.values[0] == '1' :
                 embed1 = discord.Embed(title='MOD COMMANDS' , colour=Color.random())
                 embed1.description = f"{p}wel         - Welome a player\n" \
@@ -1046,17 +1061,17 @@ class Selectmenu(discord.ui.View) :
                 await interaction.response.defer()
             elif select.values[0] == '2' :
                 embed2 = discord.Embed(title='LEADER COMMANDS' , colour=Color.random())
-                embed2.description =f"`{p}ts-m`        - add player to THE SHIELD \n" \
-                                    f"`{p}mn-m`        - add player to MONSTERS\n" \
-                                    f"`{p}wa-m`        - add player to WARNING \n" \
-                                    f"`{p}wfx-m`       - add player to WAR FARMER X44\n" \
-                                    f"`{p}unq`         - add player to unqualified\n" \
-                                    f"`{p}app`         - approve the player\n" \
-                                    f"`{p}re`          - send the player to reapply \n" \
-                                    f"`{p}check`       - check the player with CCNS\n" \
-                                    f"`{p}war`         - send war updates\n" \
-                                    f"`{p}force_link`     - link any other player with tag " \
-                                    f"\n\nfor more info type ```{p}usage <command name>```"
+                embed2.description = f"`{p}ts-m`        - add player to THE SHIELD \n" \
+                                     f"`{p}mn-m`        - add player to MONSTERS\n" \
+                                     f"`{p}wa-m`        - add player to WARNING \n" \
+                                     f"`{p}wfx-m`       - add player to WAR FARMER X44\n" \
+                                     f"`{p}unq`         - add player to unqualified\n" \
+                                     f"`{p}app`         - approve the player\n" \
+                                     f"`{p}re`          - send the player to reapply \n" \
+                                     f"`{p}check`       - check the player with CCNS\n" \
+                                     f"`{p}war`         - send war updates\n" \
+                                     f"`{p}force_link`     - link any other player with tag " \
+                                     f"\n\nfor more info type ```{p}usage <command name>```"
 
                 await interaction.message.edit(embed=embed2)
                 await interaction.response.defer()
@@ -1077,7 +1092,7 @@ class Selectmenu(discord.ui.View) :
 @client.hybrid_command(name='help' , help='help')
 async def help(ctx) :
     await ctx.defer()
-    await ctx.send(content='HELP COMMAND', view=Selectmenu())
+    await ctx.send(content='HELP COMMAND' , view=Selectmenu())
 
 
 if __name__ == '__main__' :
