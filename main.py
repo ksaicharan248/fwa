@@ -84,7 +84,7 @@ async def on_member_join(member) :
         if welcome_channel :
             p = client.command_prefix
             await member.add_roles(discord.utils.get(member.guild.roles , name='🔸ENTRY🔸'))
-            await welcome_channel.send(f'Hello, {member.mention} !')
+            await welcome_channel.send(f'Hello, {member.mention}  !')
             embed = Embed(title=f"Welcome  to  ⚔️TEAM ELITES⚔️!" , color=Color.random())
             embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n" \
                                 f"If you wish to join one of our clans then please follow the steps below.\n\n" \
