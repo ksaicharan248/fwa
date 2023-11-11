@@ -56,7 +56,7 @@ async def on_command_error(ctx , error) :
     elif isinstance(error , commands.CommandNotFound) :
         await owner.send(f'{ctx.guild} error while error , commands.CommandNotFound')
     else:
-        await owner.send(f'{ctx.guild} error : , {error}')
+        await owner.send(f'{ctx.guild} error :  {error}')
 
 
 
@@ -1093,7 +1093,8 @@ async def help(ctx) :
     await ctx.send(content='HELP COMMAND' , view=Selectmenu())
 
 @client.command()
-async def ilu(ctx):
+@commands.is_owner()
+async def audit(ctx):
     x,y,z = 0,0,0
     notinanyserver = [];elites =[]; fwaa= []
     elite = ""; noneelite = ""; fwa = ""
