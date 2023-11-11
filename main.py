@@ -726,7 +726,7 @@ async def profile(ctx , player_tag=None ,user: discord.Member = None) :
         user_data = pickle.load(f)
     if player_tag is None and user is None :
         if ctx.author.id in user_data.keys() :
-            tags = user_data[ctx.author.id].strip('#')
+            player_tags = user_data[ctx.author.id].strip('#')
         else :
             e = Embed(title="No data exists on this profile" , color=Color.red())
             await ctx.send(embed=e)
@@ -735,46 +735,40 @@ async def profile(ctx , player_tag=None ,user: discord.Member = None) :
         if user is not None :
             user = user.id
             if user in user_data :
-                tags = user_data[user].strip('#')
+                player_tags = user_data[user].strip('#')
             else :
                 e = Embed(title="User not found " , color=Color.red())
                 await ctx.send(embed=e)
                 return
         elif player_tag is not None :
-            tags = player_tag.strip('#')
+            player_tags = player_tag.strip('#')
         else:
             e = Embed(description="No player tag is found on this profile",  color=Color.red())
             await ctx.send(embed=e)
             return
-
-    try :
-        player = COC.get_user(tag=tags)
+    if player_tags is not None:
+        player = COC.get_user(tag=player_tags)
         url = f'https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23{player["tag"].strip("#")}'
         e = Embed(title=f"{player['name']} - {player['tag']}" , url=url , color=Color.random())
         emoj = discord.utils.get(ctx.guild.emojis , id=int(COC.get_id(player["townHallLevel"])))
         ptag = player["tag"].strip('#')
-        x = f'[{player["clan"]["name"]}](https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{player["clan"]["tag"]}) \n Role : **{COC.get_role(player["role"])}**' if "clan" in player else "NO clan"
-        e.set_thumbnail(url=emoj.url)
+        player_details = f'[{player["clan"]["name"]}](https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{player["clan"]["tag"]}) \n Role : **{COC.get_role(player["role"])}**' if "clan" in player else "NO clan"
         e.description = f'[CCNS](https://fwa.chocolateclash.com/cc_n/member.php?tag=%23{ptag})   [COS](https://www.clashofstats.com/players/{ptag})\n' \
-                        f'\n🏆 {player["trophies"]} \n{x}'
+                        f'\n🏆 {player["trophies"]} \n{player_details}'
         heros = []
         for hero in player["heroes"] :
             hero_id = COC.get_hero_id(hero["name"])
             if hero_id is not None :
                 emoji_declartion = f'<:{str(hero["name"]).replace(" " , "")}:{hero_id}> {hero["level"]}'
                 heros.append(emoji_declartion)
+        e.set_thumbnail(url=emoj.url)
         e.add_field(value=f'{" ".join(heros)}' , name="Heroes")
-
-
-
-
-
         e.set_footer(text=f"Done by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
         await ctx.send(embed=e)
-    except Exception as e :
+    '''except Exception as e :
         e = Embed(title="Error while fetching" , color=Color.red())
         e.description = str(e)
-        await ctx.send(embed=e)
+        await ctx.send(embed=e)'''
 
 
 @client.command(name='server_list' , aliases=['sl' , 'server-list'] ,
@@ -851,7 +845,7 @@ async def clan(ctx , target=None) :
                     f'💎 [**FWA**]({fwa})\n' \
                     f'<:see:1159496511701385297> [**CCNS**]({ccns})\n' \
                     f'⚔️ [**CWL**]({cwl})\n\n' \
-                    f'<:cp:1161299634916966400> : {clt["clanCapital"]["capitalHallLevel"]}    ' \
+                    f'<:cp:1161299634916966400> : {clt["clanCapital"]["capitalHallLevel"] if clt["clanCapital"]["capitalHallLevel"] else "1"}    ' \
                     f' <:members:1161298479050670162> : {clt["members"]}/50\n\n' \
                     f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}>!'
     await ctx.send(embed=e)
@@ -936,7 +930,6 @@ async def cwl(ctx , tag=None , *th) :
 
 @client.hybrid_command(name="bases" , help="offical fwa bases" , usage=f"{p}bases")
 async def bases(ctx) :
-    await ctx.message.delete()
     url15 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH15%3AWB%3AAAAAKQAAAAIPb7TMztzbem-F0y7oXluK"
     url14 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH14%3AWB%3AAAAAQAAAAAG_WV2seLzVBV38HVTPRJCY"
     url13 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH13%3AWB%3AAAAAKwAAAAH9cXxV00w-5lJ2qCJCm8_v"
