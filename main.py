@@ -62,13 +62,17 @@ async def on_command_error(ctx , error) :
 
 @client.event
 async def on_member_remove(member) :
+    owner = await client.fetch_user(int(info))
     with open("userdata.pkl" , "rb") as file :
         user_data = pickle.load(file)
     if member.id in user_data.keys() :
         try :
             del user_data[member.id]
+            await owner.send(f'{member} removed from data base.')
         except :
             user_data.pop(member.id)
+            await owner.send(f'{member} removed from data base')
+
         with open("userdata.pkl" , "wb") as file :
             pickle.dump(user_data , file)
 
@@ -191,9 +195,11 @@ async def removenick(ctx , member: discord.Member) :
 @client.command(name='kick' , aliases=['k'] , help='Kick a user' , usage=f'{p}kick <user> <reason>')
 @commands.has_any_role('🔰ADMIN🔰' , '☘️CO-ADMIN☘️')
 async def kick(ctx , member: discord.Member , * , reason=None) :
+    owner = await client.fetch_user(int(info))
     await ctx.send(f'{member.nick} has been flew from the server 🍃')
     await member.send(f"You have been kicked from {ctx.guild.name} for {reason}")
-    await unlink(member=member)
+    await unlink(ctx,member=member)
+    await owner.send(f'{member} removed from data base')
     await member.kick(reason=reason)
 
 
