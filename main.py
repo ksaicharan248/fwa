@@ -193,7 +193,7 @@ async def removenick(ctx , member: discord.Member) :
 async def kick(ctx , member: discord.Member , * , reason=None) :
     await ctx.send(f'{member.nick} has been flew from the server 🍃')
     await member.send(f"You have been kicked from {ctx.guild.name} for {reason}")
-    await unlink(member)
+    await unlink(member=member)
     await member.kick(reason=reason)
 
 
