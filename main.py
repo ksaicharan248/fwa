@@ -1092,6 +1092,43 @@ async def help(ctx) :
     await ctx.defer()
     await ctx.send(content='HELP COMMAND' , view=Selectmenu())
 
+@client.command()
+async def ilu(ctx):
+    x,y,z = 0,0,0
+    notinanyserver = [];elites =[]; fwaa= []
+    elite = ""; noneelite = ""; fwa = ""
+    with open('userdata.pkl', 'rb') as f:
+        userdata = pickle.load(f)
+    guild = client.get_guild(1054435038881665024)
+    guild2= client.get_guild(1152220160028057660)
+    for member in userdata.keys():
+        if guild.get_member(int(member)) :
+            elite += f'{x}  . {member}\n'
+            elites.append(member)
+
+            x += 1
+        elif guild2.get_member(int(member)) :
+            fwa += f'{y}  . {member}\n'
+            fwaa.append(member)
+            y += 1
+        else:
+            noneelite += f'{z} . {member}\n'
+            z += 1
+            notinanyserver.append(member)
+
+    embed = discord.Embed(title=f'Team elites -{len(elites)} ',description = elite , colour=Color.random())
+    embed2 = discord.Embed(title=f'empire x fwa -{len(fwaa)}',description = fwa , colour=Color.random())
+    embed3 = discord.Embed(title=f'Not in any server - {len(notinanyserver)}',description = noneelite , colour=Color.random())
+    embed4 = discord.Embed(title='count',description=f"total:{len(userdata.keys())}\n Elite: {len(elites)}\n FWA: {len(fwaa)} \n None Elite: {len(notinanyserver)}" , colour=Color.random())
+    await ctx.send(embeds=[embed,embed2,embed3,embed4])
+    for outsider in notinanyserver:
+        del userdata[outsider]
+    with open('userdata.pkl', 'wb') as f:
+        pickle.dump(userdata, f)
+    await ctx.send(f'{len(userdata.keys())}')
+
+
+
 
 if __name__ == '__main__' :
     keep_alive()
