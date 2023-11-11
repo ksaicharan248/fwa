@@ -32,9 +32,12 @@ async def on_ready() :
     print('We have logged in as {0.user}'.format(client))
     await client.tree.sync()
 
+info : int =765929481311354881
+
 
 @client.event
 async def on_command_error(ctx , error) :
+    owner = await client.fetch_user(int(info))
     if isinstance(error , commands.MissingRequiredArgument) :
         embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" ,
                               description="You forgot to mention the user. Please use the command again by mentioning the user" ,
@@ -49,11 +52,12 @@ async def on_command_error(ctx , error) :
                               color=discord.Color.red())
         await ctx.send(embed=embed)
     elif isinstance(error , commands.CommandInvokeError) and isinstance(error.original , discord.HTTPException) :
-        print("error while error , commands.CommandInvokeError,error.original , discord.HTTPException ")
+        await owner.send(f"{ctx.guild} had error :while error , commands.CommandInvokeError,error.original , discord.HTTPException ")
     elif isinstance(error , commands.CommandNotFound) :
-        return
-    else :
-        return
+        await owner.send(f'{ctx.guild} error while error , commands.CommandNotFound')
+    else:
+        await owner.send(f'{ctx.guild} error : , {error}')
+
 
 
 @client.event
@@ -631,7 +635,7 @@ async def emoji(ctx) :
 
 
 @client.hybrid_command(name='link' , help='To link your clash of clans account with your discord account' ,
-                usage=f'{p}link <#player_tag> \nexample : {p}link #2UVH89FH\n/link #2UVH89FH' )
+                       usage=f'{p}link <#player_tag> \nexample : {p}link #2UVH89FH\n/link #2UVH89FH')
 async def link(ctx , player_tag=None) :
     await ctx.message.delete()
     if player_tag is None :
@@ -686,8 +690,9 @@ async def unlink(ctx , member: discord.Member) :
 
 
 @client.hybrid_command(name='force-link' , aliases=['fl' , 'force_link' , 'force'] ,
-                help='To  link a player clash of clans account with a discord account' ,
-                usage=f'{p}force_link <@mention> <#player_tag> \nexample : {p}force_link @moon #JJ0Y71L2' , hidden=True)
+                       help='To  link a player clash of clans account with a discord account' ,
+                       usage=f'{p}force_link <@mention> <#player_tag> \nexample : {p}force_link @moon #JJ0Y71L2' ,
+                       hidden=True)
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML' , 'Staff')
 async def force_link(ctx , user_mention: discord.Member = None , player_tag=None) :
     await ctx.message.delete()
@@ -720,8 +725,8 @@ async def force_link(ctx , user_mention: discord.Member = None , player_tag=None
 
 
 @client.hybrid_command(name="profile" , help="Shows the profile of the user" ,
-                usage=f"{p}profile <none> or <user> \nexample: {p}profile @user")
-async def profile(ctx , player_tag=None ,user: discord.Member = None) :
+                       usage=f"{p}profile <none> or <user> \nexample: {p}profile @user")
+async def profile(ctx , player_tag=None , user: discord.Member = None) :
     with open('userdata.pkl' , 'rb') as f :
         user_data = pickle.load(f)
     if player_tag is None and user is None :
@@ -742,11 +747,11 @@ async def profile(ctx , player_tag=None ,user: discord.Member = None) :
                 return
         elif player_tag is not None :
             player_tags = player_tag.strip('#')
-        else:
-            e = Embed(description="No player tag is found on this profile",  color=Color.red())
+        else :
+            e = Embed(description="No player tag is found on this profile" , color=Color.red())
             await ctx.send(embed=e)
             return
-    if player_tags is not None:
+    if player_tags is not None :
         player = COC.get_user(tag=player_tags)
         url = f'https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23{player["tag"].strip("#")}'
         e = Embed(title=f"{player['name']} - {player['tag']}" , url=url , color=Color.random())
@@ -821,7 +826,7 @@ async def clan(ctx , target=None) :
 
     else :
         if len(target) <= 3 :
-            ctags = {'w' : "2Q8URCU88" , "ts" : "U0LPRYL2" , "sns" : "Y0YY9GUV" , "sav" : "LLGJUPPY"}
+            ctags = {'w' : "2Q8URCU88" , "ts" : "U0LPRYL2" , 'h' : "2G9V8PQJP" , "wf" : "LYPLQQUC"}
             clantag = ctags[target]
         elif len(target) >= 4 :
             clantag = target.strip('#')
@@ -845,7 +850,7 @@ async def clan(ctx , target=None) :
                     f'💎 [**FWA**]({fwa})\n' \
                     f'<:see:1159496511701385297> [**CCNS**]({ccns})\n' \
                     f'⚔️ [**CWL**]({cwl})\n\n' \
-                    f'<:cp:1161299634916966400> : {clt["clanCapital"]["capitalHallLevel"] if clt["clanCapital"]["capitalHallLevel"] else "1"}    ' \
+                    f'<:cp:1161299634916966400> : {"1" if clt["clanCapital"] == {} else clt["clanCapital"]["capitalHallLevel"]}    ' \
                     f' <:members:1161298479050670162> : {clt["members"]}/50\n\n' \
                     f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}>'
     await ctx.send(embed=e)
