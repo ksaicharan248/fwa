@@ -99,6 +99,23 @@ def leaugeid(id) :
         return "https://static.wikia.nocookie.net/clashofclans/images/e/e3/WarChampionI.png/revision/latest/?cb=20181024140228"
 
 
+
+
+
+
+def get_hero_id(id) :
+    if id == "Barbarian King":
+        return 1172564470984347678
+    elif id == "Archer Queen":
+        return 1172566801259954196
+    elif id == "Grand Warden":
+        return 1172565750133837844
+    elif id == "Royal Champion":
+        return 1172566389131841547
+    else:
+        return None
+
+
 def hoq(target=None , *  th) :
     ths = ""
     if target is not None :
