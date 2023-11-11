@@ -53,11 +53,11 @@ async def on_command_error(ctx , error) :
                               color=discord.Color.red())
         await ctx.send(embed=embed)
     elif isinstance(error , commands.CommandInvokeError) and isinstance(error.original , discord.HTTPException) :
-        await owner.send(f"{ctx.guild} {error} ")
+        await ctx.send("check and try agian..")
     elif isinstance(error , commands.CommandNotFound) :
-        await owner.send(f'{ctx.guild} error while error , commands.CommandNotFound\n{error}')
+        pass
     else :
-        await ctx.author.send(f'{ctx.guild} error :  {error}')
+        await ctx.author.send(f'{ctx.guild}\n error :  {error}')
 
 
 @client.event
