@@ -847,7 +847,7 @@ async def clan(ctx , target=None) :
                     f'⚔️ [**CWL**]({cwl})\n\n' \
                     f'<:cp:1161299634916966400> : {clt["clanCapital"]["capitalHallLevel"] if clt["clanCapital"]["capitalHallLevel"] else "1"}    ' \
                     f' <:members:1161298479050670162> : {clt["members"]}/50\n\n' \
-                    f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}>!'
+                    f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}>'
     await ctx.send(embed=e)
 
 
