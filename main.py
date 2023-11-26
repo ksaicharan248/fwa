@@ -198,7 +198,7 @@ async def kick(ctx , member: discord.Member , * , reason=None) :
     owner = await client.fetch_user(int(info))
     await ctx.send(f'{member.nick} has been flew from the server 🍃')
     await member.send(f"You have been kicked from {ctx.guild.name} for {reason}")
-    await unlink(ctx,member=member)
+    await unlink(ctx , member=member)
     await owner.send(f'{member} removed from data base')
     await member.kick(reason=reason)
 
@@ -267,12 +267,12 @@ async def ts_m(ctx , member: discord.Member) :
         await ctx.send("MISSING permissions")
 
 
-@client.command(name='mn-m' , aliases=['mnm'] , help=f'add player to Monster clan' , usage=f'{p}mn-m <@mention>')
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'MSL')
-async def mo_m(ctx , member: discord.Member) :
+@client.command(name='i-m' , aliases=['im'] , help=f'add player to Illuminati clan' , usage=f'{p}i-m <@mention>')
+@commands.has_any_role('🔰ADMIN🔰' , '☠️| LEADER' , '☘️CO-ADMIN☘️' , 'Staff')
+async def i_m(ctx , member: discord.Member) :
     if ctx.author.guild_permissions.manage_messages :
         await ctx.message.delete()
-        channel = client.get_channel(1063291093178916884)
+        channel = client.get_channel(1168074780877008896)
         with open('userdata.pkl' , 'rb') as f :
             data = pickle.load(f)
         if member.id in data.keys() :
@@ -284,52 +284,100 @@ async def mo_m(ctx , member: discord.Member) :
             return
         try :
             await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
-            await member.add_roles(discord.utils.get(ctx.guild.roles , name='MSC'))
-            await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
-            embed = Embed(color=Color.green())
-            embed.description = f"✅Changed roles for {member.name}, +HMC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
-            await channel.send(embed=embed)
-            flag1 = True
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='ILM'))
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='💎FWA PLAYER💎'))
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='Member'))
 
         except Exception as e :
             embed = Embed(color=Color.red())
             embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
             await ctx.send(embed=embed)
-            flag1 = False
+
         try :
             new_nickname = f'{COC.get_prefix(info["role"])}{info["name"]}'
             await member.edit(nick=new_nickname)
-            embed1 = Embed(color=Color.green())
-            embed1.description = f"✅Changed name for {member.name} to  {member.mention}"
-            await channel.send(embed=embed1)
-            flag2 = True
         except Exception as e :
             embed1 = Embed(color=Color.red())
             embed1.description = f"❌Failed to change name for {member.name}\n Reason:{e} "
             await ctx.send(embed=embed1)
-            flag2 = False
 
-        if flag1 and flag2 :
-            await ctx.send(f"{member.nick} moved to  **☬M̷O̷N̷S̷T̷E̷R☬**")
-            await channel.send(f"{member.mention} is now a member of **☬M̷O̷N̷S̷T̷E̷R☬** 🚀")
-            embed3 = Embed(color=Color.green())
-            embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
-                                  "\n"
-                                  "『📢』**clan-announcements** - For important clan announcements\n"
-                                  "『⚠』**<#1054439098342969425>** - For war rules and instructions\n"
-                                  "\n"
-                                  "Note - Make Sure To Maintain This In Clan\n"
-                                  "✅ Donate\n"
-                                  "✅ Attack in wars\n"
-                                  "✅ Follow mails\n"
-                                  "✅ 2000 in CG\n"
-                                  "✅ Participate in Clan-Capitals\n"
-                                  "❌ Don’t kick anyone")
+        try :
+            await ctx.send(f"{member.nick} moved to  **Illuminati**")
+            await channel.send(f"{member.mention} is now a member of **Illuminati** 🚀")
+            embed = discord.Embed(
+                description="🔸Respectful, mature behavior\n🔸Chat Language only `ENGLISH`\n🔸Follow clan mails \n🔸Minimum 2500+ points at Clan Games\n🔸Keep the *FWA BASE* Active Always" ,
+                colour=0xd4fb0e)
 
-            await channel.send(embed=embed3)
+            embed.set_author(name="Rules must be followed:" ,
+                             icon_url="https://cdn.dribbble.com/users/684095/screenshots/2118968/media/4d7dfc719e1772d973085806fd2727c0.png?resize=400x0")
+
+            embed.set_image(url="https://media.tenor.com/2pB1ng_3qQsAAAAC/welcome.gif")
+
+            await channel.send(embed=embed)
+        except Exception as e :
+            embed2 = Embed(color=Color.red())
+            embed2.description = f"❌Failed to send message to {member.name}\n Reason:{e} "
+            await ctx.send(embed=embed2)
 
     else :
         await ctx.send("MISSING permissions")
+
+
+@client.command(name='j-m' , aliases=['jm'] , help=f'add player to Jigglets clan' , usage=f'{p}j-m <@mention>')
+@commands.has_any_role('🔰ADMIN🔰' , '☠️| LEADER' , '☘️CO-ADMIN☘️' , 'Staff')
+async def ji_m(ctx , member: discord.Member) :
+    if ctx.author.guild_permissions.manage_messages :
+        await ctx.message.delete()
+        channel = client.get_channel(1152230941742333972)
+        with open('userdata.pkl' , 'rb') as f :
+            data = pickle.load(f)
+        if member.id in data.keys() :
+            info = COC.get_user(data[member.id])
+        else :
+            e = Embed(title='Player data not fount' , colour=Color.red())
+            e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
+            await ctx.send(embed=e)
+            return
+        try :
+            await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='JG'))
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='💎FWA PLAYER💎'))
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='Member'))
+
+        except Exception as e :
+            embed = Embed(color=Color.red())
+            embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
+            await ctx.send(embed=embed)
+
+        try :
+            new_nickname = f'{COC.get_prefix(info["role"])}{info["name"]}'
+            await member.edit(nick=new_nickname)
+        except Exception as e :
+            embed1 = Embed(color=Color.red())
+            embed1.description = f"❌Failed to change name for {member.name}\n Reason:{e} "
+            await ctx.send(embed=embed1)
+
+        try :
+            await ctx.send(f"{member.nick} moved to  **Jigglets**")
+            await channel.send(f"{member.mention} is now a member of **Jigglets** 🚀")
+            embed = discord.Embed(
+                description="🔸Respectful, mature behavior\n🔸Chat Language only `ENGLISH`\n🔸Follow clan mails \n🔸Minimum 2500+ points at Clan Games\n🔸Keep the *FWA BASE* Active Always" ,
+                colour=0xd4fb0e)
+
+            embed.set_author(name="Rules must be followed:" ,
+                             icon_url="https://cdn.dribbble.com/users/684095/screenshots/2118968/media/4d7dfc719e1772d973085806fd2727c0.png?resize=400x0")
+
+            embed.set_image(url="https://media.tenor.com/2pB1ng_3qQsAAAAC/welcome.gif")
+
+            await channel.send(embed=embed)
+        except Exception as e :
+            embed2 = Embed(color=Color.red())
+            embed2.description = f"❌Failed to send message to {member.name}\n Reason:{e} "
+            await ctx.send(embed=embed2)
+
+    else :
+        await ctx.send("MISSING permissions")
+
 
 
 @client.command(name='wa-m' , aliases=['wam'] , help='add a member to WARNING clan' , usage=f'{p}wa-m <@mention>')
