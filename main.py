@@ -303,7 +303,7 @@ async def i_m(ctx , member: discord.Member) :
 
         try :
             await ctx.send(f"{member.nick} moved to  **Illuminati**")
-            await channel.send(f"{member.mention} is now a member of **Illuminati** 🚀")
+            await channel.send(f"{member.mention} is now a member of **Illuminati**  🚀")
             embed = discord.Embed(
                 description="🔸Respectful, mature behavior\n🔸Chat Language only `ENGLISH`\n🔸Follow clan mails \n🔸Minimum 2500+ points at Clan Games\n🔸Keep the *FWA BASE* Active Always" ,
                 colour=0xd4fb0e)
