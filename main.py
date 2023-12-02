@@ -1241,103 +1241,84 @@ async def audit(ctx) :
     await ctx.send(f'{len(userdata.keys())}')
 
 
-class cwlbutton(View) :
-    def __init__(self , ctx , round) :
+class cwlbutton(View):
+    def __init__(self, ctx, round):
+        super().__init__(timeout=None)
         self.ctx = ctx
         self.round = round
-        super().__init__(timeout=None)
 
-    @discord.ui.button(style=discord.ButtonStyle.blurple , label="LAZY CWL 15" , custom_id="1" , row=1)
-    async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
-        text = '';
-        text1 = ''
-        with open('cwlrooster.pkl' , 'rb') as file :
+    async def update_embed(self, interaction, user_data):
+        embed = Embed(title=f"CWL ROSTER -ROUND {self.round}",colour=Color.random())
+        clan_one = '\n'.join(user_data[0].values())
+        clan_two = '\n'.join(user_data[1].values())
+        embed.add_field(name="LAZY CWL 15 -#2R0GRURJG", value=f'{clan_one}')
+        embed.add_field(name="SHIELD LAZY CWL -#2GPLGG820", value=f'{clan_two}')
+        await interaction.response.defer()
+        await interaction.message.edit(embed=embed)
+
+    @discord.ui.button(style=discord.ButtonStyle.blurple, label="LAZY CWL 15", custom_id="1", row=1)
+    async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button):
+        with open('cwlrooster.pkl', 'rb') as file:
             user_data = pickle.load(file)
-        if interaction.user.id in user_data[0].keys() :
-            await interaction.response.send_message("You have already enrolled for the CWL." , ephemeral=True)
-        else :
-            embed = discord.Embed(title=f"CWL ROSTER -ROUND {self.round}")
-            for key in user_data[0].keys() :
-                text += f'{user_data[0][key]}\n'
-            for keyset in user_data[1].keys() :
-                text1 += f'{user_data[1][keyset]}\n'
-            embed.add_field(name="LAZY CWL 15 -#2R0GRURJG" , value=f'{text}{interaction.user.nick}')
-            embed.add_field(name="SHIELD LAZY CWL -#2GPLGG820" , value=f'{text1}')
-            await interaction.response.defer()
-            await interaction.message.edit(embed=embed)
+        if interaction.user.id in user_data[0]:
+            await interaction.response.send_message("You have already enrolled for the CWL.", ephemeral=True)
+        else:
             user_data[0][interaction.user.id] = interaction.user.nick
-            with open('cwlrooster.pkl' , 'wb') as f :
-                pickle.dump(user_data , f)
+            await self.update_embed(interaction, user_data)
+            with open('cwlrooster.pkl', 'wb') as f:
+                pickle.dump(user_data, f)
 
-    @discord.ui.button(style=discord.ButtonStyle.green , label="SHEILD LAZY CWL" , custom_id="2" , row=1)
-    async def button_callback1(self , interaction: discord.Interaction , button: discord.ui.button) :
-        text = '';
-        text1 = ''
-        with open('cwlrooster.pkl' , 'rb') as file :
+    @discord.ui.button(style=discord.ButtonStyle.green, label="SHEILD LAZY CWL", custom_id="2", row=1)
+    async def button_callback1(self , interaction: discord.Interaction , button: discord.ui.button):
+        with open('cwlrooster.pkl', 'rb') as file:
             user_data = pickle.load(file)
-        if interaction.user.id in user_data[1].keys() :
-            await interaction.response.send_message("You have already enrolled for the CWL." , ephemeral=True)
-        else :
-            embed1 = discord.Embed(title=f"CWL ROSTER -ROUND {self.round}")
-            for keyset in user_data[0].keys() :
-                text += f'{user_data[0][keyset]}\n'
-            for key in user_data[1].keys() :
-                text1 += f'{user_data[1][key]}\n'
-            embed1.add_field(name="LAZY CWL 15 -#2R0GRURJG" , value=f'{text}')
-            embed1.add_field(name="SHIELD LAZY CWL -#2GPLGG820" , value=f'{text1}{interaction.user.nick}')
-            await interaction.response.defer()
-            await interaction.message.edit(embed=embed1)
+        if interaction.user.id in user_data[1]:
+            await interaction.response.send_message("You have already enrolled for the CWL.", ephemeral=True)
+        else:
             user_data[1][interaction.user.id] = interaction.user.nick
-            with open('cwlrooster.pkl' , 'wb') as f :
-                pickle.dump(user_data , f)
+            await self.update_embed(interaction, user_data)
+            with open('cwlrooster.pkl', 'wb') as f:
+                pickle.dump(user_data, f)
 
-    @discord.ui.button(style=discord.ButtonStyle.secondary , emoji="❌" , custom_id="3" , row=1)
-    async def button_callbackcros(self , interaction: discord.Interaction , button: discord.ui.button) :
-        text = '';
-        text1 = ''
-        with open('cwlrooster.pkl' , 'rb') as file :
+    @discord.ui.button(style=discord.ButtonStyle.secondary, emoji="❌", custom_id="3", row=1)
+    async def button_callbackcros(self , interaction: discord.Interaction , button: discord.ui.button):
+        with open('cwlrooster.pkl', 'rb') as file:
             user_data = pickle.load(file)
-        if interaction.user.id in user_data[0].keys() or interaction.user.id in user_data[1].keys() :
-            if interaction.user.id in user_data[0].keys() :
-                try :
-                    del user_data[0][interaction.user.id]
-                except :
-                    user_data[0].pop(interaction.user.id)
-            if interaction.user.id in user_data[1].keys() :
-                try :
-                    del user_data[1][interaction.user.id]
-                except :
-                    user_data[1].pop(interaction.user.id)
-            embed2 = Embed(title=f"CWL ROSTER -ROUND {self.round}")
-            for keyset in user_data[0].keys() :
-                text += f'{user_data[0][keyset]}\n'
-            for key in user_data[1].keys() :
-                text1 += f'{user_data[1][key]}\n'
-            embed2.add_field(name="LAZY CWL 15 -#2R0GRURJG" , value=f'{text}')
-            embed2.add_field(name="SHIELD LAZY CWL -#2GPLGG820" , value=f'{text1}')
-            await interaction.response.defer()
-            await interaction.message.edit(embed=embed2)
-            with open('cwlrooster.pkl' , 'wb') as f :
-                pickle.dump(user_data , f)
-        else :
-            pass
+        if interaction.user.id in user_data[0] or interaction.user.id in user_data[1]:
+            if interaction.user.id in user_data[0]:
+                user_data[0].pop(interaction.user.id, None)
+            if interaction.user.id in user_data[1]:
+                user_data[1].pop(interaction.user.id, None)
+            await self.update_embed(interaction, user_data)
+            with open('cwlrooster.pkl', 'wb') as f:
+                pickle.dump(user_data, f)
+        else:
+            await interaction.response.send_message("You have not enrolled for the CWL.", ephemeral=True)
 
 
-@client.command(name="cwl-roster" , aliases=['t'])
+@client.command(name="cwl-roster" , aliases=['cwlr'])
 async def cwl_compo(ctx , round='') :
     await ctx.message.delete()
     await ctx.send(
-        f"🔔🚨Select the clan below to enroll in the CWL compo. 🚨🔔\nIf you have not enrolled, we don't take any responsibility \nFirst come, first served.\n---------------------------------\n ")
+        f"Hey <@&{1055418276546629682}>\n🔔🚨Select the clan below to enroll in the CWL compo. 🚨🔔\nIf you have not enrolled, we don't take any responsibility \nFirst come, first served.\n---------------------------------\n ")
     await ctx.send(f"CWL ROUND {round}" , view=cwlbutton(ctx , round))
 
 
-@client.command(name="rest-cwl")
+@client.command(name="rest-cwl", aliases=['rstcwl'])
 async def cwl_compo_rest(ctx) :
     user_data = [{} , {}]
     with open("cwlrooster.pkl" , "wb") as f :
         pickle.dump(user_data , f)
     await ctx.send("CWL roster reseted")
 
+
+@client.command(name="announce")
+async def announce(ctx , message) :
+    await ctx.message.delete()
+    category_info = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682 , 'THE SHIELD'] ,
+               1054458642541334599 : ["2Q8URCU88" , 1055418808833159189 , 'WARNING']}
+    category_id = ctx.channel.category.id
+    await ctx.send(f'Hey , <@&{category_info[category_id][1]}>\n{message}')
 
 if __name__ == '__main__' :
     keep_alive()
