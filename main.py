@@ -1090,7 +1090,7 @@ async def unlink_leader(ctx , tags: str = None) :
 
 class Selectmenu1(discord.ui.View) :
     def __init__(self) :
-        super().__init__(timeout=50)
+        super().__init__(timeout=70)
 
     optoins = [discord.SelectOption(label='MOD COMMANDS🧑‍🔧' , value='1') ,
                discord.SelectOption(label='LEADER COMMANDS 🌿' , value='2') ,
@@ -1108,8 +1108,8 @@ class Selectmenu1(discord.ui.View) :
                                      f"{p}removenick  - remove nick name\n" \
                                      f"{p}kick        - kick a member from the server" \
                                      f"\n\nfor more info type ```{p}usage <command name>```"
-                await interaction.message.edit(embed=embed1)
                 await interaction.response.defer()
+                await interaction.message.edit(embed=embed1)
             elif select.values[0] == '2' :
                 embed2 = discord.Embed(title='LEADER COMMANDS' , colour=Color.random())
                 embed2.description = f"`{p}ts-m`        - add player to THE SHIELD \n" \
@@ -1124,8 +1124,8 @@ class Selectmenu1(discord.ui.View) :
                                      f"`{p}force_link`     - link any other player with tag " \
                                      f"\n\nfor more info type ```{p}usage <command name>```"
 
-                await interaction.message.edit(embed=embed2)
                 await interaction.response.defer()
+                await interaction.message.edit(embed=embed2)
             elif select.values[0] == '3' :
                 embed3 = discord.Embed(title='PLAYER COMMANDS' , colour=Color.random())
                 embed3.description = f"`{p}ping`         - Show latency\n" \
@@ -1134,15 +1134,15 @@ class Selectmenu1(discord.ui.View) :
                                      f"`{p}clan`       - clan info\n\nfor more info type " \
                                      f"```{p}usage <command name>```"
 
-                await interaction.message.edit(embed=embed3)
                 await interaction.response.defer()
+                await interaction.message.edit(embed=embed3)
         except Exception as e :
             pass
 
 
 class Selectmenu2(discord.ui.View) :
     def __init__(self) :
-        super().__init__(timeout=50)
+        super().__init__(timeout=70)
 
     optoins = [discord.SelectOption(label='MOD COMMANDS🧑‍🔧' , value='1') ,
                discord.SelectOption(label='LEADER COMMANDS 🌿' , value='2') ,
@@ -1159,8 +1159,8 @@ class Selectmenu2(discord.ui.View) :
                                      f"{p}removenick  - remove nick name\n" \
                                      f"{p}kick        - kick a member from the server" \
                                      f"\n\nfor more info type ```{p}usage <command name>```"
-                await interaction.message.edit(embed=embed1)
                 await interaction.response.defer()
+                await interaction.message.edit(embed=embed1)
             elif select.values[0] == '2' :
                 embed2 = discord.Embed(title='LEADER COMMANDS' , colour=Color.random())
                 embed2.description = f"`{p}j-m        - add player to Jigglets clan\n" \
@@ -1171,9 +1171,9 @@ class Selectmenu2(discord.ui.View) :
                                      f"`{p}check`       - check the player with CCNS\n" \
                                      f"`{p}force_link`     - link any other player with tag " \
                                      f"\n\nfor more info type ```{p}usage <command name>```"
-
-                await interaction.message.edit(embed=embed2)
                 await interaction.response.defer()
+                await interaction.message.edit(embed=embed2)
+
             elif select.values[0] == '3' :
                 embed3 = discord.Embed(title='PLAYER COMMANDS' , colour=Color.random())
                 embed3.description = f"`{p}ping`         - Show latency\n" \
@@ -1181,8 +1181,9 @@ class Selectmenu2(discord.ui.View) :
                                      f"`{p}clan`       - clan info\n\nfor more info type " \
                                      f"```{p}usage <command name>```"
 
-                await interaction.message.edit(embed=embed3)
                 await interaction.response.defer()
+                await interaction.message.edit(embed=embed3)
+
         except Exception as e :
             pass
 
