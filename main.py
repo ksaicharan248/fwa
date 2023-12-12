@@ -1191,7 +1191,7 @@ class Selectmenu1(discord.ui.View) :
                                      f"`{p}re`          - send the player to reapply \n" \
                                      f"`{p}check`       - check the player with CCNS\n" \
                                      f"`{p}war`         - send war updates\n" \
-                                     f"`{p}force_link`     - link any other player with tag " \
+                                     f"`{p}force_link `     - link any other player with tag " \
                                      f"\n\nfor more info type ```{p}usage <command name>```"
 
                 await interaction.response.defer()
