@@ -1392,7 +1392,7 @@ async def announce(ctx , message) :
     await ctx.send(f'Hey , <@&{category_info[category_id][1]}>\n{message}')
 
 
-@client.command(name='po')
+@client.command(name='pm')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
 async def pm(ctx , thread_name=None , *members: discord.Member) :
     thread_name = thread_name if thread_name is not None else "Team X Elites"
