@@ -3,7 +3,6 @@ from math import ceil
 import io
 import discord
 import typing
-
 from discord.ui import Button , View , Select
 from PIL import Image , ImageDraw , ImageFont
 import requests
@@ -57,8 +56,9 @@ async def on_command_error(ctx , error) :
     elif isinstance(error , commands.CommandNotFound) :
         pass
     else :
-        await ctx.author.send(f'{ctx.guild}\n error :  {error}')
-
+        embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" , description="Something went wrong. Please contact the developer." ,
+                              color=discord.Color.red())
+        await ctx.send(embed=embed)
 
 @client.event
 async def on_member_remove(member) :
@@ -265,6 +265,73 @@ async def ts_m(ctx , member: discord.Member) :
 
     else :
         await ctx.send("MISSING permissions")
+
+
+@client.command(name='bt-m' , aliases=['btm'] , help=f'add a player to BROTHERS clan chat ' , usage=f'{p}btm-m <@mention>')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'BTL')
+async def bt_m(ctx , member: discord.Member) :
+    try:
+        await ctx.message.delete()
+        channel = client.get_channel(1063291093178916884)
+        with open('userdata.pkl' , 'rb') as f :
+            data = pickle.load(f)
+        if member.id in data.keys() :
+            info = COC.get_user(data[member.id])
+            try :
+                await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
+                await member.add_roles(discord.utils.get(ctx.guild.roles , name='BTC'))
+                await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
+                embed = Embed(color=Color.green())
+                embed.description = f"✅Changed roles for {member.name}, +BTC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
+                await channel.send(embed=embed)
+                flag1 = True
+            except Exception as e :
+                embed = Embed(color=Color.red())
+                embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
+                await ctx.send(embed=embed)
+                flag1 = False
+            try :
+                new_nickname = f'{COC.get_prefix(info["role"])}{info["name"]}'
+                await member.edit(nick=new_nickname)
+                embed1 = Embed(color=Color.green())
+                embed1.description = f"✅Changed name for {member.name} to  {member.mention}"
+                await channel.send(embed=embed1)
+                flag2 = True
+            except Exception as e :
+                embed1 = Embed(color=Color.red())
+                embed1.description = f"❌Failed to change name for {member.name}\n Reason:{e} "
+                await ctx.send(embed=embed1)
+                flag2 = False
+
+            if flag1 and flag2 :
+                await ctx.send(f"{member.nick} moved to  **BROTHERS** 🚀")
+                await channel.send(f"{member.mention} is now a member of **BROTHERS**")
+                embed3 = Embed(color=Color.green())
+                embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
+                                      "\n"
+                                      "『📢』**<#1055531962774868038>** - For important clan announcements\n"
+                                      "『⚠』**<#1054439098342969425>** - For war rules and instructions\n"
+                                      "\n"
+                                      "Note - Make Sure To Maintain This In Clan\n"
+                                      "✅ Donate\n"
+                                      "✅ Attack in wars\n"
+                                      "✅ Follow mails\n"
+                                      "✅ 2000 in CG\n"
+                                      "✅ Participate in Clan-Capitals\n"
+                                      "❌ Don’t kick anyone")
+
+                await channel.send(embed=embed3)
+        else :
+            e = Embed(title='Player data not fount' , colour=Color.red())
+            e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
+            await ctx.send(embed=e)
+            return
+
+    except Exception as e :
+        embed = Embed(color=Color.red())
+        embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
+        await ctx.send(embed=embed)
+
 
 
 @client.command(name='i-m' , aliases=['im'] , help=f'add player to Illuminati clan' , usage=f'{p}i-m <@mention>')
@@ -790,15 +857,18 @@ async def profile(ctx , player_tag=None , user: discord.Member = None) :
             await ctx.send(embed=e)
             return
     else :
-        if user is not None :
-            user = user.id
+        if user is not None or ctx.message.mentions :
+            try:
+                user = ctx.message.mentions[0].id
+            except:
+                user = user.id
             if user in user_data :
                 player_tags = user_data[user].strip('#')
             else :
                 e = Embed(title="User not found " , color=Color.red())
                 await ctx.send(embed=e)
                 return
-        elif player_tag is not None :
+        elif player_tag is not None or ctx.message.startswith('#') :
             player_tags = player_tag.strip('#')
         else :
             e = Embed(description="No player tag is found on this profile" , color=Color.red())
@@ -1113,7 +1183,7 @@ class Selectmenu1(discord.ui.View) :
             elif select.values[0] == '2' :
                 embed2 = discord.Embed(title='LEADER COMMANDS' , colour=Color.random())
                 embed2.description = f"`{p}ts-m`        - add player to THE SHIELD \n" \
-                                     f"`{p}mn-m`        - add player to MONSTERS\n" \
+                                     f"`{p}bro-m`        - add player to BROTHERS\n" \
                                      f"`{p}wa-m`        - add player to WARNING \n" \
                                      f"`{p}wfx-m`       - add player to WAR FARMER X44\n" \
                                      f"`{p}unq`         - add player to unqualified\n" \
@@ -1242,59 +1312,59 @@ async def audit(ctx) :
     await ctx.send(f'{len(userdata.keys())}')
 
 
-class cwlbutton(View):
-    def __init__(self, ctx, round):
+class cwlbutton(View) :
+    def __init__(self , ctx , round) :
         super().__init__(timeout=None)
         self.ctx = ctx
         self.round = round
 
-    async def update_embed(self, interaction, user_data):
-        embed = Embed(title=f"CWL ROSTER -ROUND {self.round}",colour=Color.random())
+    async def update_embed(self , interaction , user_data) :
+        embed = Embed(title=f"CWL ROSTER -ROUND {self.round}" , colour=Color.random())
         clan_one = '\n'.join(user_data[0].values())
         clan_two = '\n'.join(user_data[1].values())
-        embed.add_field(name="LAZY CWL 15 -#2R0GRURJG", value=f'{clan_one}')
-        embed.add_field(name="SHIELD LAZY CWL -#2GPLGG820", value=f'{clan_two}')
+        embed.add_field(name="LAZY CWL 15 -#2R0GRURJG" , value=f'{clan_one}')
+        embed.add_field(name="SHIELD LAZY CWL -#2GPLGG820" , value=f'{clan_two}')
         await interaction.response.defer()
         await interaction.message.edit(embed=embed)
 
-    @discord.ui.button(style=discord.ButtonStyle.blurple, label="LAZY CWL 15", custom_id="1", row=1)
-    async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button):
-        with open('cwlrooster.pkl', 'rb') as file:
+    @discord.ui.button(style=discord.ButtonStyle.blurple , label="LAZY CWL 15" , custom_id="1" , row=1)
+    async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
+        with open('cwlrooster.pkl' , 'rb') as file :
             user_data = pickle.load(file)
-        if interaction.user.id in user_data[0]:
-            await interaction.response.send_message("You have already enrolled for the CWL.", ephemeral=True)
-        else:
+        if interaction.user.id in user_data[0] :
+            await interaction.response.send_message("You have already enrolled for the CWL." , ephemeral=True)
+        else :
             user_data[0][interaction.user.id] = interaction.user.nick
-            await self.update_embed(interaction, user_data)
-            with open('cwlrooster.pkl', 'wb') as f:
-                pickle.dump(user_data, f)
+            await self.update_embed(interaction , user_data)
+            with open('cwlrooster.pkl' , 'wb') as f :
+                pickle.dump(user_data , f)
 
-    @discord.ui.button(style=discord.ButtonStyle.green, label="SHEILD LAZY CWL", custom_id="2", row=1)
-    async def button_callback1(self , interaction: discord.Interaction , button: discord.ui.button):
-        with open('cwlrooster.pkl', 'rb') as file:
+    @discord.ui.button(style=discord.ButtonStyle.green , label="SHEILD LAZY CWL" , custom_id="2" , row=1)
+    async def button_callback1(self , interaction: discord.Interaction , button: discord.ui.button) :
+        with open('cwlrooster.pkl' , 'rb') as file :
             user_data = pickle.load(file)
-        if interaction.user.id in user_data[1]:
-            await interaction.response.send_message("You have already enrolled for the CWL.", ephemeral=True)
-        else:
+        if interaction.user.id in user_data[1] :
+            await interaction.response.send_message("You have already enrolled for the CWL." , ephemeral=True)
+        else :
             user_data[1][interaction.user.id] = interaction.user.nick
-            await self.update_embed(interaction, user_data)
-            with open('cwlrooster.pkl', 'wb') as f:
-                pickle.dump(user_data, f)
+            await self.update_embed(interaction , user_data)
+            with open('cwlrooster.pkl' , 'wb') as f :
+                pickle.dump(user_data , f)
 
-    @discord.ui.button(style=discord.ButtonStyle.secondary, emoji="❌", custom_id="3", row=1)
-    async def button_callbackcros(self , interaction: discord.Interaction , button: discord.ui.button):
-        with open('cwlrooster.pkl', 'rb') as file:
+    @discord.ui.button(style=discord.ButtonStyle.secondary , emoji="❌" , custom_id="3" , row=1)
+    async def button_callbackcros(self , interaction: discord.Interaction , button: discord.ui.button) :
+        with open('cwlrooster.pkl' , 'rb') as file :
             user_data = pickle.load(file)
-        if interaction.user.id in user_data[0] or interaction.user.id in user_data[1]:
-            if interaction.user.id in user_data[0]:
-                user_data[0].pop(interaction.user.id, None)
-            if interaction.user.id in user_data[1]:
-                user_data[1].pop(interaction.user.id, None)
-            await self.update_embed(interaction, user_data)
-            with open('cwlrooster.pkl', 'wb') as f:
-                pickle.dump(user_data, f)
-        else:
-            await interaction.response.send_message("You have not enrolled for the CWL.", ephemeral=True)
+        if interaction.user.id in user_data[0] or interaction.user.id in user_data[1] :
+            if interaction.user.id in user_data[0] :
+                user_data[0].pop(interaction.user.id , None)
+            if interaction.user.id in user_data[1] :
+                user_data[1].pop(interaction.user.id , None)
+            await self.update_embed(interaction , user_data)
+            with open('cwlrooster.pkl' , 'wb') as f :
+                pickle.dump(user_data , f)
+        else :
+            await interaction.response.send_message("You have not enrolled for the CWL." , ephemeral=True)
 
 
 @client.command(name="cwl-roster" , aliases=['cwlr'])
@@ -1305,7 +1375,7 @@ async def cwl_compo(ctx , round='') :
     await ctx.send(f"CWL ROUND {round}" , view=cwlbutton(ctx , round))
 
 
-@client.command(name="rest-cwl", aliases=['rstcwl'])
+@client.command(name="rest-cwl" , aliases=['rstcwl'])
 async def cwl_compo_rest(ctx) :
     user_data = [{} , {}]
     with open("cwlrooster.pkl" , "wb") as f :
@@ -1317,9 +1387,34 @@ async def cwl_compo_rest(ctx) :
 async def announce(ctx , message) :
     await ctx.message.delete()
     category_info = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682 , 'THE SHIELD'] ,
-               1054458642541334599 : ["2Q8URCU88" , 1055418808833159189 , 'WARNING']}
+                     1054458642541334599 : ["2Q8URCU88" , 1055418808833159189 , 'WARNING']}
     category_id = ctx.channel.category.id
     await ctx.send(f'Hey , <@&{category_info[category_id][1]}>\n{message}')
+
+
+@client.command(name='po')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
+async def pm(ctx , thread_name=None , *members: discord.Member) :
+    thread_name = thread_name if thread_name is not None else "Team X Elites"
+    auto_archive_duration = 1440
+    member_mentions = ' '.join([member.mention for member in members])
+    output_message = f'{ctx.author.mention} has invited {member_mentions} to the thread'
+    thread = await ctx.channel.create_thread(name=thread_name , auto_archive_duration=auto_archive_duration ,
+                                             invitable=False)
+    await thread.send(output_message)
+
+@client.command(name='deletethread', aliases=['dt'])
+@commands.has_any_role('🔰ADMIN🔰')
+async def delete_thread(ctx):
+    if isinstance(ctx.channel, discord.Thread):
+        try:
+            await ctx.channel.delete()
+        except discord.errors.NotFound:
+
+            pass
+    else:
+        await ctx.send('This command can only be used in a thread.')
+
 
 if __name__ == '__main__' :
     keep_alive()
