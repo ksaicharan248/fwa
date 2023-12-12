@@ -1183,7 +1183,7 @@ class Selectmenu1(discord.ui.View) :
             elif select.values[0] == '2' :
                 embed2 = discord.Embed(title='LEADER COMMANDS' , colour=Color.random())
                 embed2.description = f"`{p}ts-m`        - add player to THE SHIELD \n" \
-                                     f"`{p}bro-m`        - add player to BROTHERS\n" \
+                                     f"`{p}bt-m`        - add player to BROTHERS\n" \
                                      f"`{p}wa-m`        - add player to WARNING \n" \
                                      f"`{p}wfx-m`       - add player to WAR FARMER X44\n" \
                                      f"`{p}unq`         - add player to unqualified\n" \
