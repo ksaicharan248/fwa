@@ -136,7 +136,8 @@ async def approve(ctx , member: discord.Member) :
                         f'❯ Make sure to have **NO war timer** when you answer for spots.\n' \
                         f'❯ Ask in {client.get_channel(channel_info[ctx.guild.id][2]).mention} if you have any questions. \nDone by : {ctx.author.mention}'
         await channel.send(embed=e)
-        await approve_waiting_list(ctx , level=int(user_info["townHallLevel"]) , up=True , down=False)
+        if ctx.guild.id == 1054435038881665024:
+            await approve_waiting_list(ctx , level=int(user_info["townHallLevel"]) , up=True , down=False)
 
     else :
         e = Embed(title='Player data not fount' , colour=Color.red())
@@ -188,7 +189,8 @@ async def approve_waiting_list(ctx , level=None , up=None , down=None) :
         await channel.edit(name=f"TH 11 : {waiting_list[11]}")
     else :
         pass
-
+    with open('waitinglist.pkl' , 'wb') as f :
+        pickle.dump(waiting_list , f)
 
 @client.command()
 @commands.is_owner()
