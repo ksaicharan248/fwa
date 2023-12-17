@@ -147,6 +147,7 @@ async def approve(ctx , member: discord.Member) :
 
 
 @client.command(name='app-wl')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
 async def approve_waiting_list(ctx , level=None , up=None , down=None) :
     with open('waitinglist.pkl' , 'rb') as f :
         waiting_list = pickle.load(f)
