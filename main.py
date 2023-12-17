@@ -32,12 +32,12 @@ async def on_ready() :
     await client.tree.sync()
 
 
-info: int = 765929481311354881
+owener_info: int = 765929481311354881
 
 
 @client.event
 async def on_command_error(ctx , error) :
-    owner = await client.fetch_user(int(info))
+    owner = await client.fetch_user(int(owener_info))
     if isinstance(error , commands.MissingRequiredArgument) :
         embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" ,
                               description="You forgot to mention the user. Please use the command again by mentioning the user" ,
@@ -119,28 +119,75 @@ async def approve(ctx , member: discord.Member) :
     with open('userdata.pkl' , 'rb') as f :
         data = pickle.load(f)
     if member.id in data.keys() :
-        info = COC.get_user(data[member.id])
-        await member.edit(nick=f'TH {info["townHallLevel"]} - {info["name"]} ')
+        user_info = COC.get_user(data[member.id])
+        await member.edit(nick=f'TH {user_info["townHallLevel"]} - {user_info["name"]} ')
         await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
-        info = {1054435038881665024 : ['approved✅' , 1055439744739315743 , 1126856734095462511] ,  # elites
-                1152220160028057660 : ['approved✅' , 1167482592254238740 , 1152229286305079307]}  # jigg
-        await member.add_roles(discord.utils.get(ctx.guild.roles , name=info[ctx.guild.id][0]))
-        channel = client.get_channel(info[ctx.guild.id][1])
+        channel_info = {1054435038881665024 : ['approved✅' , 1055439744739315743 , 1126856734095462511] ,  # elites
+                        1152220160028057660 : ['approved✅' , 1167482592254238740 , 1152229286305079307]}  # jigg
+        await member.add_roles(discord.utils.get(ctx.guild.roles , name=channel_info[ctx.guild.id][0]))
+        channel = client.get_channel(channel_info[ctx.guild.id][1])
         await channel.send(f"{member.mention} has been approved by {ctx.author.mention}")
         e = Embed(title="APPROVED " , color=Color.random())
-        e.description = f'❯ Clan spots will be posted in this {client.get_channel(info[ctx.guild.id][1]).mention}, make sure to check it\n' \
+        e.description = f'❯ Clan spots will be posted in this {client.get_channel(channel_info[ctx.guild.id][1]).mention}, make sure to check it\n' \
                         f'❯ You will be **@notified** if a spot available for your TH level.\n' \
                         f'❯ Just make sure to reply as fast as possible to ensure your spot.\n' \
                         f'❯ Donot request to join in game unless instructed to do so.\n' \
                         f'❯ You may stay in your **current clan** or join a random clan while waiting for a **spot**.\n' \
                         f'❯ Make sure to have **NO war timer** when you answer for spots.\n' \
-                        f'❯ Ask in {client.get_channel(info[ctx.guild.id][2]).mention} if you have any questions. \nDone by : {ctx.author.mention}'
+                        f'❯ Ask in {client.get_channel(channel_info[ctx.guild.id][2]).mention} if you have any questions. \nDone by : {ctx.author.mention}'
         await channel.send(embed=e)
+        await approve_waiting_list(ctx , level=int(user_info["townHallLevel"]) , up=True , down=False)
+
     else :
         e = Embed(title='Player data not fount' , colour=Color.red())
         e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
         await ctx.send(embed=e)
         return
+
+
+@client.command(name='app-wl')
+async def approve_waiting_list(ctx , level=None , up=None , down=None) :
+    with open('waitinglist.pkl' , 'rb') as f :
+        waiting_list = pickle.load(f)
+    if level is not None :
+        if up == True :
+            waiting_list[level] += 1
+        elif down == True :
+            waiting_list[level] -= 1
+
+    if level == 16 :
+        channel = client.get_channel(1185800051105218720)
+        await channel.edit(name=f"TH 16 : {waiting_list[16]}")
+    elif level == 15 :
+        channel = client.get_channel(1185806717603287102)
+        await channel.edit(name=f"TH 15 : {waiting_list[15]}")
+    elif level == 14 :
+        channel = client.get_channel(1185806764164263998)
+        await channel.edit(name=f"TH 14 : {waiting_list[14]}")
+    elif level == 13 :
+        channel = client.get_channel(1185806805423632405)
+        await channel.edit(name=f"TH 13 : {waiting_list[13]}")
+    elif level == 12 :
+        channel = client.get_channel(1185806849631592600)
+        await channel.edit(name=f"TH 12 : {waiting_list[12]}")
+    elif level == 11 :
+        channel = client.get_channel(1185806887292244079)
+        await channel.edit(name=f"TH 11 : {waiting_list[11]}")
+    elif level is None :
+        channel = client.get_channel(1185800051105218720)
+        await channel.edit(name=f"TH 16 : {waiting_list[16]}")
+        channel = client.get_channel(1185806717603287102)
+        await channel.edit(name=f"TH 15 : {waiting_list[15]}")
+        channel = client.get_channel(1185806764164263998)
+        await channel.edit(name=f"TH 14 : {waiting_list[14]}")
+        channel = client.get_channel(1185806805423632405)
+        await channel.edit(name=f"TH 13 : {waiting_list[13]}")
+        channel = client.get_channel(1185806849631592600)
+        await channel.edit(name=f"TH 12 : {waiting_list[12]}")
+        channel = client.get_channel(1185806887292244079)
+        await channel.edit(name=f"TH 11 : {waiting_list[11]}")
+    else :
+        pass
 
 
 @client.command()
@@ -239,6 +286,7 @@ async def thread_delete(ctx) :
     else :
         await ctx.send('This command can only be used in a thread.')
 
+
 @client.command(name='pm')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
 async def thread_add(ctx , thread_name=None , *members: discord.Member) :
@@ -249,6 +297,7 @@ async def thread_add(ctx , thread_name=None , *members: discord.Member) :
     thread = await ctx.channel.create_thread(name=thread_name , auto_archive_duration=auto_archive_duration ,
                                              invitable=False)
     await thread.send(output_message)
+
 
 @client.command(name='changenick' , aliases=['nick' , 'cnick'] , help='Change the nickname of a user' ,
                 usage=f"{p}changenick <user> <new_nickname>")
@@ -268,8 +317,6 @@ async def changenick(ctx , member: discord.Member , * , new_nickname) :
         await ctx.send("I do not have permission to change the user's nickname.")
     except discord.HTTPException :
         await ctx.send("An error occurred while changing the user's nickname.")
-
-
 
 
 class Myview(View) :
@@ -790,7 +837,6 @@ async def profile(ctx , player_tag=None , user: discord.Member = None) :
         await ctx.send(embed=e)'''
 
 
-
 @client.command(name='role' , help='Add a role to a user' , usage=f"{p}role <user> <@roles>")
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def role(ctx , user: discord.Member , *roles: discord.Role) :
@@ -862,7 +908,6 @@ async def re(ctx , member: discord.Member , * , new_nickname=None) :
     await channel.send(embed=e)
 
 
-
 @client.command(name='server_list' , aliases=['sl' , 'server-list'] ,
                 help='Shows the list of servers linked to the bot' , usage=f'{p}server_list' , hidden=True)
 async def server_list(ctx) :
@@ -879,6 +924,7 @@ async def server_list(ctx) :
     e.add_field(name="Server Count" , value=len(user_data) , inline=False)
     e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
     await ctx.send(embed=e)
+
 
 @client.command(name="unq" , aliases=["unqualified"] , help='Move a member to unqualifed ' , usage=f'{p}unq <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
@@ -904,10 +950,6 @@ async def unq(ctx , member: discord.Member , * , new_nickname=None) :
                     f'\n**please follow all the instructions** \nauthour : {ctx.author.mention}'
 
     await channel.send(embed=e)
-
-
-
-
 
 
 ''''
@@ -937,7 +979,6 @@ async def unlink(ctx , member: discord.Member) :
         await ctx.send(embed=e)
         with open("userdata.pkl" , "wb") as file :
             pickle.dump(user_data , file)
-
 
 
 @client.command(name='usage' , aliases=['u'])
@@ -976,10 +1017,6 @@ async def unlink_leader(ctx , tags: str = None) :
 
     with open('leader_userdata.pkl' , 'wb') as f :
         pickle.dump(leader_user_data , f)
-
-
-
-
 
 
 @client.command(name='war' , help="war announcement either win or loose or mis match or blacklist clan war" ,
@@ -1095,6 +1132,7 @@ async def ts_m(ctx , member: discord.Member) :
             embed1 = Embed(color=Color.green())
             embed1.description = f"✅Changed name for {member.name} to  {member.mention}"
             await channel.send(embed=embed1)
+            await approve_waiting_list(ctx , level=int(info["townHallLevel"]) , up=False , down=True)
             flag2 = True
         except Exception as e :
             embed1 = Embed(color=Color.red())
@@ -1155,6 +1193,7 @@ async def bt_m(ctx , member: discord.Member) :
                 embed1 = Embed(color=Color.green())
                 embed1.description = f"✅Changed name for {member.name} to  {member.mention}"
                 await channel.send(embed=embed1)
+                await approve_waiting_list(ctx , level=int(info["townHallLevel"]) , up=False , down=True)
                 flag2 = True
             except Exception as e :
                 embed1 = Embed(color=Color.red())
@@ -1338,6 +1377,7 @@ async def wa_m(ctx , member: discord.Member) :
             embed1 = Embed(color=Color.green())
             embed1.description = f"✅Changed name for {member.name} to  {member.mention}"
             await channel.send(embed=embed1)
+            await approve_waiting_list(ctx , level=int(info["townHallLevel"]) , up=False , down=True)
             flag2 = True
         except Exception as e :
             embed1 = Embed(color=Color.red())
@@ -1402,6 +1442,7 @@ async def wfx_m(ctx , member: discord.Member) :
             embed1 = Embed(color=Color.green())
             embed1.description = f"✅Changed name for {member.name} to  {member.mention}"
             await channel.send(embed=embed1)
+            await approve_waiting_list(ctx , level=int(info["townHallLevel"]) , up=False , down=True)
             flag2 = True
         except Exception as e :
             embed1 = Embed(color=Color.red())
