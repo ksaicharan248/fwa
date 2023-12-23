@@ -370,10 +370,10 @@ async def check(ctx , member: typing.Optional[discord.Member] = None , player_ta
             await ctx.reply(embed=e)
             return
         try :
-            if ctx.channel.id in [1055439542863274038 , 1165189096214368257 , 1157946757309804604] :
+            if ctx.channel.id in [1055439542863274038 , 1165189096214368257 , 1157946757309804604,1172782155772985425] :
                 if ctx.message.mentions or member :
                     opt = Options()
-                    opt.add_argument('--headless')
+                    #opt.add_argument('--headless')
                     opt.add_argument('--no-sandbox')
                     driver = webdriver.Chrome(options=opt)
                     clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
@@ -1460,6 +1460,70 @@ async def wfx_m(ctx , member: discord.Member) :
             embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
                                   "\n"
                                   "『📢』**<#1055532032626806804>** - For important clan announcements\n"
+                                  "『⚠』**<#1054439098342969425>** - For war rules and instructions\n"
+                                  "\n"
+                                  "Note - Make Sure To Maintain This In Clan\n"
+                                  "✅ Donate\n"
+                                  "✅ Attack in wars\n"
+                                  "✅ Follow mails\n"
+                                  "✅ 2000 in CG\n"
+                                  "✅ Participate in Clan-Capitals\n"
+                                  "❌ Don’t kick anyone")
+
+            await channel.send(embed=embed3)
+
+    else :
+        await ctx.send("MISSING SOMETHING .....🔍")
+
+@client.command(name='hg-m' , aliases=['hgm'] , help='Move a member to Hogwarts clan channel' , usage=f'{p}hg-m <@mention>')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'HGL')
+async def wfx_m(ctx , member: discord.Member) :
+    if member in ctx.guild.members :
+        await ctx.message.delete()
+        channel = client.get_channel(1188095537954705469)
+        with open('userdata.pkl' , 'rb') as f :
+            data = pickle.load(f)
+        if member.id in data.keys() :
+            info = COC.get_user(data[member.id])
+        else :
+            e = Embed(title='Player data not fount' , colour=Color.red())
+            e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
+            await ctx.send(embed=e)
+            return
+        try :
+            await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='HGC'))
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
+            embed = Embed(color=Color.green())
+            embed.description = f"✅Changed roles for {member.name}, +HGC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
+            await channel.send(embed=embed)
+            flag1 = True
+        except Exception as e :
+            embed = Embed(color=Color.red())
+            embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
+            await ctx.send(embed=embed)
+            flag1 = False
+        try :
+            new_nickname = f'{COC.get_prefix(info["role"])}{info["name"]}'
+            await member.edit(nick=new_nickname)
+            embed1 = Embed(color=Color.green())
+            embed1.description = f"✅Changed name for {member.name} to  {member.mention}"
+            await channel.send(embed=embed1)
+            await approve_waiting_list(ctx , level=int(info["townHallLevel"]) , up=False , down=True)
+            flag2 = True
+        except Exception as e :
+            embed1 = Embed(color=Color.red())
+            embed1.description = f"❌Failed to change name for {member.name}\n Reason:{e} "
+            await ctx.send(embed=embed1)
+            flag2 = False
+
+        if flag1 and flag2 :
+            await ctx.send(f"{member.nick} is now a member of **♤HOGWARTS♤** 🚀")
+            await channel.send(f"{member.mention} is now a member of **♤HOGWARTS♤**")
+            embed3 = Embed(color=Color.green())
+            embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
+                                  "\n"
+                                  "『📢』**<#1188094179864236123>** - For important clan announcements\n"
                                   "『⚠』**<#1054439098342969425>** - For war rules and instructions\n"
                                   "\n"
                                   "Note - Make Sure To Maintain This In Clan\n"
