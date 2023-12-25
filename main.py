@@ -1174,7 +1174,7 @@ async def ts_m(ctx , member: discord.Member) :
             await ctx.send(embed=embed1)
             flag2 = False
 
-        if flag1 and flag2 :
+        if member :
             await ctx.send(f"{member.nick} moved to  **THE SHIELD** 🚀")
             await channel.send(f"{member.mention} is now a member of **THE SHIELD**")
             embed3 = Embed(color=Color.green())
@@ -1235,7 +1235,7 @@ async def bt_m(ctx , member: discord.Member) :
                 await ctx.send(embed=embed1)
                 flag2 = False
 
-            if flag1 and flag2 :
+            if member :
                 await ctx.send(f"{member.nick} moved to  **BROTHERS** 🚀")
                 await channel.send(f"{member.mention} is now a member of **BROTHERS**")
                 embed3 = Embed(color=Color.green())
@@ -1419,7 +1419,7 @@ async def wa_m(ctx , member: discord.Member) :
             await ctx.send(embed=embed1)
             flag2 = False
 
-        if flag1 and flag2 :
+        if member :
             await ctx.send(f"{member.nick} moved to  **♤WARNING♤** 🚀")
             await channel.send(f"{member.mention} is now a member of **♤WARNING♤**")
             embed3 = Embed(color=Color.green())
@@ -1484,7 +1484,7 @@ async def wfx_m(ctx , member: discord.Member) :
             await ctx.send(embed=embed1)
             flag2 = False
 
-        if flag1 and flag2 :
+        if member :
             await ctx.send(f"{member.nick} is now a member of **War Farmers x44** 🚀")
             await channel.send(f"{member.mention} is now a member of **War Farmers x44**")
             embed3 = Embed(color=Color.green())
@@ -1548,7 +1548,7 @@ async def hg_m(ctx , member: discord.Member) :
             await ctx.send(embed=embed1)
             flag2 = False
 
-        if flag1 and flag2 :
+        if member :
             await ctx.send(f"{member.nick} is now a member of **♤HOGWARTS♤** 🚀")
             await channel.send(f"{member.mention} is now a member of **♤HOGWARTS♤**")
             embed3 = Embed(color=Color.green())
