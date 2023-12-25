@@ -206,7 +206,7 @@ async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typin
         info : str = ' '
     API_KEY = "AIzaSyCexfS8zCMI_mlyswWf7k3LSO-uOq8ebgE"
     palm.configure(api_key=API_KEY)
-    print(ctx.message.content)
+    #print(ctx.message.content)
     model = palm.GenerativeModel('gemini-pro')
     if clash_of_clans is None:
         question = f'{general}'
@@ -216,7 +216,7 @@ async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typin
         question = f'{ctx.message.content[5:]} Note:if any data needed use {info}'
     answer = model.generate_content(question)
     embed = discord.Embed(description=answer.text)
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command(name= 'reload')
 async def reload(ctx):
