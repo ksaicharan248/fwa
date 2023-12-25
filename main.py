@@ -221,8 +221,8 @@ async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typin
 @client.command(name= 'reload')
 async def reload(ctx):
     await ctx.send("Reload...")
-    await client.tree.sync()
-    await ctx.send("Tree.sync reloaded")
+    synced = await client.tree.sync()
+    await ctx.send(f"Synced {len(synced)} commands.")
 
 @client.command()
 @commands.is_owner()
