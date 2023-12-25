@@ -197,10 +197,10 @@ async def approve_waiting_list(ctx , level=None , up=None , down=None) :
 
 @client.hybrid_command(name='ask')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
-async def ask(ctx , general: typing.Optional[str] = None , clash_Of_Clans: typing.Optional[str] = None)  :
+async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typing.Optional[str] = None)  :
     with open('userdata.pkl' , 'rb') as f :
         data = pickle.load(f)
-    if clash_Of_Clans is None and ctx.author.id in data.keys() :
+    if clash_of_clans is None and ctx.author.id in data.keys() :
         info = COC.get_user(data[ctx.author.id])
     else:
         info : str = ' '
@@ -208,16 +208,21 @@ async def ask(ctx , general: typing.Optional[str] = None , clash_Of_Clans: typin
     palm.configure(api_key=API_KEY)
     print(ctx.message.content)
     model = palm.GenerativeModel('gemini-pro')
-    if clash_Of_Clans is None:
+    if clash_of_clans is None:
         question = f'{general}'
     elif general is None:
-        question = f'{clash_Of_Clans} Note:if any data needed use {info}'
+        question = f'{clash_of_clans} Note:if any data needed use {info}'
     else:
         question = f'{ctx.message.content[5:]} Note:if any data needed use {info}'
     answer = model.generate_content(question)
     embed = discord.Embed(description=answer.text)
     await ctx.send(embed=embed)
 
+@client.command(name= 'reload')
+async def reload(ctx):
+    await ctx.send("Reload...")
+    await client.tree.sync()
+    await ctx.send("Tree.sync reloaded")
 
 @client.command()
 @commands.is_owner()
