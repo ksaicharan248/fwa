@@ -203,7 +203,7 @@ async def ask(ctx , general: typing.Optional[str] = None , clash_Of_Clans: typin
     if clash_Of_Clans is None and ctx.author.id in data.keys() :
         info = COC.get_user(data[ctx.author.id])
     else:
-        info : str = ''
+        info : str = ' '
     API_KEY = "AIzaSyCexfS8zCMI_mlyswWf7k3LSO-uOq8ebgE"
     palm.configure(api_key=API_KEY)
     print(ctx.message.content)
