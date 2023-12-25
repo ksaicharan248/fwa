@@ -15,6 +15,7 @@ from webser import keep_alive
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import pickle
+import google.generativeai as palm
 
 # Define the intents
 intents = discord.Intents.all()
@@ -64,7 +65,7 @@ async def on_command_error(ctx , error) :
 
 @client.event
 async def on_member_remove(member) :
-    owner = await client.fetch_user(int(info))
+    owner = await client.fetch_user(int(765929481311354881))
     with open("userdata.pkl" , "rb") as file :
         user_data = pickle.load(file)
     if member.id in user_data.keys() :
@@ -192,6 +193,24 @@ async def approve_waiting_list(ctx , level=None , up=None , down=None) :
         pass
     with open('waitinglist.pkl' , 'wb') as f :
         pickle.dump(waiting_list , f)
+
+
+@client.command(name='ask')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
+async def ask(ctx) :
+    with open('userdata.pkl' , 'rb') as f :
+        data = pickle.load(f)
+    if ctx.author.id in data.keys() :
+        info = COC.get_user(data[ctx.author.id])
+    else:
+        info : str = ''
+    API_KEY = "AIzaSyCexfS8zCMI_mlyswWf7k3LSO-uOq8ebgE"
+    palm.configure(api_key=API_KEY)
+    model = palm.GenerativeModel('gemini-pro')
+    question = f'{ctx.message.content} Note:if any data needed use {info}'
+    answer = await model.generate_content(question)
+    embed = discord.Embed(description=answer)
+    await ctx.send(embed=embed)
 
 @client.command()
 @commands.is_owner()
@@ -716,7 +735,7 @@ async def help(ctx) :
 @client.command(name='kick' , aliases=['k'] , help='Kick a user' , usage=f'{p}kick <user> <reason>')
 @commands.has_any_role('🔰ADMIN🔰' , '☘️CO-ADMIN☘️')
 async def kick(ctx , member: discord.Member , * , reason=None) :
-    owner = await client.fetch_user(int(info))
+    owner = await client.fetch_user(int(765929481311354881))
     await ctx.send(f'{member.nick} has been flew from the server 🍃')
     await member.send(f"You have been kicked from {ctx.guild.name} for {reason}")
     await unlink(ctx , member=member)
@@ -1477,7 +1496,7 @@ async def wfx_m(ctx , member: discord.Member) :
 
 @client.command(name='hg-m' , aliases=['hgm'] , help='Move a member to Hogwarts clan channel' , usage=f'{p}hg-m <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'HGL')
-async def wfx_m(ctx , member: discord.Member) :
+async def hg_m(ctx , member: discord.Member) :
     if member in ctx.guild.members :
         await ctx.message.delete()
         channel = client.get_channel(1188095537954705469)
@@ -1524,6 +1543,65 @@ async def wfx_m(ctx , member: discord.Member) :
             embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
                                   "\n"
                                   "『📢』**<#1188094179864236123>** - For important clan announcements\n"
+                                  "『⚠』**<#1054439098342969425>** - For war rules and instructions\n"
+                                  "\n"
+                                  "Note - Make Sure To Maintain This In Clan\n"
+                                  "✅ Donate\n"
+                                  "✅ Attack in wars\n"
+                                  "✅ Follow mails\n"
+                                  "✅ 2000 in CG\n"
+                                  "✅ Participate in Clan-Capitals\n"
+                                  "❌ Don’t kick anyone")
+
+            await channel.send(embed=embed3)
+
+    else :
+        await ctx.send("MISSING SOMETHING .....🔍")
+
+
+
+
+@client.command(name='av-m' , aliases=['avm'] , help='Move a member to Avengers clan channel' , usage=f'{p}hg-m <@mention>')
+@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'AVL')
+async def avm(ctx , member: discord.Member) :
+    if member in ctx.guild.members :
+        await ctx.message.delete()
+        channel = client.get_channel(1188695675391717437)
+        with open('userdata.pkl' , 'rb') as f :
+            data = pickle.load(f)
+        if member.id in data.keys() :
+            info = COC.get_user(data[member.id])
+        else :
+            e = Embed(title='Player data not fount' , colour=Color.red())
+            e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
+            await ctx.send(embed=e)
+            return
+        try :
+            await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='AVM'))
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
+
+        except Exception as e :
+            embed = Embed(color=Color.red())
+            embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
+            await ctx.send(embed=embed)
+            flag1 = False
+        try :
+            new_nickname = f'{COC.get_prefix(info["role"])}{info["name"]}'
+            await member.edit(nick=new_nickname)
+            await approve_waiting_list(ctx , level=int(info["townHallLevel"]) , up=False , down=True)
+        except Exception as e :
+            embed1 = Embed(color=Color.red())
+            embed1.description = f"❌Failed to change name for {member.name}\n Reason:{e} "
+            await ctx.send(embed=embed1)
+
+        if member :
+            await ctx.send(f"{member.nick} is now a member of **AVENGERS ** 🚀")
+            await channel.send(f"{member.mention} is now a member of **AVENGERS **")
+            embed3 = Embed(color=Color.green())
+            embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
+                                  "\n"
+                                  "『📢』**<#1188695109705945108>** - For important clan announcements\n"
                                   "『⚠』**<#1054439098342969425>** - For war rules and instructions\n"
                                   "\n"
                                   "Note - Make Sure To Maintain This In Clan\n"
