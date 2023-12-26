@@ -662,6 +662,7 @@ class Selectmenu1(discord.ui.View) :
                                      f"`{p}bt-m`        - add player to BROTHERS\n" \
                                      f"`{p}wa-m`        - add player to WARNING \n" \
                                      f"`{p}wfx-m`       - add player to WAR FARMER X44\n" \
+                                     f"`{p}av-m`       - add player to AVENGERS\n" \
                                      f"`{p}unq`         - add player to unqualified\n" \
                                      f"`{p}app`         - approve the player\n" \
                                      f"`{p}re`          - send the player to reapply \n" \
@@ -1573,7 +1574,7 @@ async def hg_m(ctx , member: discord.Member) :
 
 
 
-@client.command(name='av-m' , aliases=['avm'] , help='Move a member to Avengers clan channel' , usage=f'{p}hg-m <@mention>')
+@client.command(name='av-m' , aliases=['avm'] , help='Move a member to Avengers clan channel' , usage=f'{p}av-m <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'AVL')
 async def avm(ctx , member: discord.Member) :
     if member in ctx.guild.members :
