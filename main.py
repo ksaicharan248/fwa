@@ -198,12 +198,15 @@ async def approve_waiting_list(ctx , level=None , up=None , down=None) :
 @client.hybrid_command(name='ask')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typing.Optional[str] = None)  :
+    await ctx.defer()
     with open('userdata.pkl' , 'rb') as f :
         data = pickle.load(f)
-    if clash_of_clans is None and ctx.author.id in data.keys() :
+    if clash_of_clans is not None and ctx.author.id in data.keys() :
         info = COC.get_user(data[ctx.author.id])
     else:
         info : str = ' '
+    #print(info)
+    #print('\n\n\n\n')
     API_KEY = "AIzaSyCexfS8zCMI_mlyswWf7k3LSO-uOq8ebgE"
     palm.configure(api_key=API_KEY)
     #print(ctx.message.content)
@@ -214,6 +217,7 @@ async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typin
         question = f'{clash_of_clans} Note:if any data needed use {info}'
     else:
         question = f'{ctx.message.content[5:]} Note:if any data needed use {info}'
+    #print(question)
     answer = model.generate_content(question)
     embed = discord.Embed(description=answer.text)
     await ctx.reply(embed=embed)
