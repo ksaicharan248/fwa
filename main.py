@@ -408,7 +408,7 @@ async def check(ctx , member: typing.Optional[discord.Member] = None , player_ta
             if ctx.channel.id in [1055439542863274038 , 1165189096214368257 , 1157946757309804604,1172782155772985425] :
                 if ctx.message.mentions or member :
                     opt = Options()
-                    #opt.add_argument('--headless')
+                    opt.add_argument('--headless')
                     opt.add_argument('--no-sandbox')
                     driver = webdriver.Chrome(options=opt)
                     clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
