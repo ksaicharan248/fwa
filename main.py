@@ -815,6 +815,14 @@ async def link_leader(ctx , user: discord.Member , tag: str) :
         await ctx.send('Please provide a valid clan tag.')
 
 
+@client.command(name="list_clan",aliases=["lc"],help="list all the clans",usage=f"{p}list_clan")
+async def list_clan(ctx) :
+    await ctx.message.delete()
+    clans_list = {'LYPLQQUC' : 934119513291653150 , 'U0LPRYL2' : 775168480969621586 , 'GC8QRPUJ' : 241897116815851530 , 'Y0YY9GUV' : 1034730502701203467 , 'LLGJUPPY' : 1034730502701203467 , '2G9V8PQJP' : 1034730502701203467 ,
+                  '2Q8URCU88' : 1034730502701203467 , '2G9URUGGC' : 1102485434933727252 , '2G9V8PQJP' : 1034730502701203467}
+    for clan_tag in clans_list.keys():
+        await clan(ctx,target=clan_tag)
+
 @client.command()
 async def ping(ctx) :
     await ctx.send(f'Pong! {round(client.latency * 1000)}ms')
