@@ -52,15 +52,18 @@ async def on_command_error(ctx , error) :
         embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" , description="The user is not in the server." ,
                               color=discord.Color.red())
         await ctx.send(embed=embed)
-    elif isinstance(error , commands.CommandInvokeError) and isinstance(error.original , discord.HTTPException) :
-        await ctx.send("check and try agian..")
+    # elif isinstance(error , commands.CommandInvokeError) and isinstance(error.original , discord.HTTPException) :
+    # await ctx.send("check and try agian..")
+    ''' 
     elif isinstance(error , commands.CommandNotFound) :
         pass
-    else :
+
+  else :
         embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" ,
                               description="Something went wrong. Please contact the developer." ,
                               color=discord.Color.red())
         await ctx.send(embed=embed)
+'''
 
 
 @client.event
@@ -137,7 +140,7 @@ async def approve(ctx , member: discord.Member) :
                         f'❯ Make sure to have **NO war timer** when you answer for spots.\n' \
                         f'❯ Ask in {client.get_channel(channel_info[ctx.guild.id][2]).mention} if you have any questions. \nDone by : {ctx.author.mention}'
         await channel.send(embed=e)
-        if ctx.guild.id == 1054435038881665024:
+        if ctx.guild.id == 1054435038881665024 :
             await approve_waiting_list(ctx , level=int(user_info["townHallLevel"]) , up=True , down=False)
 
     else :
@@ -197,36 +200,38 @@ async def approve_waiting_list(ctx , level=None , up=None , down=None) :
 
 @client.hybrid_command(name='ask')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
-async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typing.Optional[str] = None)  :
+async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typing.Optional[str] = None) :
     await ctx.defer()
     with open('userdata.pkl' , 'rb') as f :
         data = pickle.load(f)
     if clash_of_clans is not None and ctx.author.id in data.keys() :
         info = COC.get_user(data[ctx.author.id])
-    else:
-        info : str = ' '
-    #print(info)
-    #print('\n\n\n\n')
+    else :
+        info: str = ' '
+    # print(info)
+    # print('\n\n\n\n')
     API_KEY = "AIzaSyCexfS8zCMI_mlyswWf7k3LSO-uOq8ebgE"
     palm.configure(api_key=API_KEY)
-    #print(ctx.message.content)
+    # print(ctx.message.content)
     model = palm.GenerativeModel('gemini-pro')
-    if clash_of_clans is None:
+    if clash_of_clans is None :
         question = f'{general}'
-    elif general is None:
+    elif general is None :
         question = f'{clash_of_clans} Note:if any data needed use {info}'
-    else:
-        question = f'{ctx.message.content[5:]} Note:if any data needed use {info}'
-    #print(question)
+    else :
+        question = f'{ctx.message.content[5 :]} Note:if any data needed use {info}'
+    # print(question)
     answer = model.generate_content(question)
     embed = discord.Embed(description=answer.text)
     await ctx.reply(embed=embed)
 
-@client.command(name= 'reload')
-async def reload(ctx):
+
+@client.command(name='reload')
+async def reload(ctx) :
     await ctx.send("Reload...")
     synced = await client.tree.sync()
     await ctx.send(f"Synced {len(synced)} commands.")
+
 
 @client.command()
 @commands.is_owner()
@@ -405,7 +410,8 @@ async def check(ctx , member: typing.Optional[discord.Member] = None , player_ta
             await ctx.reply(embed=e)
             return
         try :
-            if ctx.channel.id in [1055439542863274038 , 1165189096214368257 , 1157946757309804604,1172782155772985425] :
+            if ctx.channel.id in [1055439542863274038 , 1165189096214368257 , 1157946757309804604 ,
+                                  1172782155772985425] :
                 if ctx.message.mentions or member :
                     opt = Options()
                     opt.add_argument('--headless')
@@ -815,13 +821,17 @@ async def link_leader(ctx , user: discord.Member , tag: str) :
         await ctx.send('Please provide a valid clan tag.')
 
 
-@client.command(name="list_clan",aliases=["lc"],help="list all the clans",usage=f"{p}list_clan")
+@client.command(name="list_clan" , aliases=["lc"] , help="list all the clans" , usage=f"{p}list_clan")
 async def list_clan(ctx) :
     await ctx.message.delete()
-    clans_list = {'LYPLQQUC' : 934119513291653150 , 'U0LPRYL2' : 775168480969621586 , 'GC8QRPUJ' : 241897116815851530 , 'Y0YY9GUV' : 1034730502701203467 , 'LLGJUPPY' : 1034730502701203467 , '2G9V8PQJP' : 1034730502701203467 ,
-                  '2Q8URCU88' : 1034730502701203467 , '2G9URUGGC' : 1102485434933727252 , '2G9V8PQJP' : 1034730502701203467}
-    for clan_tag in clans_list.keys():
-        await clan(ctx,target=clan_tag)
+    clans_list = {'LYPLQQUC' : 934119513291653150 , 'U0LPRYL2' : 775168480969621586 , 'GC8QRPUJ' : 241897116815851530 ,
+                  'Y0YY9GUV' : 1034730502701203467 , 'LLGJUPPY' : 1034730502701203467 ,
+                  '2G9V8PQJP' : 1034730502701203467 , '2Q8URCU88' : 1034730502701203467 ,
+                  '2G9URUGGC' : 1102485434933727252 , '2G9V8PQJP' : 1034730502701203467}
+    for clan_tag in clans_list.keys() :
+        print(clan_tag)
+        await clan(ctx , target=clan_tag)
+
 
 @client.command()
 async def ping(ctx) :
@@ -1518,7 +1528,9 @@ async def wfx_m(ctx , member: discord.Member) :
     else :
         await ctx.send("MISSING SOMETHING .....🔍")
 
-@client.command(name='hg-m' , aliases=['hgm'] , help='Move a member to Hogwarts clan channel' , usage=f'{p}hg-m <@mention>')
+
+@client.command(name='hg-m' , aliases=['hgm'] , help='Move a member to Hogwarts clan channel' ,
+                usage=f'{p}hg-m <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'HGL')
 async def hg_m(ctx , member: discord.Member) :
     if member in ctx.guild.members :
@@ -1583,9 +1595,8 @@ async def hg_m(ctx , member: discord.Member) :
         await ctx.send("MISSING SOMETHING .....🔍")
 
 
-
-
-@client.command(name='av-m' , aliases=['avm'] , help='Move a member to Avengers clan channel' , usage=f'{p}hg-m <@mention>')
+@client.command(name='av-m' , aliases=['avm'] , help='Move a member to Avengers clan channel' ,
+                usage=f'{p}hg-m <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'AVL')
 async def avm(ctx , member: discord.Member) :
     if member in ctx.guild.members :
