@@ -52,18 +52,18 @@ async def on_command_error(ctx , error) :
         embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" , description="The user is not in the server." ,
                               color=discord.Color.red())
         await ctx.send(embed=embed)
-    # elif isinstance(error , commands.CommandInvokeError) and isinstance(error.original , discord.HTTPException) :
-    # await ctx.send("check and try agian..")
-    ''' 
+    elif isinstance(error , commands.CommandInvokeError) and isinstance(error.original , discord.HTTPException) :
+        await ctx.send("check and try agian..")
+
     elif isinstance(error , commands.CommandNotFound) :
         pass
 
-  else :
+    else :
         embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" ,
                               description="Something went wrong. Please contact the developer." ,
                               color=discord.Color.red())
         await ctx.send(embed=embed)
-'''
+
 
 
 @client.event
@@ -451,8 +451,9 @@ async def check(ctx , member: typing.Optional[discord.Member] = None , player_ta
 
 @client.command(name="clan" , help="shows the information of the clan" ,
                 usage=f"{p}clan <none> optionol : <clan_tag> \nexample : {p}clan #2Q8URCU88")
-async def clan(ctx , target=None) :
-    await ctx.message.delete()
+async def clan(ctx , target=None,render = True) :
+    if render:
+        await ctx.message.delete()
     clantag = None
     tags = None
     clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC' , 'SNC' , 'SML' , 'SMC']
@@ -823,15 +824,12 @@ async def link_leader(ctx , user: discord.Member , tag: str) :
 
 @client.command(name="list_clan" , aliases=["lc"] , help="list all the clans" , usage=f"{p}list_clan")
 async def list_clan(ctx) :
-    await ctx.message.delete()
-    clans_list = {'LYPLQQUC' : 934119513291653150 , 'U0LPRYL2' : 775168480969621586 , 'GC8QRPUJ' : 241897116815851530 ,
-                  'Y0YY9GUV' : 1034730502701203467 , 'LLGJUPPY' : 1034730502701203467 ,
-                  '2G9V8PQJP' : 1034730502701203467 , '2Q8URCU88' : 1034730502701203467 ,
+    clans_list = {'LYPLQQUC' : 934119513291653150 , 'U0LPRYL2' : 775168480969621586 ,
+                  'GC8QRPUJ' : 241897116815851530 , '2Q8URCU88' : 1034730502701203467 ,
                   '2G9URUGGC' : 1102485434933727252 , '2G9V8PQJP' : 1034730502701203467}
     for clan_tag in clans_list.keys() :
-        print(clan_tag)
-        print(clans_list[clan_tag])
-        await clan(ctx , target=clan_tag)
+        await clan(ctx , target=clan_tag,render=False)
+        await asyncio.sleep(1)
 
 
 @client.command()
