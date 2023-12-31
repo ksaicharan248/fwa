@@ -830,6 +830,7 @@ async def list_clan(ctx) :
                   '2G9URUGGC' : 1102485434933727252 , '2G9V8PQJP' : 1034730502701203467}
     for clan_tag in clans_list.keys() :
         print(clan_tag)
+        print(clans_list[clan_tag])
         await clan(ctx , target=clan_tag)
 
 
