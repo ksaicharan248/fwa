@@ -831,6 +831,14 @@ async def list_clan(ctx) :
         await clan(ctx , target=clan_tag,render=False)
         await asyncio.sleep(1)
 
+@client.command(name='listcommands', aliases=["lstcmd"] ,help='List all available commands')
+async def list_commands(ctx):
+    command_info = ""
+    for command in client.commands:
+        help_message = command.help or "No help available."
+        command_info += f"Command: {command.name}\nHelp: {help_message}\n\n"
+
+    await ctx.send(f"List of available commands:\n```{command_info}```")
 
 @client.command()
 async def ping(ctx) :
