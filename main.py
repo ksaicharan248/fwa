@@ -150,7 +150,7 @@ async def approve(ctx , member: discord.Member) :
         return
 
 
-@client.command(name='app-wl')
+@client.command(name='app-wl',help="update the waiting list in approved channel")
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
 async def approve_waiting_list(ctx , level=None , up=None , down=None) :
     with open('waitinglist.pkl' , 'rb') as f :
@@ -198,7 +198,7 @@ async def approve_waiting_list(ctx , level=None , up=None , down=None) :
         pickle.dump(waiting_list , f)
 
 
-@client.hybrid_command(name='ask')
+@client.hybrid_command(name='ask',help="Ask any thing with AI")
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typing.Optional[str] = None) :
     await ctx.defer()
@@ -208,11 +208,8 @@ async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typin
         info = COC.get_user(data[ctx.author.id])
     else :
         info: str = ' '
-    # print(info)
-    # print('\n\n\n\n')
     API_KEY = "AIzaSyCexfS8zCMI_mlyswWf7k3LSO-uOq8ebgE"
     palm.configure(api_key=API_KEY)
-    # print(ctx.message.content)
     model = palm.GenerativeModel('gemini-pro')
     if clash_of_clans is None :
         question = f'{general}'
@@ -220,13 +217,13 @@ async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typin
         question = f'{clash_of_clans} Note:if any data needed use {info}'
     else :
         question = f'{ctx.message.content[5 :]} Note:if any data needed use {info}'
-    # print(question)
+
     answer = model.generate_content(question)
     embed = discord.Embed(description=answer.text)
     await ctx.reply(embed=embed)
 
 
-@client.command(name='reload')
+@client.command(name='reload', help="updated the slash command list")
 async def reload(ctx) :
     await ctx.send("Reload...")
     synced = await client.tree.sync()
@@ -330,7 +327,7 @@ async def thread_delete(ctx) :
         await ctx.send('This command can only be used in a thread.')
 
 
-@client.command(name='pm')
+@client.command(name='pm',help="create a private chat using threads")
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
 async def thread_add(ctx , thread_name=None , *members: discord.Member) :
     thread_name = thread_name if thread_name is not None else "Team X Elites"
@@ -445,7 +442,7 @@ async def check(ctx , member: typing.Optional[discord.Member] = None , player_ta
             e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink})  \n'
             e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.reply(embed=e)
-            print(er)
+
             return
 
 
@@ -528,7 +525,6 @@ async def cwl(ctx , tag=None , *th) :
                   color=Color.random())
         e.set_thumbnail(url=COC.leaugeid(clt["warLeague"]["id"]))
         ths = '\n'.join([f'TH : {thvalue}  <:th{thvalue}:{COC.get_id(int(thvalue))}>' for thvalue in th])
-        print(ths)
         e.description = f'\n**Info** :\n\n{clt["description"]} '
         e.add_field(name="\n\n**Town hall**\n" , value=f' {ths}')
         await ctx.send(embed=e)
@@ -589,7 +585,7 @@ class cwlbutton(View) :
             await interaction.response.send_message("You have not enrolled for the CWL." , ephemeral=True)
 
 
-@client.command(name="cwl-roster" , aliases=['cwlr'])
+@client.command(name="cwl-roster" , aliases=['cwlr'], help="CWL rooster announcement")
 async def cwl_compo(ctx , round='') :
     await ctx.message.delete()
     await ctx.send(
@@ -597,7 +593,7 @@ async def cwl_compo(ctx , round='') :
     await ctx.send(f"CWL ROUND {round}" , view=cwlbutton(ctx , round))
 
 
-@client.command(name="rest-cwl" , aliases=['rstcwl'])
+@client.command(name="rest-cwl" , aliases=['rstcwl'],help="CWL rooster rester")
 async def cwl_compo_rest(ctx) :
     user_data = [{} , {}]
     with open("cwlrooster.pkl" , "wb") as f :
@@ -671,6 +667,7 @@ class Selectmenu1(discord.ui.View) :
                 embed2 = discord.Embed(title='LEADER COMMANDS' , colour=Color.random())
                 embed2.description = f"`{p}ts-m`        - add player to THE SHIELD \n" \
                                      f"`{p}bt-m`        - add player to BROTHERS\n" \
+                                     f"`{p}av-m`        - add player to AVENGERS\n" \
                                      f"`{p}wa-m`        - add player to WARNING \n" \
                                      f"`{p}wfx-m`       - add player to WAR FARMER X44\n" \
                                      f"`{p}unq`         - add player to unqualified\n" \
@@ -833,10 +830,11 @@ async def list_clan(ctx) :
 
 @client.command(name='listcommands', aliases=["lstcmd"] ,help='List all available commands')
 async def list_commands(ctx):
+    sorted_commands = sorted(client.commands , key=lambda x : x.name.lower())
     command_info = ""
-    for command in client.commands:
-        help_message = command.help or "No help available."
-        command_info += f"Command: {command.name}\nHelp: {help_message}\n\n"
+    for command in sorted_commands:
+        aliases = '  -- '+', '.join(command.aliases) if command.aliases else " "
+        command_info += f"->{client.command_prefix}{command.name}{aliases}\n"
 
     await ctx.send(f"List of available commands:\n```{command_info}```")
 
