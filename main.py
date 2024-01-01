@@ -543,9 +543,9 @@ class cwlbutton(View) :
     async def update_embed(self , interaction , user_data) :
         embed = Embed(title=f"CWL ROSTER -ROUND {self.round}" , colour=Color.random())
         clan_one = '\n'.join(user_data[0].values())
-        clan_two = '\n'.join(user_data[1].values())
+        #clan_two = '\n'.join(user_data[1].values())
         embed.add_field(name="LAZY CWL 15 -#2R0GRURJG" , value=f'{clan_one}')
-        embed.add_field(name="SHIELD LAZY CWL -#2GPLGG820" , value=f'{clan_two}')
+        #embed.add_field(name="SHIELD LAZY CWL -#2GPLGG820" , value=f'{clan_two}')
         await interaction.response.defer()
         await interaction.message.edit(embed=embed)
 
@@ -561,7 +561,7 @@ class cwlbutton(View) :
             with open('cwlrooster.pkl' , 'wb') as f :
                 pickle.dump(user_data , f)
 
-    @discord.ui.button(style=discord.ButtonStyle.green , label="SHEILD LAZY CWL" , custom_id="2" , row=1)
+    '''@discord.ui.button(style=discord.ButtonStyle.green , label="SHEILD LAZY CWL" , custom_id="2" , row=1)
     async def button_callback1(self , interaction: discord.Interaction , button: discord.ui.button) :
         with open('cwlrooster.pkl' , 'rb') as file :
             user_data = pickle.load(file)
@@ -571,7 +571,7 @@ class cwlbutton(View) :
             user_data[1][interaction.user.id] = interaction.user.nick
             await self.update_embed(interaction , user_data)
             with open('cwlrooster.pkl' , 'wb') as f :
-                pickle.dump(user_data , f)
+                pickle.dump(user_data , f)'''
 
     @discord.ui.button(style=discord.ButtonStyle.secondary , emoji="❌" , custom_id="3" , row=1)
     async def button_callbackcros(self , interaction: discord.Interaction , button: discord.ui.button) :
