@@ -1192,7 +1192,7 @@ async def listcompo(ctx , clan_tag: str) :
         for player_name , player_data in clan_weight.items() :
             output += f'<:th{player_data["Town hall"]}:{COC.get_id(player_data["Town hall"])}> ~ <:th{player_data["eqvweight"]}:{COC.get_id(player_data["eqvweight"])}>   ~    {player_data["weight"]} ~    `{player_name}`\n\n'
         e = Embed(title=f"War Compo - {clan_tag.upper()}" , color=Color.random())
-        e.description = output + f"\n{clani[1]}\n{clani[2]}"
+        e.description = output + f"\n{clani[1]}"
         e.set_footer(text=f"{len(clan_weight.keys())}/50 ")
         await ctx.reply(embed=e)
 
