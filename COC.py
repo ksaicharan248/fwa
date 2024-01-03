@@ -128,7 +128,7 @@ def get_hero_id(id) :
 
 
 
-def fwa_clan_data(tag) :
+def fwa_clan_data(tag):
     tag.strip("#")
     clan_weight = {}
     options = Options()
