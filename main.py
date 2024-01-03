@@ -1135,16 +1135,17 @@ async def war(ctx , target=None) :
         await ctx.send(file=discord.File(image_bytes , filename="template.png"))
 
 
-@client.command(name='warcompo',help= 'claclulate the war compo basd on fwa data sheet')
-async def warcompo(ctx , tag):
-    if tag is None:
+@client.hybrid_command(name='warcompo',help= 'claclulate the war compo basd on fwa data sheet')
+async def warcompo(ctx , clan_tag):
+    ctx.defer()
+    if clan_tag is None:
         e = Embed(title="Please provide me a tag" , color=Color.red())
         await ctx.send(embed=e)
         return
     else:
-        tag = tag.strip("#")
+        tag = clan_tag.strip("#")
         try :
-            clan_weight= COC.fwa_clan_data(tag=tag)[0]
+            clan_weight= COC.fwa_clan_data(tag=clan_tag)[0]
         except :
             e = Embed(title="Not a Fwa Clan" , color=Color.red())
             await ctx.send(embed=e)
@@ -1164,20 +1165,21 @@ async def warcompo(ctx , tag):
             output += f'<:th{level}:{COC.get_id(level)}>  Town Hall {level}   : {counts["actual_count"]}  ~ {counts["equivalent"]} \n\n'
         e = Embed(title="War Compo" , color=Color.random())
         e.description = output
-        await ctx.send(embed=e)
+        await ctx.reply(embed=e)
 
 
 
-@client.command(name='listcompo' , help='list the individual war compo for evaery player in clan ')
-async def listcompo(ctx , tag : str):
-    if tag is None:
+@client.hybrid_command(name='listcompo' , help='list the individual war compo for every player in the clan ')
+async def listcompo(ctx , clan_tag : str):
+    ctx.defer()
+    if clan_tag is None:
         e = Embed(title="Please provide me a tag" , color=Color.red())
         await ctx.send(embed=e)
         return
     else:
-        tag = tag.strip("#")
+        clan_tag = clan_tag.strip("#")
         try :
-            clani : tuple= COC.fwa_clan_data(tag=tag)
+            clani : tuple= COC.fwa_clan_data(tag=clan_tag)
             clan_weight : dict = clani[0]
         except :
             e = Embed(title="Not a Fwa Clan" , color=Color.red())
@@ -1186,10 +1188,10 @@ async def listcompo(ctx , tag : str):
         output = "### Town hall  ~ weight  ~  Name\n"
         for player_name , player_data in clan_weight.items() :
             output += f'<:th{player_data["Town hall"]}:{COC.get_id(player_data["Town hall"])}> ~ <:th{player_data["eqvweight"]}:{COC.get_id(player_data["eqvweight"])}>   ~    {player_data["weight"]} ~    `{player_name}`\n\n'
-        e = Embed(title=f"War Compo - {tag.upper()}" , color=Color.random())
+        e = Embed(title=f"War Compo - {clan_tag.upper()}" , color=Color.random())
         e.description = output+f"\n{clani[1]}"
         e.set_footer(text= f"{len(clan_weight.keys())}/50 ")
-        await ctx.send(embed=e)
+        await ctx.reply(embed=e)
 
 
 
