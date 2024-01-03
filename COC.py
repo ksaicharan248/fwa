@@ -1,6 +1,14 @@
 import requests
 from setkey import auth
 import random
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+
+
 
 header = {'Accept' : 'application/json' , 'Authorization' : auth}
 
@@ -118,13 +126,62 @@ def get_hero_id(id) :
         return None
 
 
+
+
+def fwa_clan_data(tag) :
+    tag.strip("#")
+    clan_weight = {}
+    options = Options()
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    driver = webdriver.Chrome(options=options)
+    driver.set_window_size(1024 , 768)
+    driver.get(f"https://fwastats.com/Clan/{tag}/Weight")
+    s = driver.find_element(By.CSS_SELECTOR , "#myTable > tbody > tr:nth-child(1) > td:nth-child(2) > span").text
+    for i in range(1 , 51) :
+        try :
+            player_name = driver.find_element(By.CSS_SELECTOR ,
+                                              f"#myTable > tbody > tr:nth-child({i}) > td:nth-child(2) > a").text
+            town_hall_level = int(driver.find_element(By.CSS_SELECTOR ,
+                                                      f"#myTable > tbody > tr:nth-child({i}) > td:nth-child(2) > span").text)
+            weight = int(driver.find_element(By.CSS_SELECTOR ,
+                                             f"#myTable > tbody > tr:nth-child({i}) > td:nth-child(3) > div > input").get_attribute(
+                'value'))
+            if weight > 150000 and weight <= 160000:
+                equvweiht = 16
+            elif weight > 140000 and weight <= 150000:
+                equvweiht = 15
+            elif weight > 130000 and weight <= 140000:
+                equvweiht = 14
+            elif weight > 120000 and weight <= 130000:
+                equvweiht = 13
+            elif weight > 110000 and weight <= 120000:
+                equvweiht = 12
+            elif weight >90000 and weight <= 110000:
+                equvweiht = 11
+            elif weight > 70000 and weight <= 90000:
+                equvweiht = 10
+            elif weight > 55000 and weight <= 70000:
+                equvweiht = 9
+            else:
+                equvweiht = town_hall_level
+
+            clan_weight[player_name] = {"Town hall" : town_hall_level , "weight" : weight ,
+                                        "eqvweight" : equvweiht}
+        except :
+            pass
+    last_date = driver.find_element(By.CSS_SELECTOR ,
+                            "body > div.container.body-content.fill > div.alert.alert-success > strong").text
+    return clan_weight ,last_date
+
+
 def hoq(target=None , *  th) :
     ths = ""
     if target is not None :
         print(target)
 
     x = ""  # Initialize an empty string
-cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682] ,
+    cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682] ,
                1054458642541334599 : ["2Q8URCU88" , 1055418808833159189]}
 
 if __name__ == '__main__' :

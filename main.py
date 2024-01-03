@@ -36,7 +36,7 @@ async def on_ready() :
 owener_info: int = 765929481311354881
 
 
-@client.event
+'''@client.event
 async def on_command_error(ctx , error) :
     owner = await client.fetch_user(int(owener_info))
     if isinstance(error , commands.MissingRequiredArgument) :
@@ -64,7 +64,7 @@ async def on_command_error(ctx , error) :
                               color=discord.Color.red())
         await ctx.send(embed=embed)
 
-
+'''
 
 @client.event
 async def on_member_remove(member) :
@@ -1133,6 +1133,69 @@ async def war(ctx , target=None) :
         image_bytes.seek(0)
         await ctx.send(f'Hey , <@&{cidinfo[cid][1]}>')
         await ctx.send(file=discord.File(image_bytes , filename="template.png"))
+
+
+@client.command(name='warcompo',help= 'claclulate the war compo basd on fwa data sheet')
+async def warcompo(ctx,tag):
+    if tag is None:
+        e = Embed(title="Please provide me a tag" , color=Color.red())
+        await ctx.send(embed=e)
+        return
+    else:
+        tag = tag.strip("#")
+        try :
+            clan_weight= COC.fwa_clan_data(tag=tag)[0]
+        except :
+            e = Embed(title="Not a Fwa Clan" , color=Color.red())
+            await ctx.send(embed=e)
+            return
+        merged_info = {}
+        output = ""
+        for player_name , player_data in clan_weight.items() :
+            town_hall_level = player_data.get('Town hall')
+            eqvweight = player_data.get('eqvweight')
+            if town_hall_level is not None :
+                merged_info.setdefault(town_hall_level , {'actual_count' : 0 , 'equivalent' : 0})
+                merged_info[town_hall_level]['actual_count'] += 1
+            if eqvweight is not None :
+                merged_info.setdefault(eqvweight , {'actual_count' : 0 , 'equivalent' : 0})
+                merged_info[eqvweight]['equivalent'] += 1
+        for level , counts in merged_info.items() :
+            output += f'<:th{level}:{COC.get_id(level)}>  Town Hall {level}   : {counts["actual_count"]}  ~ {counts["equivalent"]} \n\n'
+        e = Embed(title="War Compo" , color=Color.random())
+        e.description = output
+        await ctx.send(embed=e)
+
+
+
+@client.command(name='listcompo' , help='list the individual war compo for evaery player in clan ')
+async def listcompo(ctx , tag : str):
+    if tag is None:
+        e = Embed(title="Please provide me a tag" , color=Color.red())
+        await ctx.send(embed=e)
+        return
+    else:
+        tag = tag.strip("#")
+        try :
+            clani : tuple= COC.fwa_clan_data(tag=tag)
+            clan_weight : dict = clani[0]
+        except :
+            e = Embed(title="Not a Fwa Clan" , color=Color.red())
+            await ctx.send(embed=e)
+            return
+        output = "### Town hall  ~ weight  ~  Name\n"
+        for player_name , player_data in clan_weight.items() :
+            output += f'<:th{player_data["Town hall"]}:{COC.get_id(player_data["Town hall"])}> ~ <:th{player_data["eqvweight"]}:{COC.get_id(player_data["eqvweight"])}>   ~    {player_data["weight"]} ~    `{player_name}`\n\n'
+        e = Embed(title=f"War Compo - {tag.upper()}" , color=Color.random())
+        e.description = output+f"\n{clani[1]}"
+        e.set_footer(text= f"{len(clan_weight.keys())}/50 ")
+        await ctx.send(embed=e)
+
+
+
+
+
+
 
 
 @client.command(name='wel' , help='Welcome a player')
