@@ -1137,18 +1137,18 @@ async def war(ctx , target=None) :
 
 @client.hybrid_command(name='warcompo',help= 'claclulate the war compo basd on fwa data sheet')
 async def warcompo(ctx , clan_tag):
-    ctx.defer()
+    await ctx.defer()
     if clan_tag is None:
         e = Embed(title="Please provide me a tag" , color=Color.red())
-        await ctx.send(embed=e)
+        await ctx.reply(embed=e)
         return
     else:
-        tag = clan_tag.strip("#")
+        clan_tag = clan_tag.strip("#")
         try :
             clan_weight = await COC.fwa_clan_data(tag=clan_tag)[0]
         except :
             e = Embed(title="Not a Fwa Clan" , color=Color.red())
-            await ctx.send(embed=e)
+            await ctx.reply(embed=e)
             return
         merged_info = {}
         output = ""
@@ -1171,10 +1171,10 @@ async def warcompo(ctx , clan_tag):
 
 @client.hybrid_command(name='listcompo' , help='list the individual war compo for every player in the clan ')
 async def listcompo(ctx , clan_tag : str):
-    ctx.defer()
+    await ctx.defer()
     if clan_tag is None:
         e = Embed(title="Please provide me a tag" , color=Color.red())
-        await ctx.send(embed=e)
+        await ctx.reply(embed=e)
         return
     else:
         clan_tag = clan_tag.strip("#")
@@ -1183,7 +1183,7 @@ async def listcompo(ctx , clan_tag : str):
             clan_weight : dict = clani[0]
         except :
             e = Embed(title="Not a Fwa Clan" , color=Color.red())
-            await ctx.send(embed=e)
+            await ctx.reply(embed=e)
             return
         output = "### Town hall  ~ weight  ~  Name\n"
         for player_name , player_data in clan_weight.items() :
