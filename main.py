@@ -35,7 +35,6 @@ async def on_ready() :
 
 owener_info: int = 765929481311354881
 
-
 '''@client.event
 async def on_command_error(ctx , error) :
     owner = await client.fetch_user(int(owener_info))
@@ -65,6 +64,7 @@ async def on_command_error(ctx , error) :
         await ctx.send(embed=embed)
 
 '''
+
 
 @client.event
 async def on_member_remove(member) :
@@ -150,7 +150,7 @@ async def approve(ctx , member: discord.Member) :
         return
 
 
-@client.command(name='app-wl',help="update the waiting list in approved channel")
+@client.command(name='app-wl' , help="update the waiting list in approved channel")
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
 async def approve_waiting_list(ctx , level=None , up=None , down=None) :
     with open('waitinglist.pkl' , 'rb') as f :
@@ -198,7 +198,7 @@ async def approve_waiting_list(ctx , level=None , up=None , down=None) :
         pickle.dump(waiting_list , f)
 
 
-@client.hybrid_command(name='ask',help="Ask any thing with AI")
+@client.hybrid_command(name='ask' , help="Ask any thing with AI")
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typing.Optional[str] = None) :
     await ctx.defer()
@@ -223,7 +223,7 @@ async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typin
     await ctx.reply(embed=embed)
 
 
-@client.command(name='reload', help="updated the slash command list")
+@client.command(name='reload' , help="updated the slash command list")
 async def reload(ctx) :
     await ctx.send("Reload...")
     synced = await client.tree.sync()
@@ -327,7 +327,7 @@ async def thread_delete(ctx) :
         await ctx.send('This command can only be used in a thread.')
 
 
-@client.command(name='pm',help="create a private chat using threads")
+@client.command(name='pm' , help="create a private chat using threads")
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
 async def thread_add(ctx , thread_name=None , *members: discord.Member) :
     thread_name = thread_name if thread_name is not None else "Team X Elites"
@@ -448,8 +448,8 @@ async def check(ctx , member: typing.Optional[discord.Member] = None , player_ta
 
 @client.command(name="clan" , help="shows the information of the clan" ,
                 usage=f"{p}clan <none> optionol : <clan_tag> \nexample : {p}clan #2Q8URCU88")
-async def clan(ctx , target=None,render = True) :
-    if render:
+async def clan(ctx , target=None , render=True) :
+    if render :
         await ctx.message.delete()
     clantag = None
     tags = None
@@ -539,9 +539,9 @@ class cwlbutton(View) :
     async def update_embed(self , interaction , user_data) :
         embed = Embed(title=f"CWL ROSTER -ROUND {self.round}" , colour=Color.random())
         clan_one = '\n'.join(user_data[0].values())
-        #clan_two = '\n'.join(user_data[1].values())
+        # clan_two = '\n'.join(user_data[1].values())
         embed.add_field(name="LAZY CWL 15 -#2R0GRURJG" , value=f'{clan_one}')
-        #embed.add_field(name="SHIELD LAZY CWL -#2GPLGG820" , value=f'{clan_two}')
+        # embed.add_field(name="SHIELD LAZY CWL -#2GPLGG820" , value=f'{clan_two}')
         await interaction.response.defer()
         await interaction.message.edit(embed=embed)
 
@@ -585,7 +585,7 @@ class cwlbutton(View) :
             await interaction.response.send_message("You have not enrolled for the CWL." , ephemeral=True)
 
 
-@client.command(name="cwl-roster" , aliases=['cwlr'], help="CWL rooster announcement")
+@client.command(name="cwl-roster" , aliases=['cwlr'] , help="CWL rooster announcement")
 async def cwl_compo(ctx , round='') :
     await ctx.message.delete()
     await ctx.send(
@@ -593,7 +593,7 @@ async def cwl_compo(ctx , round='') :
     await ctx.send(f"CWL ROUND {round}" , view=cwlbutton(ctx , round))
 
 
-@client.command(name="rest-cwl" , aliases=['rstcwl'],help="CWL rooster rester")
+@client.command(name="rest-cwl" , aliases=['rstcwl'] , help="CWL rooster rester")
 async def cwl_compo_rest(ctx) :
     user_data = [{} , {}]
     with open("cwlrooster.pkl" , "wb") as f :
@@ -821,22 +821,24 @@ async def link_leader(ctx , user: discord.Member , tag: str) :
 
 @client.command(name="list_clan" , aliases=["lc"] , help="list all the clans" , usage=f"{p}list_clan")
 async def list_clan(ctx) :
-    clans_list = {'LYPLQQUC' : 934119513291653150 , 'U0LPRYL2' : 775168480969621586 ,
-                  'GC8QRPUJ' : 241897116815851530 , '2Q8URCU88' : 1034730502701203467 ,
-                  '2G9URUGGC' : 1102485434933727252 , '2G9V8PQJP' : 1034730502701203467}
+    clans_list = {'LYPLQQUC' : 934119513291653150 , 'U0LPRYL2' : 775168480969621586 , 'GC8QRPUJ' : 241897116815851530 ,
+                  '2Q8URCU88' : 1034730502701203467 , '2G9URUGGC' : 1102485434933727252 ,
+                  '2G9V8PQJP' : 1034730502701203467}
     for clan_tag in clans_list.keys() :
-        await clan(ctx , target=clan_tag,render=False)
+        await clan(ctx , target=clan_tag , render=False)
         await asyncio.sleep(1)
 
-@client.command(name='listcommands', aliases=["lstcmd"] ,help='List all available commands')
-async def list_commands(ctx):
+
+@client.command(name='listcommands' , aliases=["lstcmd"] , help='List all available commands')
+async def list_commands(ctx) :
     sorted_commands = sorted(client.commands , key=lambda x : x.name.lower())
     command_info = ""
-    for command in sorted_commands:
-        aliases = '  -- '+', '.join(command.aliases) if command.aliases else " "
+    for command in sorted_commands :
+        aliases = '  -- ' + ', '.join(command.aliases) if command.aliases else " "
         command_info += f"->{client.command_prefix}{command.name}{aliases}\n"
 
     await ctx.send(f"List of available commands:\n```{command_info}```")
+
 
 @client.command()
 async def ping(ctx) :
@@ -1135,17 +1137,17 @@ async def war(ctx , target=None) :
         await ctx.send(file=discord.File(image_bytes , filename="template.png"))
 
 
-@client.hybrid_command(name='warcompo',help= 'claclulate the war compo basd on fwa data sheet')
-async def warcompo(ctx , clan_tag):
+@client.hybrid_command(name='warcompo' , help='claclulate the war compo basd on fwa data sheet')
+async def warcompo(ctx , clan_tag) :
     await ctx.defer()
-    if clan_tag is None:
+    if clan_tag is None :
         e = Embed(title="Please provide me a tag" , color=Color.red())
         await ctx.reply(embed=e)
         return
-    else:
+    else :
         clan_tag = clan_tag.strip("#")
         try :
-            clan_weight = await COC.fwa_clan_data(tag=clan_tag)[0]
+            clan_weight = COC.fwa_clan_data(tag=clan_tag)[0]
         except :
             e = Embed(title="Not a Fwa Clan" , color=Color.red())
             await ctx.reply(embed=e)
@@ -1168,36 +1170,30 @@ async def warcompo(ctx , clan_tag):
         await ctx.reply(embed=e)
 
 
-
 @client.hybrid_command(name='listcompo' , help='list the individual war compo for every player in the clan ')
-async def listcompo(ctx , clan_tag : str):
+async def listcompo(ctx , clan_tag: str) :
     await ctx.defer()
-    if clan_tag is None:
+    if clan_tag is None :
         e = Embed(title="Please provide me a tag" , color=Color.red())
         await ctx.reply(embed=e)
         return
-    else:
+    else :
         clan_tag = clan_tag.strip("#")
-        try :
-            clani : tuple= await COC.fwa_clan_data(tag=clan_tag)
-            clan_weight : dict = clani[0]
-        except :
+        if clan_tag :
+            clani = COC.fwa_clan_data(tag=clan_tag)
+
+        else :
             e = Embed(title="Not a Fwa Clan" , color=Color.red())
             await ctx.reply(embed=e)
             return
+        clan_weight = clani[0]
         output = "### Town hall  ~ weight  ~  Name\n"
         for player_name , player_data in clan_weight.items() :
             output += f'<:th{player_data["Town hall"]}:{COC.get_id(player_data["Town hall"])}> ~ <:th{player_data["eqvweight"]}:{COC.get_id(player_data["eqvweight"])}>   ~    {player_data["weight"]} ~    `{player_name}`\n\n'
         e = Embed(title=f"War Compo - {clan_tag.upper()}" , color=Color.random())
-        e.description = output+f"\n{clani[1]}"
-        e.set_footer(text= f"{len(clan_weight.keys())}/50 ")
+        e.description = output + f"\n{clani[1]}"
+        e.set_footer(text=f"{len(clan_weight.keys())}/50 ")
         await ctx.reply(embed=e)
-
-
-
-
-
-
 
 
 @client.command(name='wel' , help='Welcome a player')

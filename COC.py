@@ -132,7 +132,7 @@ def fwa_clan_data(tag):
     tag.strip("#")
     clan_weight = {}
     options = Options()
-    options.add_argument('--headless')
+    #options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     driver = webdriver.Chrome(options=options)
     driver.set_window_size(1024 , 768)
@@ -172,7 +172,7 @@ def fwa_clan_data(tag):
             pass
     last_date = driver.find_element(By.CSS_SELECTOR ,
                             "body > div.container.body-content.fill > div.alert.alert-success > strong").text
-    return clan_weight ,last_date
+    return [clan_weight ,last_date]
 
 
 def hoq(target=None , *  th) :
