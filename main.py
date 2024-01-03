@@ -1145,7 +1145,7 @@ async def warcompo(ctx , clan_tag):
     else:
         tag = clan_tag.strip("#")
         try :
-            clan_weight= COC.fwa_clan_data(tag=clan_tag)[0]
+            clan_weight = await COC.fwa_clan_data(tag=clan_tag)[0]
         except :
             e = Embed(title="Not a Fwa Clan" , color=Color.red())
             await ctx.send(embed=e)
@@ -1179,7 +1179,7 @@ async def listcompo(ctx , clan_tag : str):
     else:
         clan_tag = clan_tag.strip("#")
         try :
-            clani : tuple= COC.fwa_clan_data(tag=clan_tag)
+            clani : tuple= await COC.fwa_clan_data(tag=clan_tag)
             clan_weight : dict = clani[0]
         except :
             e = Embed(title="Not a Fwa Clan" , color=Color.red())
