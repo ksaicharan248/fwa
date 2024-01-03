@@ -1147,13 +1147,14 @@ async def warcompo(ctx , clan_tag) :
     else :
         clan_tag = clan_tag.strip("#")
         try :
-            clan_weight = COC.fwa_clan_data(tag=clan_tag)[0]
+            claninfoo= COC.fwa_clan_data(tag=clan_tag)
         except :
             e = Embed(title="Not a Fwa Clan" , color=Color.red())
             await ctx.reply(embed=e)
             return
         merged_info = {}
         output = ""
+        clan_weight = claninfoo[0]
         for player_name , player_data in clan_weight.items() :
             town_hall_level = player_data.get('Town hall')
             eqvweight = player_data.get('eqvweight')
@@ -1166,7 +1167,7 @@ async def warcompo(ctx , clan_tag) :
         for level , counts in merged_info.items() :
             output += f'<:th{level}:{COC.get_id(level)}>  Town Hall {level}   : {counts["actual_count"]}  ~ {counts["equivalent"]} \n\n'
         e = Embed(title="War Compo" , color=Color.random())
-        e.description = output
+        e.description = output+f"\n{claninfoo[2]}"
         await ctx.reply(embed=e)
 
 
@@ -1179,10 +1180,10 @@ async def listcompo(ctx , clan_tag: str) :
         return
     else :
         clan_tag = clan_tag.strip("#")
-        if clan_tag :
+        try  :
             clani = COC.fwa_clan_data(tag=clan_tag)
 
-        else :
+        except :
             e = Embed(title="Not a Fwa Clan" , color=Color.red())
             await ctx.reply(embed=e)
             return
@@ -1191,7 +1192,7 @@ async def listcompo(ctx , clan_tag: str) :
         for player_name , player_data in clan_weight.items() :
             output += f'<:th{player_data["Town hall"]}:{COC.get_id(player_data["Town hall"])}> ~ <:th{player_data["eqvweight"]}:{COC.get_id(player_data["eqvweight"])}>   ~    {player_data["weight"]} ~    `{player_name}`\n\n'
         e = Embed(title=f"War Compo - {clan_tag.upper()}" , color=Color.random())
-        e.description = output + f"\n{clani[1]}"
+        e.description = output + f"\n{clani[1]}\n{clani[2]}"
         e.set_footer(text=f"{len(clan_weight.keys())}/50 ")
         await ctx.reply(embed=e)
 
