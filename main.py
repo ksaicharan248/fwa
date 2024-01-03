@@ -1136,7 +1136,7 @@ async def war(ctx , target=None) :
 
 
 @client.command(name='warcompo',help= 'claclulate the war compo basd on fwa data sheet')
-async def warcompo(ctx,tag):
+async def warcompo(ctx , tag):
     if tag is None:
         e = Embed(title="Please provide me a tag" , color=Color.red())
         await ctx.send(embed=e)
