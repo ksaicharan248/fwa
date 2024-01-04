@@ -1138,7 +1138,7 @@ async def war(ctx , target=None) :
 
 
 @client.hybrid_command(name='warcompo' , help='claclulate the war compo basd on fwa data sheet')
-async def warcompo(ctx , clan_tag) :
+async def warcompo(ctx , clan_tag ) :
     await ctx.defer()
     if clan_tag is None :
         e = Embed(title="Please provide me a tag" , color=Color.red())
@@ -1152,7 +1152,7 @@ async def warcompo(ctx , clan_tag) :
             e = Embed(title="Not a Fwa Clan" , color=Color.red())
             await ctx.reply(embed=e)
             return
-        merged_info = {}
+        merged_info = {};average_townhalls = 0;average_equivalent = 0
         output = ""
         clan_weight = claninfoo[1]
         total_sum_weight = 0
@@ -1162,7 +1162,7 @@ async def warcompo(ctx , clan_tag) :
                 total_sum_weight += clan_weight[i]["weight"]
             else :
                 NotWeighted += 1
-        endingline = f'EstWeight: {total_sum_weight}  ({len(clan[0].keys()) - NotWeighted} / {len(clan[0].keys())}) '
+        endingline = f'★ EstWeight: {total_sum_weight}  ({len(clan_weight.keys()) - NotWeighted} / {len(clan_weight.keys())}) '
         for player_name , player_data in clan_weight.items() :
             town_hall_level = player_data.get('Town hall')
             eqvweight = player_data.get('eqvweight')
@@ -1173,9 +1173,12 @@ async def warcompo(ctx , clan_tag) :
                 merged_info.setdefault(eqvweight , {'actual_count' : 0 , 'equivalent' : 0})
                 merged_info[eqvweight]['equivalent'] += 1
         for level , counts in merged_info.items() :
-            output += f'<:th{level}:{COC.get_id(level)}>  Town Hall {level}   : {counts["actual_count"]}  ~ {counts["equivalent"]} \n\n'
+            output += f'<:th{level}:{COC.get_id(level)}> Townhall {level}   : {counts["actual_count"]}  ~ {counts["equivalent"]} \n\n'
+            average_townhalls  += int(level)*int(counts["actual_count"])
+            average_equivalent += int(level)*int(counts["equivalent"])
         e = Embed(title=f"War Compo - {claninfoo[0]} " , color=Color.random())
-        e.description = output+f"\n{endingline}\n{claninfoo[1]}"
+        average = f'★ AvgTh : {round(average_townhalls / len(clan_weight.keys()),2)}  ~  {round(average_equivalent / len(clan_weight.keys()),2)}'
+        e.description = output+f"\n{endingline}\n{average}\n{claninfoo[2]}"
         await ctx.reply(embed=e)
 
 
@@ -1200,7 +1203,7 @@ async def listcompo(ctx , clan_tag: str) :
         for player_name , player_data in clan_weight.items() :
             output += f'<:th{player_data["Town hall"]}:{COC.get_id(player_data["Town hall"])}> ~ <:th{player_data["eqvweight"]}:{COC.get_id(player_data["eqvweight"])}>   ~    {player_data["weight"]} ~    `{player_name}`\n\n'
         e = Embed(title=f"War Compo - {clani[0]}" , color=Color.random())
-        e.description = output + f"\n{clani[1]}"
+        e.description = output + f"\n{clani[2]}"
         e.set_footer(text=f"{len(clan_weight.keys())}/50 ")
         await ctx.reply(embed=e)
 
