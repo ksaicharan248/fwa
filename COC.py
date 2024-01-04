@@ -132,7 +132,7 @@ def get_hero_id(id) :
 
 def fwa_clan_data(tag):
     url = f"https://fwastats.com/Clan/{tag.strip('#')}/Weight"
-    claninfo = {}
+    clan_weight = {}
     response = requests.get(url)
     html_content = response.content
     soup = BeautifulSoup(html_content , 'html.parser')
@@ -161,12 +161,13 @@ def fwa_clan_data(tag):
                 equivalent = 9
             else :
                 equivalent = town_hall_level
-            claninfo[player_name] = {"Town hall" : town_hall_level , "weight" : weight , "eqvweight" : equivalent}
+            clan_weight[player_name] = {"Town hall" : town_hall_level , "weight" : weight , "eqvweight" : equivalent}
         except AttributeError :
             pass
-    sorted_claninfo = dict(sorted(claninfo.items() , key=lambda item : item[1]["weight"] , reverse=True))
+    sorted_clan_weight = dict(sorted(clan_weight.items() , key=lambda item : item[1]["weight"] , reverse=True))
+    clan_name = soup.select_one('body > div.container.body-content.fill > div.well > div > div > h3').text
     last_date = soup.select_one('body > div.container.body-content.fill > div.alert.alert-success > strong').text
-    return sorted_claninfo , last_date
+    return clan_name,sorted_clan_weight , last_date
 
 
 
