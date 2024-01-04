@@ -1167,7 +1167,7 @@ async def warcompo(ctx , clan_tag) :
         for level , counts in merged_info.items() :
             output += f'<:th{level}:{COC.get_id(level)}>  Town Hall {level}   : {counts["actual_count"]}  ~ {counts["equivalent"]} \n\n'
         e = Embed(title="War Compo" , color=Color.random())
-        e.description = output+f"\n{claninfoo[2]}"
+        e.description = output+f"\n{claninfoo[1]}"
         await ctx.reply(embed=e)
 
 
