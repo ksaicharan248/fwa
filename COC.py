@@ -143,8 +143,16 @@ def fwa_clan_data(tag):
                 soup.select_one(f"#myTable > tbody > tr:nth-child({i}) > td:nth-child(2) > span").text)
             weight = int(
                 soup.select_one(f"#myTable > tbody > tr:nth-child({i}) > td:nth-child(3) > div > input")['value'])
-            if 110000 < weight <= 160000 :
-                equivalent = round(weight / 10000)
+            if 150000 < weight <= 160000 :
+                equivalent = 16
+            elif 140000 < weight <= 150000 :
+                equivalent = 15
+            elif 130000 < weight <= 140000 :
+                equivalent = 14
+            elif 120000 < weight <= 130000 :
+                equivalent = 13
+            elif 110000 < weight <= 120000 :
+                equivalent = 12
             elif 90000 < weight <= 110000 :
                 equivalent = 11
             elif 70000 < weight <= 90000 :
