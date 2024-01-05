@@ -1138,7 +1138,7 @@ async def war(ctx , target=None) :
 
 
 @client.hybrid_command(name='warcompo' , help='claclulate the war compo basd on fwa data sheet')
-async def warcompo(ctx , clan_tag ) :
+async def warcompo(ctx , clan_tag) :
     await ctx.defer()
     if clan_tag is None :
         e = Embed(title="Please provide me a tag" , color=Color.red())
@@ -1147,12 +1147,14 @@ async def warcompo(ctx , clan_tag ) :
     else :
         clan_tag = clan_tag.strip("#")
         try :
-            claninfoo= COC.fwa_clan_data(tag=clan_tag)
+            claninfoo = COC.fwa_clan_data(tag=clan_tag)
         except :
             e = Embed(title="Not a Fwa Clan" , color=Color.red())
             await ctx.reply(embed=e)
             return
-        merged_info = {};average_townhalls = 0;average_equivalent = 0
+        merged_info = {};
+        average_townhalls = 0;
+        average_equivalent = 0
         output = ""
         clan_weight = claninfoo[1]
         total_sum_weight = 0
@@ -1174,12 +1176,52 @@ async def warcompo(ctx , clan_tag ) :
                 merged_info[eqvweight]['equivalent'] += 1
         for level , counts in merged_info.items() :
             output += f'<:th{level}:{COC.get_id(level)}> Townhall {level}   : {counts["actual_count"]}  ~ {counts["equivalent"]} \n\n'
-            average_townhalls  += int(level)*int(counts["actual_count"])
-            average_equivalent += int(level)*int(counts["equivalent"])
+            average_townhalls += int(level) * int(counts["actual_count"])
+            average_equivalent += int(level) * int(counts["equivalent"])
         e = Embed(title=f"War Compo - {claninfoo[0]} " , color=Color.random())
-        average = f'★ AvgTh : {round(average_townhalls / len(clan_weight.keys()),2)}  ~  {round(average_equivalent / len(clan_weight.keys()),2)}'
-        e.description = output+f"\n{endingline}\n{average}\n{claninfoo[2]}"
+        average = f'★ AvgTh : {round(average_townhalls / len(clan_weight.keys()) , 2)}  ~  {round(average_equivalent / len(clan_weight.keys()) , 2)}'
+        e.description = output + f"\n{endingline}\n{average}\n{claninfoo[2]}"
         await ctx.reply(embed=e)
+
+
+class My_View(View):
+    def __init__(self, ctx, clan_name, last_updated, total_count, output):
+        super().__init__(timeout=100)
+        self.ctx = ctx
+        self.pageno = 0
+        self.clan_name = clan_name
+        self.total_count = total_count
+        self.last_updated = last_updated
+        self.output_msg = output
+        self.last_page = len(output)
+
+    async def update_embed(self, interaction):
+        embed = Embed(
+            title=f"War Compo - {self.clan_name}\n\n★ TH : {16 - self.pageno if self.pageno < 5 else 'Less than Th 11'}\n\nTown hall   ~ weight   ~  Name\n",
+            colour=Color.random()
+        )
+        embed.description = f"{self.output_msg[self.pageno]}\n{self.last_updated}"
+        embed.set_footer(text=f"{self.total_count}/50 ")
+        await interaction.response.defer()
+        await interaction.message.edit(embed=embed)
+
+
+
+    @discord.ui.button(style=discord.ButtonStyle.secondary, emoji='⬅️')
+    async def button_callback2(self, interaction: discord.Interaction, button: discord.ui.button):
+        if self.pageno > 0:
+            self.pageno -= 1
+            await self.update_embed(interaction)
+        else:
+            await interaction.response.defer()
+
+    @discord.ui.button(style=discord.ButtonStyle.secondary, emoji='➡️')
+    async def button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+        if self.pageno < self.last_page - 1:
+            self.pageno += 1
+            await self.update_embed(interaction)
+        else:
+            await interaction.response.defer()
 
 
 @client.hybrid_command(name='listcompo' , help='list the individual war compo for every player in the clan ')
@@ -1191,7 +1233,7 @@ async def listcompo(ctx , clan_tag: str) :
         return
     else :
         clan_tag = clan_tag.strip("#")
-        try  :
+        try :
             clani = COC.fwa_clan_data(tag=clan_tag)
 
         except :
@@ -1199,13 +1241,31 @@ async def listcompo(ctx , clan_tag: str) :
             await ctx.reply(embed=e)
             return
         clan_weight = clani[1]
-        output = "### Town hall  ~ weight  ~  Name\n"
+        output1 = output2 = output3 = output4 = output5 = outputelse = ""
         for player_name , player_data in clan_weight.items() :
-            output += f'<:th{player_data["Town hall"]}:{COC.get_id(player_data["Town hall"])}> ~ <:th{player_data["eqvweight"]}:{COC.get_id(player_data["eqvweight"])}>   ~    {player_data["weight"]} ~    `{player_name}`\n\n'
-        e = Embed(title=f"War Compo - {clani[0]}" , color=Color.random())
-        e.description = output + f"\n{clani[2]}"
-        e.set_footer(text=f"{len(clan_weight.keys())}/50 ")
-        await ctx.reply(embed=e)
+            if player_data["eqvweight"] == 16 :
+                output1 += f'<:th{player_data["Town hall"]}:{COC.get_id(player_data["Town hall"])}> ~ <:th{player_data["eqvweight"]}:{COC.get_id(player_data["eqvweight"])}>   ~    {player_data["weight"]}  ~    `{player_name}`\n\n'
+            elif player_data["eqvweight"] == 15 :
+                output2 += f'<:th{player_data["Town hall"]}:{COC.get_id(player_data["Town hall"])}> ~ <:th{player_data["eqvweight"]}:{COC.get_id(player_data["eqvweight"])}>   ~    {player_data["weight"]}  ~    `{player_name}`\n\n'
+            elif player_data["eqvweight"] == 14 :
+                output3 += f'<:th{player_data["Town hall"]}:{COC.get_id(player_data["Town hall"])}> ~ <:th{player_data["eqvweight"]}:{COC.get_id(player_data["eqvweight"])}>   ~    {player_data["weight"]}  ~    `{player_name}`\n\n'
+            elif player_data["eqvweight"] == 13 :
+                output4 += f'<:th{player_data["Town hall"]}:{COC.get_id(player_data["Town hall"])}> ~ <:th{player_data["eqvweight"]}:{COC.get_id(player_data["eqvweight"])}>   ~    {player_data["weight"]}  ~    `{player_name}`\n\n'
+            elif player_data["eqvweight"] == 12 :
+                output5 += f'<:th{player_data["Town hall"]}:{COC.get_id(player_data["Town hall"])}> ~ <:th{player_data["eqvweight"]}:{COC.get_id(player_data["eqvweight"])}>   ~    {player_data["weight"]}  ~    `{player_name}`\n\n'
+            elif player_data["eqvweight"] <= 11 :
+                outputelse += f'<:th{player_data["Town hall"]}:{COC.get_id(player_data["Town hall"])}> ~ <:th{player_data["eqvweight"]}:{COC.get_id(player_data["eqvweight"])}>   ~    {player_data["weight"]} ~    `{player_name}`\n\n'
+            else :
+                pass
+        clan_name : str = clani[0]
+        last_updated : str = clani[2]
+        counter_num : int = len(clan_weight.keys())
+        e = Embed(title=f"War Compo - {clan_name}\n\n★ TH : 16\n\nTown hall   ~ weight   ~  Name\n" , color=Color.random())
+        e.description = f"\n{output1}\n{last_updated}"
+        e.set_footer(text=f"{counter_num}/50 ")
+        output = [output1 , output2 , output3 , output4 , output5 , outputelse]
+        view = My_View(ctx ,clan_name ,last_updated, counter_num , output)
+        await ctx.reply(embed=e , view=view)
 
 
 @client.command(name='wel' , help='Welcome a player')
