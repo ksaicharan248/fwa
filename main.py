@@ -1227,7 +1227,7 @@ class My_View(View):
 @client.hybrid_command(name='listcompo' , help='list the individual war compo for every player in the clan ')
 async def listcompo(ctx , clan_tag: str) :
     await ctx.defer()
-    if clan_tag is None :
+    if clan_tag is None:
         e = Embed(title="Please provide me a tag" , color=Color.red())
         await ctx.reply(embed=e)
         return
