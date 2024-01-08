@@ -1088,7 +1088,9 @@ async def war(ctx , target=None) :
     cid = ctx.channel.category.id
     cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682 , 'THE SHIELD'] ,
                1054458642541334599 : ["2Q8URCU88" , 1055418808833159189 , 'WARNING'] ,
-               1063290412397244587 : ["2G9URUGGC" , 1063289659586785362 , 'BROTHERS']}
+               1063290412397244587 : ["2G9URUGGC" , 1063289659586785362 , 'BROTHERS'],
+               1054905899866660884 :['LYPLQQUC',1056602570333880410,'War Farmers x44'],
+               1188693015921950890 : ["GC8QRPUJ" , 1188693492503957514 , "AVENGERS"]}
     await ctx.message.delete()
     if cid in cidinfo.keys() :
         clani = COC.getclan(tag=f"{cidinfo[cid][0]}/currentwar")
