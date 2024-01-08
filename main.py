@@ -1088,8 +1088,8 @@ async def unlink_leader(ctx , tags: str = None) :
 async def war(ctx , target=None) :
     cid = ctx.channel.category.id
     cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682 , 'THE SHIELD'] ,
-               1054458642541334599 : ["2Q8URCU88" , 1055418808833159189 , 'WARNING'],
-               1063290412397244587 : ["#2G9URUGGC", 1063289659586785362,'BROTHERS']}
+               1054458642541334599 : ["2Q8URCU88" , 1055418808833159189 , 'WARNING'] ,
+               1063290412397244587 : ["#2G9URUGGC" , 1063289659586785362 , 'BROTHERS']}
     await ctx.message.delete()
     if cid in cidinfo.keys() :
         clani = COC.getclan(tag=f"{cidinfo[cid][0]}/currentwar")
@@ -1185,8 +1185,8 @@ async def warcompo(ctx , clan_tag) :
         await ctx.reply(embed=e)
 
 
-class My_View(View):
-    def __init__(self, ctx, clan_name, last_updated, total_count, output):
+class My_View(View) :
+    def __init__(self , ctx , clan_name , last_updated , total_count , output) :
         super().__init__(timeout=100)
         self.ctx = ctx
         self.pageno = 0
@@ -1196,39 +1196,36 @@ class My_View(View):
         self.output_msg = output
         self.last_page = len(output)
 
-    async def update_embed(self, interaction):
+    async def update_embed(self , interaction) :
         embed = Embed(
-            title=f"War Compo - {self.clan_name}\n\n★ TH : {16 - self.pageno if self.pageno < 5 else 'Less than Th 11'}\n\nTown hall   ~ weight   ~  Name\n",
-            colour=Color.random()
-        )
+            title=f"War Compo - {self.clan_name}\n\n★ TH : {16 - self.pageno if self.pageno < 5 else 'Less than Th 11'}\n\nTown hall   ~ weight   ~  Name\n" ,
+            colour=Color.random())
         embed.description = f"{self.output_msg[self.pageno]}\n{self.last_updated}"
         embed.set_footer(text=f"{self.total_count}/50 ")
         await interaction.response.defer()
         await interaction.message.edit(embed=embed)
 
-
-
-    @discord.ui.button(style=discord.ButtonStyle.secondary, emoji='⬅️')
-    async def button_callback2(self, interaction: discord.Interaction, button: discord.ui.button):
-        if self.pageno > 0:
+    @discord.ui.button(style=discord.ButtonStyle.secondary , emoji='⬅️')
+    async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
+        if self.pageno > 0 :
             self.pageno -= 1
             await self.update_embed(interaction)
-        else:
+        else :
             await interaction.response.defer()
 
-    @discord.ui.button(style=discord.ButtonStyle.secondary, emoji='➡️')
-    async def button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
-        if self.pageno < self.last_page - 1:
+    @discord.ui.button(style=discord.ButtonStyle.secondary , emoji='➡️')
+    async def button_callback(self , interaction: discord.Interaction , button: discord.ui.button) :
+        if self.pageno < self.last_page - 1 :
             self.pageno += 1
             await self.update_embed(interaction)
-        else:
+        else :
             await interaction.response.defer()
 
 
 @client.hybrid_command(name='listcompo' , help='list the individual war compo for every player in the clan ')
 async def listcompo(ctx , clan_tag: str) :
     await ctx.defer()
-    if clan_tag is None:
+    if clan_tag is None :
         e = Embed(title="Please provide me a tag" , color=Color.red())
         await ctx.reply(embed=e)
         return
@@ -1258,14 +1255,15 @@ async def listcompo(ctx , clan_tag: str) :
                 outputelse += f'<:th{player_data["Town hall"]}:{COC.get_id(player_data["Town hall"])}> ~ <:th{player_data["eqvweight"]}:{COC.get_id(player_data["eqvweight"])}>   ~    {player_data["weight"]} ~    `{player_name}`\n\n'
             else :
                 pass
-        clan_name : str = clani[0]
-        last_updated : str = clani[2]
-        counter_num : int = len(clan_weight.keys())
-        e = Embed(title=f"War Compo - {clan_name}\n\n★ TH : 16\n\nTown hall   ~ weight   ~  Name\n" , color=Color.random())
+        clan_name: str = clani[0]
+        last_updated: str = clani[2]
+        counter_num: int = len(clan_weight.keys())
+        e = Embed(title=f"War Compo - {clan_name}\n\n★ TH : 16\n\nTown hall   ~ weight   ~  Name\n" ,
+                  color=Color.random())
         e.description = f"\n{output1}\n{last_updated}"
         e.set_footer(text=f"{counter_num}/50 ")
         output = [output1 , output2 , output3 , output4 , output5 , outputelse]
-        view = My_View(ctx ,clan_name ,last_updated, counter_num , output)
+        view = My_View(ctx , clan_name , last_updated , counter_num , output)
         await ctx.reply(embed=e , view=view)
 
 
