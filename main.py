@@ -35,7 +35,7 @@ async def on_ready() :
 
 owener_info: int = 765929481311354881
 
-'''@client.event
+@client.event
 async def on_command_error(ctx , error) :
     owner = await client.fetch_user(int(owener_info))
     if isinstance(error , commands.MissingRequiredArgument) :
@@ -63,7 +63,6 @@ async def on_command_error(ctx , error) :
                               color=discord.Color.red())
         await ctx.send(embed=embed)
 
-'''
 
 
 @client.event
@@ -1089,7 +1088,7 @@ async def war(ctx , target=None) :
     cid = ctx.channel.category.id
     cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682 , 'THE SHIELD'] ,
                1054458642541334599 : ["2Q8URCU88" , 1055418808833159189 , 'WARNING'] ,
-               1063290412397244587 : ["#2G9URUGGC" , 1063289659586785362 , 'BROTHERS']}
+               1063290412397244587 : ["2G9URUGGC" , 1063289659586785362 , 'BROTHERS']}
     await ctx.message.delete()
     if cid in cidinfo.keys() :
         clani = COC.getclan(tag=f"{cidinfo[cid][0]}/currentwar")
