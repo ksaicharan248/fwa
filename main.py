@@ -35,7 +35,7 @@ async def on_ready() :
 
 owener_info: int = 765929481311354881
 
-@client.event
+'''@client.event
 async def on_command_error(ctx , error) :
     owner = await client.fetch_user(int(owener_info))
     if isinstance(error , commands.MissingRequiredArgument) :
@@ -62,7 +62,7 @@ async def on_command_error(ctx , error) :
                               description="Something went wrong. Please contact the developer." ,
                               color=discord.Color.red())
         await ctx.send(embed=embed)
-
+'''
 
 
 @client.event
@@ -70,6 +70,8 @@ async def on_member_remove(member) :
     owner = await client.fetch_user(int(765929481311354881))
     with open("userdata.pkl" , "rb") as file :
         user_data = pickle.load(file)
+    with open("leader_userdata.pkl",'rb') as foo:
+        token = pickle.load(foo)
     if member.id in user_data.keys() :
         try :
             del user_data[member.id]
@@ -80,6 +82,17 @@ async def on_member_remove(member) :
 
         with open("userdata.pkl" , "wb") as file :
             pickle.dump(user_data , file)
+
+    if member.id in token.values() :
+        for clantag , ids in token.items() :
+            if ids == 241897116815851530 :
+                pop_tag = clantag
+        try:
+            del token[pop_tag]
+        except:
+            token.pop(pop_tag)
+        with open("leader_userdata.pkl" , "wb") as file :
+            pickle.dump(token , file)
 
 
 @client.event
@@ -122,7 +135,7 @@ async def approve(ctx , member: discord.Member) :
     with open('userdata.pkl' , 'rb') as f :
         data = pickle.load(f)
     if member.id in data.keys() :
-        user_info = COC.get_user(data[member.id])
+        user_info = COC.get_user(data[member.id]['tag'])
         await member.edit(nick=f'TH {user_info["townHallLevel"]} - {user_info["name"]} ')
         await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
         channel_info = {1054435038881665024 : ['approved✅' , 1055439744739315743 , 1126856734095462511] ,  # elites
@@ -204,7 +217,7 @@ async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typin
     with open('userdata.pkl' , 'rb') as f :
         data = pickle.load(f)
     if clash_of_clans is not None and ctx.author.id in data.keys() :
-        info = COC.get_user(data[ctx.author.id])
+        info = COC.get_user(data[ctx.author.id]['tag'])
     else :
         info: str = ' '
     API_KEY = "AIzaSyCexfS8zCMI_mlyswWf7k3LSO-uOq8ebgE"
@@ -397,11 +410,11 @@ async def check(ctx , member: typing.Optional[discord.Member] = None , player_ta
         if user is not None :
             with open('userdata.pkl' , 'rb') as f :
                 data = pickle.load(f)
-            tags = data[user]
+            tags = data[user]['tag']
         elif player_tag is not None :
             tags = player_tag.strip('#')
         else :
-            e = Embed(title="Member you are trying to  check doesnot have any proper profile tag" ,
+            e = Embed(title="Member you are trying to  check does not have any proper profile tag" ,
                       color=Color.random())
             await ctx.reply(embed=e)
             return
@@ -421,7 +434,7 @@ async def check(ctx , member: typing.Optional[discord.Member] = None , player_ta
                     screenshot_bytes = io.BytesIO(screenshot)
                     screenshot_bytes.seek(0)
                     driver.quit()
-                    e = Embed(title=f'  #{tags} \n\n' , color=Color.blue())
+                    e = Embed(title=f'{data[user]["name"]} -  #{tags} \n\n' , color=Color.blue())
                     e.description = f'[**CHOCOLATE CLASH**]({clink}) \n\n[**CLASH OF STATS**]({coslink}) \n' \
                                     f'\n**❯** Check the palyer is **Banned** or not ,then confirm the base is correct.'
                     screenshot_file = discord.File(screenshot_bytes , filename="screenshot.png")
@@ -452,7 +465,6 @@ async def clan(ctx , target=None , render=True) :
         await ctx.message.delete()
     clantag = None
     tags = None
-    clanroles = ['WAL' , 'TSL' , 'SNL' , 'WAC' , 'TSC' , 'SNC' , 'SML' , 'SMC']
     with open('leader_userdata.pkl' , 'rb') as f :
         lead = pickle.load(f)
     if target is None or ctx.message.mentions :
@@ -462,23 +474,11 @@ async def clan(ctx , target=None , render=True) :
             idd = ctx.message.mentions[0].id
         else :
             idd = ctx.author.id
-
         if idd in user_data.keys() :
-            tags = user_data[idd]
-
-        elif any(role.name in clanroles for role in ctx.author.roles) :
-            if any(role.name in ["WAC" , "WAL"] for role in ctx.author.roles) :
-                clantag = "2Q8URCU88"
-            elif any(role.name in ["TSC" , "TSL"] for role in ctx.author.roles) :
-                clantag = "U0LPRYL2"
-            elif any(role.name in ["SNC" , "SNL"] for role in ctx.author.roles) :
-                clantag = "Y0YY9GUV"
-            elif any(role.name in ["SMC" , "SML"] for role in ctx.author.roles) :
-                clantag = "LLGJUPPY"
-
+            clantag = user_data[idd]['clan']
     else :
         if len(target) <= 3 :
-            ctags = {'w' : "2Q8URCU88" , "ts" : "U0LPRYL2" , 'h' : "2G9V8PQJP" , "wf" : "LYPLQQUC"}
+            ctags = {'w' : "2Q8URCU88" , "ts" : "U0LPRYL2" , 'h' : "2G9V8PQJP" }
             clantag = ctags[target]
         elif len(target) >= 4 :
             clantag = target.strip('#')
@@ -488,7 +488,7 @@ async def clan(ctx , target=None , render=True) :
             return
     if clantag is None and tags is not None :
         clantag = COC.get_user(tag=tags)["clan"]["tag"].strip("#")
-    clt = COC.getclan(tag=clantag)
+    clt = COC.getclan(tag=clantag.strip('#'))
     e = Embed(title=f'**{clt["name"]}** - {clt["tag"]}' ,
               url=f'https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{clt["tag"].strip("#")}' ,
               color=Color.random())
@@ -621,7 +621,7 @@ async def force_link(ctx , user_mention: discord.Member = None , player_tag=None
         with open('userdata.pkl' , 'rb') as file :
             user_data = pickle.load(file)
         if user_mention.id in user_data.keys() :
-            e = Embed(title=f"{user_mention.mention} have already linked his account <:ver:1157952898362261564>" ,
+            e = Embed(title=f"{user_mention.mention} have already linked his account <:ver:1157952898362261564>\nLinked {user_data[user_mention.id]['name']} - {user_data[user_mention.id]['tag']}" ,
                       colour=Color.random())
             await ctx.send(embed=e)
             await ctx.send()
@@ -634,7 +634,7 @@ async def force_link(ctx , user_mention: discord.Member = None , player_tag=None
             e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {user_mention.mention}'
             e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
-            user_data[user_mention.id] = player_tag
+            user_data[user_mention.id] = {'tag' : player['tag'] , 'name': player['name'] , 'clan' :player['clan']['tag'] if 'clan' in player else 'no clan' ,'clanname': player['clan']['name'] if 'clan' in player else 'no clan'}
             with open('userdata.pkl' , 'wb') as file :
                 pickle.dump(user_data , file)
             return
@@ -775,9 +775,8 @@ async def link(ctx , player_tag=None) :
         with open('userdata.pkl' , 'rb') as file :
             user_data = pickle.load(file)
         if ctx.author.id in user_data.keys() :
-            e = Embed(title="You have already linked your account <:ver:1157952898362261564>" , colour=Color.random())
+            e = Embed(title=f"You have already linked your account <:ver:1157952898362261564>\nLinked account:{user_data[ctx.author.id]['name']} - {user_data[ctx.author.id]['tag']}" , colour=Color.random())
             await ctx.send(embed=e)
-            await ctx.send()
             return
         else :
             player = COC.get_user(tag=player_tag)
@@ -787,7 +786,8 @@ async def link(ctx , player_tag=None) :
             e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {ctx.author.mention}'
             e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
-            user_data[ctx.author.id] = player_tag
+            user_data[ctx.author.id] = {'tag' : player['tag'] , 'name': player['name'] , 'clan' : player['clan']['tag'] if 'clan' in player else 'no clan' ,'clanname': player['clan']['name'] if 'clan' in player else 'no clan'}
+
             with open('userdata.pkl' , 'wb') as file :
                 pickle.dump(user_data , file)
             return
@@ -820,7 +820,7 @@ async def link_leader(ctx , user: discord.Member , tag: str) :
 
 @client.command(name="list_clan" , aliases=["lc"] , help="list all the clans" , usage=f"{p}list_clan")
 async def list_clan(ctx) :
-    clans_list = {'LYPLQQUC' : 934119513291653150 , 'U0LPRYL2' : 775168480969621586 , 'GC8QRPUJ' : 241897116815851530 ,
+    clans_list = {'U0LPRYL2' : 775168480969621586 , 'GC8QRPUJ' : 241897116815851530 ,
                   '2Q8URCU88' : 1034730502701203467 , '2G9URUGGC' : 1102485434933727252 ,
                   '2G9V8PQJP' : 1034730502701203467}
     for clan_tag in clans_list.keys() :
@@ -851,7 +851,7 @@ async def profile(ctx , player_tag=None , user: discord.Member = None) :
         user_data = pickle.load(f)
     if player_tag is None and user is None :
         if ctx.author.id in user_data.keys() :
-            player_tags = user_data[ctx.author.id].strip('#')
+            player_tags = user_data[ctx.author.id]['tag'].strip('#')
         else :
             e = Embed(title="No data exists on this profile" , color=Color.red())
             await ctx.send(embed=e)
@@ -863,7 +863,7 @@ async def profile(ctx , player_tag=None , user: discord.Member = None) :
             except :
                 user = user.id
             if user in user_data :
-                player_tags = user_data[user].strip('#')
+                player_tags = user_data[user]['tag'].strip('#')
             else :
                 e = Embed(title="User not found " , color=Color.red())
                 await ctx.send(embed=e)
@@ -970,23 +970,6 @@ async def re(ctx , member: discord.Member , * , new_nickname=None) :
     await channel.send(embed=e)
 
 
-@client.command(name='server_list' , aliases=['sl' , 'server-list'] ,
-                help='Shows the list of servers linked to the bot' , usage=f'{p}server_list' , hidden=True)
-async def server_list(ctx) :
-    await ctx.message.delete()
-    with open('userdata.pkl' , 'rb') as f :
-        user_data = pickle.load(f)
-    user_text = ""
-    e = Embed(title="Server List" , color=Color.blue())
-    for i in user_data.keys() :
-        user_name = await client.fetch_user(int(i))
-        user_name = user_name.display_name
-        user_text += f'{user_name}  : {user_data[i]} \n'
-    e.description = user_text
-    e.add_field(name="Server Count" , value=len(user_data) , inline=False)
-    e.set_footer(text=f"Requested by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
-    await ctx.send(embed=e)
-
 
 @client.command(name="unq" , aliases=["unqualified"] , help='Move a member to unqualifed ' , usage=f'{p}unq <@mention>')
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
@@ -1075,7 +1058,7 @@ async def unlink_leader(ctx , tags: str = None) :
             leader_user_data.pop(tags.strip("#"))
 
     else :
-        await ctx.send('Nothing happend as you wondered.')
+        await ctx.send('Nothing happened as you wondered.')
 
     with open('leader_userdata.pkl' , 'wb') as f :
         pickle.dump(leader_user_data , f)
@@ -1089,7 +1072,6 @@ async def war(ctx , target=None) :
     cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682 , 'THE SHIELD'] ,
                1054458642541334599 : ["2Q8URCU88" , 1055418808833159189 , 'WARNING'] ,
                1063290412397244587 : ["2G9URUGGC" , 1063289659586785362 , 'BROTHERS'],
-               1054905899866660884 :['LYPLQQUC',1056602570333880410,'War Farmers x44'],
                1188693015921950890 : ["GC8QRPUJ" , 1188693492503957514 , "AVENGERS"]}
     await ctx.message.delete()
     if cid in cidinfo.keys() :
@@ -1140,14 +1122,20 @@ async def war(ctx , target=None) :
 
 
 @client.hybrid_command(name='warcompo' , help='claclulate the war compo basd on fwa data sheet')
-async def warcompo(ctx , clan_tag) :
+async def warcompo(ctx , clan_tag = None):
     await ctx.defer()
+    with open('userdata.pkl', 'rb') as f:
+        token = pickle.load(f)
     if clan_tag is None :
-        e = Embed(title="Please provide me a tag" , color=Color.red())
-        await ctx.reply(embed=e)
-        return
+        if ctx.author.id in token.keys() :
+            clan_tag = token[ctx.author.id]['clan']
+        else:
+            e = Embed(title="Please provide me a tag" , color=Color.red())
+            await ctx.reply(embed=e)
+            return
     else :
         clan_tag = clan_tag.strip("#")
+    if clan_tag:
         try :
             claninfoo = COC.fwa_clan_data(tag=clan_tag)
         except :
@@ -1224,14 +1212,19 @@ class My_View(View) :
 
 
 @client.hybrid_command(name='listcompo' , help='list the individual war compo for every player in the clan ')
-async def listcompo(ctx , clan_tag: str) :
-    await ctx.defer()
+async def listcompo(ctx , clan_tag: str = None) :
+    with open('userdata.pkl' , 'rb') as f :
+        token = pickle.load(f)
     if clan_tag is None :
-        e = Embed(title="Please provide me a tag" , color=Color.red())
-        await ctx.reply(embed=e)
-        return
+        if ctx.author.id in token.keys() :
+            clan_tag = token[ctx.author.id]['clan']
+        else :
+            e = Embed(title="Please provide me a tag" , color=Color.red())
+            await ctx.reply(embed=e)
+            return
     else :
         clan_tag = clan_tag.strip("#")
+    if clan_tag :
         try :
             clani = COC.fwa_clan_data(tag=clan_tag)
 
@@ -1301,7 +1294,7 @@ async def ts_m(ctx , member: discord.Member) :
         with open('userdata.pkl' , 'rb') as f :
             data = pickle.load(f)
         if member.id in data.keys() :
-            info = COC.get_user(data[member.id])
+            info = COC.get_user(data[member.id]['tag'])
         else :
             e = Embed(title='Player data not fount' , colour=Color.red())
             e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
@@ -1367,7 +1360,7 @@ async def bt_m(ctx , member: discord.Member) :
         with open('userdata.pkl' , 'rb') as f :
             data = pickle.load(f)
         if member.id in data.keys() :
-            info = COC.get_user(data[member.id])
+            info = COC.get_user(data[member.id]['tag'])
             try :
                 await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
                 await member.add_roles(discord.utils.get(ctx.guild.roles , name='BTC'))
@@ -1434,7 +1427,7 @@ async def i_m(ctx , member: discord.Member) :
         with open('userdata.pkl' , 'rb') as f :
             data = pickle.load(f)
         if member.id in data.keys() :
-            info = COC.get_user(data[member.id])
+            info = COC.get_user(data[member.id]['tag'])
         else :
             e = Embed(title='Player data not fount' , colour=Color.red())
             e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
@@ -1490,7 +1483,7 @@ async def ji_m(ctx , member: discord.Member) :
         with open('userdata.pkl' , 'rb') as f :
             data = pickle.load(f)
         if member.id in data.keys() :
-            info = COC.get_user(data[member.id])
+            info = COC.get_user(data[member.id]['tag'])
         else :
             e = Embed(title='Player data not fount' , colour=Color.red())
             e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
@@ -1546,7 +1539,7 @@ async def wa_m(ctx , member: discord.Member) :
         with open('userdata.pkl' , 'rb') as f :
             data = pickle.load(f)
         if member.id in data.keys() :
-            info = COC.get_user(data[member.id])
+            info = COC.get_user(data[member.id]['tag'])
         else :
             e = Embed(title='Player data not fount' , colour=Color.red())
             e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
@@ -1602,70 +1595,6 @@ async def wa_m(ctx , member: discord.Member) :
         await ctx.send("MISSING permissions")
 
 
-@client.command(name='wfx-m' , aliases=['wfxm'] , help='Move member to War Farmers x44' , usage=f'{p}wfx-m <@mention>')
-@commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WFL')
-async def wfx_m(ctx , member: discord.Member) :
-    if member in ctx.guild.members :
-        await ctx.message.delete()
-        channel = client.get_channel(1056605645836656791)
-        with open('userdata.pkl' , 'rb') as f :
-            data = pickle.load(f)
-        if member.id in data.keys() :
-            info = COC.get_user(data[member.id])
-        else :
-            e = Embed(title='Player data not fount' , colour=Color.red())
-            e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
-            await ctx.send(embed=e)
-            return
-        try :
-            await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
-            await member.add_roles(discord.utils.get(ctx.guild.roles , name='WFC'))
-            await member.add_roles(discord.utils.get(ctx.guild.roles , name='🔰THE FARMERS MEMBERS🔰'))
-            embed = Embed(color=Color.green())
-            embed.description = f"✅Changed roles for {member.name}, +WFC, +🔰THE FARMERS MEMBERS🔰,-🔸ENTRY🔸"
-            await channel.send(embed=embed)
-            flag1 = True
-        except Exception as e :
-            embed = Embed(color=Color.red())
-            embed.description = f"❌Failed to change roles for {member.name}\n Reason{e}"
-            await ctx.send(embed=embed)
-            flag1 = False
-        try :
-            new_nickname = f'{COC.get_prefix(info["role"])}{info["name"]}'
-            await member.edit(nick=new_nickname)
-            embed1 = Embed(color=Color.green())
-            embed1.description = f"✅Changed name for {member.name} to  {member.mention}"
-            await channel.send(embed=embed1)
-            await approve_waiting_list(ctx , level=int(info["townHallLevel"]) , up=False , down=True)
-            flag2 = True
-        except Exception as e :
-            embed1 = Embed(color=Color.red())
-            embed1.description = f"❌Failed to change name for {member.name}\n Reason:{e} "
-            await ctx.send(embed=embed1)
-            flag2 = False
-
-        if member :
-            await ctx.send(f"{member.nick} is now a member of **War Farmers x44** 🚀")
-            await channel.send(f"{member.mention} is now a member of **War Farmers x44**")
-            embed3 = Embed(color=Color.green())
-            embed3.description = ("🍻 Welcome, this is your clan chat.\n""Make sure to go through the followings -\n"
-                                  "\n"
-                                  "『📢』**<#1055532032626806804>** - For important clan announcements\n"
-                                  "『⚠』**<#1054439098342969425>** - For war rules and instructions\n"
-                                  "\n"
-                                  "Note - Make Sure To Maintain This In Clan\n"
-                                  "✅ Donate\n"
-                                  "✅ Attack in wars\n"
-                                  "✅ Follow mails\n"
-                                  "✅ 2000 in CG\n"
-                                  "✅ Participate in Clan-Capitals\n"
-                                  "❌ Don’t kick anyone")
-
-            await channel.send(embed=embed3)
-
-    else :
-        await ctx.send("MISSING SOMETHING .....🔍")
-
 
 @client.command(name='hg-m' , aliases=['hgm'] , help='Move a member to Hogwarts clan channel' ,
                 usage=f'{p}hg-m <@mention>')
@@ -1677,7 +1606,7 @@ async def hg_m(ctx , member: discord.Member) :
         with open('userdata.pkl' , 'rb') as f :
             data = pickle.load(f)
         if member.id in data.keys() :
-            info = COC.get_user(data[member.id])
+            info = COC.get_user(data[member.id]['tag'])
         else :
             e = Embed(title='Player data not fount' , colour=Color.red())
             e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
@@ -1743,7 +1672,7 @@ async def avm(ctx , member: discord.Member) :
         with open('userdata.pkl' , 'rb') as f :
             data = pickle.load(f)
         if member.id in data.keys() :
-            info = COC.get_user(data[member.id])
+            info = COC.get_user(data[member.id]['tag'])
         else :
             e = Embed(title='Player data not fount' , colour=Color.red())
             e.description = f'Please link the {member.mention} with the game tag to proced```{client.command_prefix}link #tag```'
