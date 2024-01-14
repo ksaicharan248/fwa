@@ -10,8 +10,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
-
-
 header = {'Accept' : 'application/json' , 'Authorization' : auth}
 
 verifyheaders = {'Content-Type' : 'application/json' , 'Authorization' : auth}
@@ -51,7 +49,7 @@ def get_id(th) :
         return "1158776040525680694"
     elif th == 16 :
         return "1184685970814156800"
-    else:
+    else :
         return "1184693650907746324"
 
 
@@ -111,26 +109,23 @@ def leaugeid(id) :
         return "https://static.wikia.nocookie.net/clashofclans/images/e/e3/WarChampionI.png/revision/latest/?cb=20181024140228"
 
 
-
-
-
-
 def get_hero_id(id) :
-    if id == "Barbarian King":
+    if id == "Barbarian King" :
         return 1172564470984347678
-    elif id == "Archer Queen":
+    elif id == "Archer Queen" :
         return 1172566801259954196
-    elif id == "Grand Warden":
+    elif id == "Grand Warden" :
         return 1172565750133837844
-    elif id == "Royal Champion":
+    elif id == "Royal Champion" :
         return 1172566389131841547
-    else:
+    else :
         return None
 
 
+body > div.container.body - content.fill > div.alert.alert - warning > strong
 
 
-def fwa_clan_data(tag):
+def fwa_clan_data(tag) :
     url = f"https://fwastats.com/Clan/{tag.strip('#')}/Weight"
     clan_weight = {}
     response = requests.get(url)
@@ -166,11 +161,13 @@ def fwa_clan_data(tag):
             pass
     sorted_clan_weight = dict(sorted(clan_weight.items() , key=lambda item : item[1]["weight"] , reverse=True))
     clan_name = soup.select_one('body > div.container.body-content.fill > div.well > div > div > h3').text
-    last_date = soup.select_one('body > div.container.body-content.fill > div.alert.alert-success > strong').text
-    return clan_name,sorted_clan_weight , last_date
-
-
+    try :
+        last_date = soup.select_one('body > div.container.body-content.fill > div.alert.alert-success > strong').text
+    except :
+        last_date = soup.select_one('body > div.container.body-content.fill > div.alert.alert-warning > strong').text
+    return clan_name , sorted_clan_weight , last_date
 
 
 if __name__ == '__main__' :
-    print("i am in")
+    sudo = get_user("#")
+    print(sudo)

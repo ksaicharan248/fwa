@@ -35,7 +35,7 @@ async def on_ready() :
 
 owener_info: int = 765929481311354881
 
-@client.event
+'''@client.event
 async def on_command_error(ctx , error) :
     owner = await client.fetch_user(int(owener_info))
     if isinstance(error , commands.MissingRequiredArgument) :
@@ -61,7 +61,7 @@ async def on_command_error(ctx , error) :
         embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" ,
                               description="Something went wrong. Please contact the developer." ,
                               color=discord.Color.red())
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed)'''
 
 
 
@@ -136,6 +136,7 @@ async def approve(ctx , member: discord.Member) :
         data = pickle.load(f)
     if member.id in data.keys() :
         user_info = COC.get_user(data[member.id]['tag'])
+        print(user_info,data[member.id]['tag'])
         await member.edit(nick=f'TH {user_info["townHallLevel"]} - {user_info["name"]} ')
         await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
         channel_info = {1054435038881665024 : ['approved✅' , 1055439744739315743 , 1126856734095462511] ,  # elites
@@ -456,6 +457,56 @@ async def check(ctx , member: typing.Optional[discord.Member] = None , player_ta
             await ctx.reply(embed=e)
 
             return
+
+@commands.has_any_role('🔰ADMIN🔰')
+@client.command(name='create_category_channel',aliases=['ccc'])
+async def create_category_channel(ctx, category_name ,role_a_name:discord.Role, role_b_name:discord.Role):
+    guild = ctx.guild
+    overwrites = {guild.default_role : discord.PermissionOverwrite(view_channel=False) }
+    lead_role = discord.utils.get(guild.roles , name=role_a_name.name)
+    meber_role = discord.utils.get(guild.roles , name=role_b_name.name)
+    # Create category
+    category = await guild.create_category(category_name)
+    chanel1_create = await category.create_text_channel( '『☘』leadership-chat', overwrites=overwrites)
+    await chanel1_create.set_permissions(lead_role , read_messages=True ,send_messages=True , read_message_history=True ,manage_messages=True,attach_files=True,mention_everyone=True)
+    await chanel1_create.set_permissions(meber_role , read_messages=False)
+    chanel2_create = await category.create_text_channel('『💭』clan-chat', overwrites=overwrites)
+    await chanel2_create.set_permissions(lead_role , read_messages=True , send_messages=True,
+                                         read_message_history=True , manage_messages=True , attach_files=True ,
+                                         mention_everyone=True,add_reactions=True)
+    await chanel2_create.set_permissions(meber_role , read_messages=True , send_messages=True ,
+                                         read_message_history=True , manage_messages=False , attach_files=True ,
+                                         mention_everyone=True,add_reactions=True)
+    chanel3_create = await category.create_text_channel( '『📢』clan-announcements', overwrites=overwrites)
+    await chanel3_create.set_permissions(lead_role , read_messages=True , send_messages=True ,
+                                         read_message_history=True , manage_messages=True , attach_files=True ,
+                                         mention_everyone=True)
+    await chanel3_create.set_permissions(meber_role , read_messages=True , send_messages=False , read_message_history=True ,
+                                  manage_messages=False , use_external_emojis=False , add_reactions=True)
+    channel_names = ['『📘』war-tracker','『📗』donation-tracker','『📕』player-tracker','『📙』clan-tracker' ,'『⏱』activity-tracker','『📔』raids-tracker','『📊』boost-board','『🏓』clan-games-tracker']
+    for channel_name in channel_names:
+        channel = await category.create_text_channel(channel_name, overwrites=overwrites)
+
+        await channel.set_permissions(lead_role , read_messages=True ,send_messages=False , read_message_history=True ,manage_messages=True)
+        await channel.set_permissions(meber_role , read_messages=True , send_messages=False , read_message_history=True,manage_messages=False,use_external_emojis=False,add_reactions=False)
+        await ctx.send(f'Category "{category_name}" and channel "{channel_name}" created with permissions!')
+
+
+@client.command(name='deltac')
+@commands.is_owner()
+async def delete_all_channels(ctx):
+    guild = ctx.guild
+
+    # Get the category
+    category = ctx.channel.category
+    if category:
+        # Iterate through channels in the category and delete them
+        for channel in category.channels:
+            await channel.delete()
+        await category.delete()
+    else:
+        await ctx.send(f'Category "{category}" not found.')
+
 
 
 @client.command(name="clan" , help="shows the information of the clan" ,
