@@ -35,7 +35,7 @@ async def on_ready() :
 
 owener_info: int = 765929481311354881
 
-'''@client.event
+@client.event
 async def on_command_error(ctx , error) :
     owner = await client.fetch_user(int(owener_info))
     if isinstance(error , commands.MissingRequiredArgument) :
@@ -62,7 +62,7 @@ async def on_command_error(ctx , error) :
                               description="Something went wrong. Please contact the developer." ,
                               color=discord.Color.red())
         await ctx.send(embed=embed)
-'''
+
 
 
 @client.event
@@ -410,7 +410,7 @@ async def check(ctx , member: typing.Optional[discord.Member] = None , player_ta
         if user is not None :
             with open('userdata.pkl' , 'rb') as f :
                 data = pickle.load(f)
-            tags = data[user]['tag']
+            tags = data[user]['tag'].strip('#')
         elif player_tag is not None :
             tags = player_tag.strip('#')
         else :
@@ -634,7 +634,7 @@ async def force_link(ctx , user_mention: discord.Member = None , player_tag=None
             e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {user_mention.mention}'
             e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
-            user_data[user_mention.id] = {'tag' : player['tag'] , 'name': player['name'] , 'clan' :player['clan']['tag'] if 'clan' in player else 'no clan' ,'clanname': player['clan']['name'] if 'clan' in player else 'no clan'}
+            user_data[user_mention.id] = {'tag' : player['tag'].strip('#') , 'name': player['name'] , 'clan' :player['clan']['tag'] if 'clan' in player else 'no clan' ,'clanname': player['clan']['name'] if 'clan' in player else 'no clan'}
             with open('userdata.pkl' , 'wb') as file :
                 pickle.dump(user_data , file)
             return
@@ -786,7 +786,7 @@ async def link(ctx , player_tag=None) :
             e.description = f'\n<:ver:1157952898362261564> Linked {player["tag"]} to {ctx.author.mention}'
             e.set_footer(text=f"Linked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
-            user_data[ctx.author.id] = {'tag' : player['tag'] , 'name': player['name'] , 'clan' : player['clan']['tag'] if 'clan' in player else 'no clan' ,'clanname': player['clan']['name'] if 'clan' in player else 'no clan'}
+            user_data[ctx.author.id] = {'tag' : player['tag'].strip('#') , 'name': player['name'] , 'clan' : player['clan']['tag'] if 'clan' in player else 'no clan' ,'clanname': player['clan']['name'] if 'clan' in player else 'no clan'}
 
             with open('userdata.pkl' , 'wb') as file :
                 pickle.dump(user_data , file)
