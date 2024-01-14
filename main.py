@@ -34,8 +34,7 @@ async def on_ready() :
 
 
 owener_info: int = 765929481311354881
-
-'''@client.event
+@client.event
 async def on_command_error(ctx , error) :
     owner = await client.fetch_user(int(owener_info))
     if isinstance(error , commands.MissingRequiredArgument) :
@@ -61,7 +60,7 @@ async def on_command_error(ctx , error) :
         embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" ,
                               description="Something went wrong. Please contact the developer." ,
                               color=discord.Color.red())
-        await ctx.send(embed=embed)'''
+        await ctx.send(embed=embed)
 
 
 

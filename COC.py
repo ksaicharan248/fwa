@@ -122,7 +122,6 @@ def get_hero_id(id) :
         return None
 
 
-body > div.container.body - content.fill > div.alert.alert - warning > strong
 
 
 def fwa_clan_data(tag) :
