@@ -129,7 +129,12 @@ class profile_link(commands.Cog) :
         with open('clan_deltails.pkl' , 'rb') as file :
             clan_data = pickle.load(file)
         for clan in clan_data.keys() :
-            await ctx.send(f'{clan} : {clan_data[clan]}')
+            embed = Embed(title=f'{clan_data[clan]["clan"]} ' ,
+                              description=f'channel id : <#{clan_data[clan]["channel_id"]}> \nroles : <@&{clan_data[clan]["roles"][0]}> \nclan : {clan_data[clan]["clan"]} \nannouncement channel : <#{clan_data[clan]["announcement_channel"]}>' ,
+                          color=Color.random())
+            await ctx.send(embed=embed)
+
+
 
     @commands.command(name='unlink' , help='To unlink your clash of clans account with your discord account' ,
                       usage=f'{p}unlink <none> or <@mention>')
