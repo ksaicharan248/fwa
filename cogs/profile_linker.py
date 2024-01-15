@@ -123,7 +123,13 @@ class profile_link(commands.Cog) :
         with open('clan_deltails.pkl' , 'wb') as file :
             pickle.dump(clan_data , file)
 
-
+    @commands.command(name="listsetup")
+    @commands.has_any_role('🔰ADMIN🔰' )
+    async def listsetup(self , ctx) :
+        with open('clan_deltails.pkl' , 'rb') as file :
+            clan_data = pickle.load(file)
+        for clan in clan_data.keys() :
+            await ctx.send(f'{clan} : {clan_data[clan]}')
 
     @commands.command(name='unlink' , help='To unlink your clash of clans account with your discord account' ,
                       usage=f'{p}unlink <none> or <@mention>')
