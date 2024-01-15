@@ -183,7 +183,7 @@ class ClanRoleAdder(commands.Cog) :
                                       1172782155772985425] :
                     if ctx.message.mentions or member :
                         opt = Options()
-                        #opt.add_argument('--headless')
+                        opt.add_argument('--headless')
                         opt.add_argument('--no-sandbox')
                         driver = webdriver.Chrome(options=opt)
                         clink = 'https://fwa.chocolateclash.com/cc_n/member.php?tag=%23' + tags
