@@ -116,6 +116,7 @@ class profile_link(commands.Cog) :
         clan_data[clan_name] = {'channel_id' : ctx.channel.id , 'roles' : [member_role.name , '🔰THE FARMERS MEMBERS🔰'] , 'clan' : clanInfo["name"] , 'announcement_channel' : announcement_channel}
         embed = Embed(title=f'setup completed' , description=f'channel id : <@%{ctx.channel.id}> \nroles : <@&{member_role.id}> \nclan : {clanInfo["name"]}' , color=Color.random())
         await ctx.send(embed=embed)
+
         with open('clan_deltails.pkl' , 'wb') as file :
             pickle.dump(clan_data , file)
 

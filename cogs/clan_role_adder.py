@@ -267,7 +267,6 @@ class ClanRoleAdder(commands.Cog) :
 
         await channel.send(embed=e)
 
-
     @commands.command(name='i-m' , aliases=['im'] , help=f'add player to Illuminati clan' , usage=f'{p}i-m <@mention>')
     @commands.has_any_role('🔰ADMIN🔰' , '☠️| LEADER' , '☘️CO-ADMIN☘️' , 'Staff')
     async def i_m(self , ctx , member: discord.Member) :
@@ -378,7 +377,6 @@ class ClanRoleAdder(commands.Cog) :
         else :
             await ctx.send("MISSING permissions")
 
-
     @commands.command(name='move-clan' , aliases=['mc'] , help='Move a player to a specific clan chat' ,
                       usage=f'{p}move-clan <clan_name> <@mention> \nclan_name are :\n btm\navm\ntsm\nwam\nhgm\netc...')
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'BTL' , '☠️| LEADER' , 'Staff' , '🔰ADMIN🔰' ,
@@ -389,7 +387,7 @@ class ClanRoleAdder(commands.Cog) :
         if clan_name not in clan_data :
             valid_clans = '\n'.join([f"{key} - For {data['clan']}" for key , data in clan_data.items()])
             await ctx.send(f"Invalid clan name **{clan_name}**\n\nTry with one of the following:\n{valid_clans}" ,
-                           ephemeral=True ,delete_after = 5)
+                           ephemeral=True , delete_after=5)
             return
         await ctx.message.delete()
         channel_id = clan_data[clan_name]['channel_id']
