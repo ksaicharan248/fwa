@@ -109,7 +109,7 @@ class profile_link(commands.Cog) :
 
     @commands.command(name='setup')
     @commands.has_any_role('🔰ADMIN🔰' )
-    async def setup(self , ctx , announcement_channel : int , clan_name : str , clantag : str , member_role : discord.Role, ) :
+    async def setup(self , ctx , announcement_channel : int , clan_name : str , clantag : str , member_role : discord.Role ) :
         with open('clan_deltails.pkl' , 'rb') as file :
             clan_data = pickle.load(file)
         clanInfo = COC.getclan(tag=clantag)
