@@ -112,10 +112,13 @@ class profile_link(commands.Cog) :
     async def setup(self , ctx , announcement_channel : int , clan_name : str , clantag : str , member_role : discord.Role ) :
         with open('clan_deltails.pkl' , 'rb') as file :
             clan_data = pickle.load(file)
-        clanInfo = COC.getclan(tag=clantag.strip('#'))
-        clan_data[clan_name] = {'channel_id' : ctx.channel.id , 'roles' : [member_role.name , '🔰THE FARMERS MEMBERS🔰'] , 'clan' : clanInfo["name"] , 'announcement_channel' : announcement_channel}
-        embed = Embed(title=f'setup completed' , description=f'channel id : <@%{ctx.channel.id}> \nroles : <@&{member_role.id}> \nclan : {clanInfo["name"]}' , color=Color.random())
-        await ctx.send(embed=embed)
+        if clan_name in clan_data.keys() :
+            clanInfo = COC.getclan(tag=clantag.strip('#'))
+            clan_data[clan_name] = {'channel_id' : ctx.channel.id , 'roles' : [member_role.name , '🔰THE FARMERS MEMBERS🔰'] , 'clan' : clanInfo["name"] , 'announcement_channel' : announcement_channel}
+            embed = Embed(title=f'setup completed' , description=f'channel id : <#{ctx.channel.id}> \nroles : <@&{member_role.id}> \nclan : {clanInfo["name"]} \nannouncement channel : <#{announcement_channel}>' , color=Color.random())
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send('Setup has already been done')
 
         with open('clan_deltails.pkl' , 'wb') as file :
             pickle.dump(clan_data , file)
