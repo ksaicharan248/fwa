@@ -107,6 +107,20 @@ class profile_link(commands.Cog) :
                 return
 
 
+    @commands.command(name='setup')
+    @commands.has_any_role('🔰ADMIN🔰' )
+    async def setup(self , ctx , announcement_channel : int , clan_name : str , clantag : str , member_role : discord.Role, ) :
+        with open('clan_deltails.pkl' , 'rb') as file :
+            clan_data = pickle.load(file)
+        clanInfo = COC.getclan(tag=clantag)
+        clan_data[clan_name] = {'channel_id' : ctx.channel.id , 'roles' : [member_role.name , '🔰THE FARMERS MEMBERS🔰'] , 'clan' : clanInfo["name"] , 'announcement_channel' : announcement_channel}
+        embed = Embed(title=f'setup completed' , description=f'channel id : <@%{ctx.channel.id}> \nroles : <@&{member_role.id}> \nclan : {clanInfo["name"]}' , color=Color.random())
+        await ctx.send(embed=embed)
+        with open('clan_deltails.pkl' , 'wb') as file :
+            pickle.dump(clan_data , file)
+
+
+
     @commands.command(name='unlink' , help='To unlink your clash of clans account with your discord account' ,
                       usage=f'{p}unlink <none> or <@mention>')
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML' , 'Staff')
@@ -167,6 +181,9 @@ class profile_link(commands.Cog) :
         await self.unlink(ctx , member=member)
         await owner.send(f'{member} removed from data base')
         await member.kick(reason=reason)
+
+
+
 
 async def setup(client) :
     await client.add_cog(profile_link(client))
