@@ -82,7 +82,7 @@ class My_View(View) :
         embed.description = f"{self.output_msg[self.pageno]}\n{self.last_updated}"
         embed.set_footer(text=f"{self.total_count}/50 ")
         await interaction.response.defer()
-        await interaction.message.edit(embed=embed,ephemeral=True)
+        await interaction.message.edit(embed=embed)
 
     @discord.ui.button(style=discord.ButtonStyle.secondary , emoji='⬅️')
     async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
@@ -264,7 +264,7 @@ class clashofclansmethods(commands.Cog) :
             e.set_footer(text=f"{counter_num}/50 ")
             output = [output1 , output2 , output3 , output4 , output5 , outputelse]
             view = My_View(ctx , clan_name , last_updated , counter_num , output)
-            await ctx.reply(embed=e , view=view , ephemeral=True)
+            await ctx.reply(embed=e , view=view)
 
 
     @commands.hybrid_command(name="profile" , help="Shows the profile of the user" ,
