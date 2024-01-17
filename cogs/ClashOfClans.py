@@ -144,7 +144,7 @@ class clashofclansmethods(commands.Cog) :
                 return
         else :
             if len(target) <= 3 :
-                ctags = {'w' : "2Q8URCU88" , "ts" : "U0LPRYL2" , 'h' : "2G9V8PQJP"}
+                ctags = {'w' : "2Q8URCU88" , "ts" : "U0LPRYL2" , 'h' : "2G9V8PQJP" }
                 clantag = ctags[target]
             elif len(target) >= 4 :
                 clantag = target.strip('#')
