@@ -138,6 +138,10 @@ class clashofclansmethods(commands.Cog) :
                 idd = ctx.author.id
             if idd in user_data.keys() :
                 clantag = user_data[idd]['clan']
+            else:
+                embeed = Embed(title=f"No id is linked with the specific account" , color=Color.red())
+                await ctx.send(embed=embeed)
+                return
         else :
             if len(target) <= 3 :
                 ctags = {'w' : "2Q8URCU88" , "ts" : "U0LPRYL2" , 'h' : "2G9V8PQJP"}

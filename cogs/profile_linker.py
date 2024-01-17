@@ -197,6 +197,46 @@ class profile_link(commands.Cog) :
         await member.kick(reason=reason)
 
 
+    @commands.command(name='update_info',aliases=['uinfo'] , help='To update your clash of clans account details with your discord account' ,usage=f'{p}update_info')
+    async def update_information(self , ctx , member : discord.Member = None) :
+        with open('datasheets/userdata.pkl') as file :
+            user_info = pickle.load(file)
+        if member is None:
+            user_id = ctx.author.id
+        else:
+            user_id = member.id
+        previous_data = user_info[user_id]
+        coc_data  = COC.get_user(tag=user_info[user_id]['tag'])
+        #775168480969621586: {'tag': 'LVG8YJVRP', 'name': 'AQUAMAN', 'clan': 'U0LPRYL2', 'clanname': 'THE SHIELD'}
+        user_info[user_id] = {
+            'tag': coc_data['tag'],
+            'name': coc_data['name'],
+            'clan': coc_data['clan']['tag'],
+            'clanname': coc_data['clan']['name']
+        }
+        if previous_data == user_info[user_id]:
+            embed = Embed(title=f'<:th{str(coc_data["townHallLevel"])}:{COC.get_id(coc_data["townHallLevel"])}>  {coc_data["name"]} -{coc_data["tag"]}' ,colour=Color.random())
+            embed.description = f'\n```user : {ctx.author.mention if member is None else member.mention}\nname : {user_info[user_id]["name"]}\ntag  : {user_info[user_id]["tag"]}\nclanname : {user_info[user_id]["clanname"]}clan : {user_info[user_id]["clan"]}\n```'
+            await ctx.send(embed=embed)
+        else:
+            embed1 = Embed(
+                title=f'<:th{str(coc_data["townHallLevel"])}:{COC.get_id(coc_data["townHallLevel"])}>  {coc_data["name"]} -{coc_data["tag"]}' ,
+                colour=Color.random())
+            embed1.description = f'\n```user : {ctx.author.mention if member is None else member.mention}\nname : {previous_data["name"]}\ntag  : {previous_data["tag"]}\nclanname : {previous_data["clanname"]}clan : {previous_data["clan"]}\n```'
+            await ctx.send(embed=embed1)
+            embed = Embed(
+                title=f'<:th{str(coc_data["townHallLevel"])}:{COC.get_id(coc_data["townHallLevel"])}>  {coc_data["name"]} -{coc_data["tag"]}' ,
+                colour=Color.random())
+            embed.description = f'\n```user : {ctx.author.mention if member is None else member.mention}\nname : {user_info[user_id]["name"]}\ntag  : {user_info[user_id]["tag"]}\nclanname : {user_info[user_id]["clanname"]}clan : {user_info[user_id]["clan"]}\n```'
+            await ctx.send(embed=embed)
+            with open('datasheets/userdata.pkl' , 'wb') as file :
+                pickle.dump(user_info, file)
+            await ctx.send('Updated')
+
+
+
+
+
 
 
 async def setup(client) :
