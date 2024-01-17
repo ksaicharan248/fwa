@@ -199,15 +199,15 @@ class profile_link(commands.Cog) :
 
     @commands.command(name='update_info',aliases=['uinfo'] , help='To update your clash of clans account details with your discord account' ,usage=f'{p}update_info')
     async def update_information(self , ctx , member : discord.Member = None) :
-        with open('datasheets/userdata.pkl') as file :
+        with open('datasheets/userdata.pkl' , 'rb') as file :
             user_info = pickle.load(file)
         if member is None:
             user_id = ctx.author.id
         else:
             user_id = member.id
+
         previous_data = user_info[user_id]
-        coc_data  = COC.get_user(tag=user_info[user_id]['tag'])
-        #775168480969621586: {'tag': 'LVG8YJVRP', 'name': 'AQUAMAN', 'clan': 'U0LPRYL2', 'clanname': 'THE SHIELD'}
+        coc_data = COC.get_user(tag=user_info[user_id]['tag'])
         user_info[user_id] = {
             'tag': coc_data['tag'],
             'name': coc_data['name'],
