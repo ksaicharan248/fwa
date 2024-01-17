@@ -209,9 +209,9 @@ class clashofclansmethods(commands.Cog) :
 
     @commands.command(name="list_clan" , aliases=["lc"] , help="list all the clans" , usage=f"{p}list_clan")
     async def list_clan(self ,ctx) :
-        clans_list = {'U0LPRYL2' : 775168480969621586 , 'GC8QRPUJ' : 241897116815851530 ,
+        clans_list = {'U0LPRYL2' : 775168480969621586  ,'QL9998CC':1102485434933727252 ,'GC8QRPUJ' : 241897116815851530 ,
                       '2Q8URCU88' : 1034730502701203467 , '2G9URUGGC' : 1102485434933727252 ,
-                      '2G9V8PQJP' : 1034730502701203467}
+                      '2G9V8PQJP' : 1034730502701203467 , '2QR0Q8QYL': ''}
         for clan_tag in clans_list.keys() :
             await self.clan(ctx , target=clan_tag , render=False)
             await asyncio.sleep(1)
