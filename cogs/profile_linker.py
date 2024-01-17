@@ -216,7 +216,7 @@ class profile_link(commands.Cog) :
         }
         if previous_data['tag'] == user_info[user_id]['tag']:
             embed = Embed(title=f'<:th{str(coc_data["townHallLevel"])}:{COC.get_id(coc_data["townHallLevel"])}>  {coc_data["name"]} -{coc_data["tag"]}' ,colour=Color.random())
-            embed.description = f'\n```user : {ctx.author.mention if member is None else member.mention}\nname : {user_info[user_id]["name"]}\ntag  : {user_info[user_id]["tag"]}\nclanname : {user_info[user_id]["clanname"]}clan : {user_info[user_id]["clan"]}\n```'
+            embed.description = f'\n```user     : ```{ctx.author.mention if member is None else member.mention}\n```name     : {user_info[user_id]["name"]}\ntag      : {user_info[user_id]["tag"]}\nclanname : {user_info[user_id]["clanname"]}\nclan     : {user_info[user_id]["clan"]}\n```'
             await ctx.send(embed=embed)
         else:
             embed1 = Embed(
