@@ -220,8 +220,11 @@ class ClanRoleAdder(commands.Cog) :
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
     async def re(self , ctx , member: discord.Member , * , new_nickname=None) :
         await ctx.message.delete()
+        with open('datasheets/userdata.pkl' , 'rb') as f :
+            data = pickle.load(f)
+        name = data[member.id]['name'] if member.id in data.keys() else member.name
         if new_nickname is None :
-            await member.edit(nick=f"re - {member.name}")
+            await member.edit(nick=f"re - {name}")
         else :
             await member.edit(nick=f"{new_nickname}")
         await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
