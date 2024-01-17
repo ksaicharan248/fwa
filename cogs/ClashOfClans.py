@@ -259,7 +259,7 @@ class clashofclansmethods(commands.Cog) :
             e.set_footer(text=f"{counter_num}/50 ")
             output = [output1 , output2 , output3 , output4 , output5 , outputelse]
             view = My_View(ctx , clan_name , last_updated , counter_num , output)
-            await ctx.reply(embed=e , view=view)
+            await ctx.reply(embed=e , view=view , ephemeral=True)
 
 
     @commands.hybrid_command(name="profile" , help="Shows the profile of the user" ,
@@ -368,7 +368,7 @@ class clashofclansmethods(commands.Cog) :
             e = Embed(title=f"War Compo - {claninfoo[0]} " , color=Color.random())
             average = f'★ AvgTh : {round(average_townhalls / len(clan_weight.keys()) , 2)}  ~  {round(average_equivalent / len(clan_weight.keys()) , 2)}'
             e.description = output + f"\n{endingline}\n{average}\n{claninfoo[2]}"
-            await ctx.reply(embed=e)
+            await ctx.reply(embed=e, ephemeral=True)
 
 
 
