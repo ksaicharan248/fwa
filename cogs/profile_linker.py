@@ -209,25 +209,25 @@ class profile_link(commands.Cog) :
         previous_data = user_info[user_id]
         coc_data = COC.get_user(tag=user_info[user_id]['tag'])
         user_info[user_id] = {
-            'tag': coc_data['tag'],
+            'tag': coc_data['tag'].strip('#'),
             'name': coc_data['name'],
-            'clan': coc_data['clan']['tag'],
+            'clan': coc_data['clan']['tag'].strip('#'),
             'clanname': coc_data['clan']['name']
         }
         if previous_data['tag'] == user_info[user_id]['tag']:
             embed = Embed(title=f'<:th{str(coc_data["townHallLevel"])}:{COC.get_id(coc_data["townHallLevel"])}>  {coc_data["name"]} -{coc_data["tag"]}' ,colour=Color.random())
-            embed.description = f'\n```user     : ```{ctx.author.mention if member is None else member.mention}\n```name     : {user_info[user_id]["name"]}\ntag      : {user_info[user_id]["tag"]}\nclanname : {user_info[user_id]["clanname"]}\nclan     : {user_info[user_id]["clan"]}\n```'
+            embed.description = f'\n```user     : {ctx.author.display_name if member is None else member.display_name}\nname     : {user_info[user_id]["name"]}\ntag      : {user_info[user_id]["tag"]}\nclanname : {user_info[user_id]["clanname"]}\nclan     : {user_info[user_id]["clan"]}\n```'
             await ctx.send(embed=embed)
         else:
             embed1 = Embed(
                 title=f'<:th{str(coc_data["townHallLevel"])}:{COC.get_id(coc_data["townHallLevel"])}>  {coc_data["name"]} -{coc_data["tag"]}' ,
                 colour=Color.random())
-            embed1.description = f'\n```user     : ```{ctx.author.mention if member is None else member.mention}\n```name     : {previous_data["name"]}\ntag      : {previous_data["tag"]}\nclanname : {previous_data["clanname"]}clan     : {previous_data["clan"]}\n```'
+            embed1.description = f'\n```user     : ```{ctx.author.display_name if member is None else member.display_name}\n```name     : {previous_data["name"]}\ntag      : {previous_data["tag"]}\nclanname : {previous_data["clanname"]}\nclan     : {previous_data["clan"]}\n```'
             await ctx.send(embed=embed1)
             embed = Embed(
                 title=f'<:th{str(coc_data["townHallLevel"])}:{COC.get_id(coc_data["townHallLevel"])}>  {coc_data["name"]} -{coc_data["tag"]}' ,
                 colour=Color.random())
-            embed.description = f'\n```user : {ctx.author.mention if member is None else member.mention}\nname : {user_info[user_id]["name"]}\ntag  : {user_info[user_id]["tag"]}\nclanname : {user_info[user_id]["clanname"]}clan : {user_info[user_id]["clan"]}\n```'
+            embed.description = f'\n```user     : {ctx.author.display_name if member is None else member.display_name}\nname     : {user_info[user_id]["name"]}\ntag     : {user_info[user_id]["tag"]}\nclanname : {user_info[user_id]["clanname"]}\nclan    : {user_info[user_id]["clan"]}\n```'
             await ctx.send(embed=embed)
             with open('datasheets/userdata.pkl' , 'wb') as file :
                 pickle.dump(user_info, file)
