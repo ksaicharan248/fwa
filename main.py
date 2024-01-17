@@ -66,9 +66,9 @@ async def on_command_error(ctx , error) :
 @client.event
 async def on_member_remove(member) :
     owner = await client.fetch_user(int(765929481311354881))
-    with open("userdata.pkl" , "rb") as file :
+    with open("datasheets/userdata.pkl" , "rb") as file :
         user_data = pickle.load(file)
-    with open("leader_userdata.pkl",'rb') as foo:
+    with open("datasheets/leader_userdata.pkl" , 'rb') as foo:
         token = pickle.load(foo)
     if member.id in user_data.keys() :
         try :
@@ -78,7 +78,7 @@ async def on_member_remove(member) :
             user_data.pop(member.id)
             await owner.send(f'{member} removed from data base')
 
-        with open("userdata.pkl" , "wb") as file :
+        with open("datasheets/userdata.pkl" , "wb") as file :
             pickle.dump(user_data , file)
 
     if member.id in token.values() :
@@ -89,7 +89,7 @@ async def on_member_remove(member) :
             del token[pop_tag]
         except:
             token.pop(pop_tag)
-        with open("leader_userdata.pkl" , "wb") as file :
+        with open("datasheets/leader_userdata.pkl" , "wb") as file :
             pickle.dump(token , file)
 
 
@@ -122,7 +122,7 @@ async def on_member_join(member) :
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typing.Optional[str] = None) :
     await ctx.defer()
-    with open('userdata.pkl' , 'rb') as f :
+    with open('datasheets/userdata.pkl' , 'rb') as f :
         data = pickle.load(f)
     if clash_of_clans is not None and ctx.author.id in data.keys() :
         info = COC.get_user(data[ctx.author.id]['tag'])
@@ -374,7 +374,7 @@ async def war(ctx , target=None) :
         template.paste(your_clan_image , (80 , 50) , mask=your_clan_image)
         template.paste(opponents_clan_image , (1000 , 50) , mask=opponents_clan_image)
         draw = ImageDraw.Draw(template)
-        font = ImageFont.truetype(r'ArialUnicodeMS.ttf' , 40)
+        font = ImageFont.truetype(r'templates/ArialUnicodeMS.ttf' , 40)
         text = [clani["clan"]["name"] , clani["opponent"]["name"]]
         x = [86 , 697]
         for i in range(len(x)) :

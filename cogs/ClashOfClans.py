@@ -25,31 +25,31 @@ class cwlbutton(View) :
 
     @discord.ui.button(style=discord.ButtonStyle.blurple , label="LAZY CWL 15" , custom_id="1" , row=1)
     async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
-        with open('cwlrooster.pkl' , 'rb') as file :
+        with open('datasheets/cwlrooster.pkl', 'rb') as file :
             user_data = pickle.load(file)
         if interaction.user.id in user_data[0] :
             await interaction.response.send_message("You have already enrolled for the CWL." , ephemeral=True)
         else :
             user_data[0][interaction.user.id] = interaction.user.nick
             await self.update_embed(interaction , user_data)
-            with open('cwlrooster.pkl' , 'wb') as f :
+            with open('datasheets/cwlrooster.pkl' , 'wb') as f :
                 pickle.dump(user_data , f)
 
     '''@discord.ui.button(style=discord.ButtonStyle.green , label="SHEILD LAZY CWL" , custom_id="2" , row=1)
     async def button_callback1(self , interaction: discord.Interaction , button: discord.ui.button) :
-        with open('cwlrooster.pkl' , 'rb') as file :
+        with open('datasheets/cwlrooster.pkl' , 'rb') as file :
             user_data = pickle.load(file)
         if interaction.user.id in user_data[1] :
             await interaction.response.send_message("You have already enrolled for the CWL." , ephemeral=True)
         else :
             user_data[1][interaction.user.id] = interaction.user.nick
             await self.update_embed(interaction , user_data)
-            with open('cwlrooster.pkl' , 'wb') as f :
+            with open('datasheets/cwlrooster.pkl' , 'wb') as f :
                 pickle.dump(user_data , f)'''
 
     @discord.ui.button(style=discord.ButtonStyle.secondary , emoji="❌" , custom_id="3" , row=1)
     async def button_callbackcros(self , interaction: discord.Interaction , button: discord.ui.button) :
-        with open('cwlrooster.pkl' , 'rb') as file :
+        with open('datasheets/cwlrooster.pkl' , 'rb') as file :
             user_data = pickle.load(file)
         if interaction.user.id in user_data[0] or interaction.user.id in user_data[1] :
             if interaction.user.id in user_data[0] :
@@ -57,7 +57,7 @@ class cwlbutton(View) :
             if interaction.user.id in user_data[1] :
                 user_data[1].pop(interaction.user.id , None)
             await self.update_embed(interaction , user_data)
-            with open('cwlrooster.pkl' , 'wb') as f :
+            with open('datasheets/cwlrooster.pkl' , 'wb') as f :
                 pickle.dump(user_data , f)
         else :
             await interaction.response.send_message("You have not enrolled for the CWL." , ephemeral=True)
@@ -127,10 +127,10 @@ class clashofclansmethods(commands.Cog) :
             await ctx.message.delete()
         clantag = None
         tags = None
-        with open('leader_userdata.pkl' , 'rb') as f :
+        with open('datasheets/leader_userdata.pkl' , 'rb') as f :
             lead = pickle.load(f)
         if target is None or ctx.message.mentions :
-            with open('userdata.pkl' , 'rb') as f :
+            with open('datasheets/userdata.pkl' , 'rb') as f :
                 user_data = pickle.load(f)
             if ctx.message.mentions :
                 idd = ctx.message.mentions[0].id
@@ -199,7 +199,7 @@ class clashofclansmethods(commands.Cog) :
     @commands.command(name="rest-cwl" , aliases=['rstcwl'] , help="CWL rooster rester")
     async def cwl_compo_rest(self , ctx) :
         user_data = [{} , {}]
-        with open("cwlrooster.pkl" , "wb") as f :
+        with open('datasheets/cwlrooster.pkl', "wb") as f :
             pickle.dump(user_data , f)
         await ctx.send("CWL roster reseted")
 
@@ -214,7 +214,7 @@ class clashofclansmethods(commands.Cog) :
 
     @commands.hybrid_command(name='listcompo' , help='list the individual war compo for every player in the clan ')
     async def listcompo(self , ctx , clan_tag: str = None) :
-        with open('userdata.pkl' , 'rb') as f :
+        with open('datasheets/userdata.pkl' , 'rb') as f :
             token = pickle.load(f)
         if clan_tag is None :
             if ctx.author.id in token.keys() :
@@ -265,7 +265,7 @@ class clashofclansmethods(commands.Cog) :
     @commands.hybrid_command(name="profile" , help="Shows the profile of the user" ,
                            usage=f"{p}profile <none> or <user> \nexample: {p}profile @user")
     async def profile(self , ctx , player_tag=None , user: discord.Member = None) :
-        with open('userdata.pkl' , 'rb') as f :
+        with open('datasheets/userdata.pkl' , 'rb') as f :
             user_data = pickle.load(f)
         if player_tag is None and user is None :
             if ctx.author.id in user_data.keys() :
@@ -321,7 +321,7 @@ class clashofclansmethods(commands.Cog) :
     @commands.hybrid_command(name='warcompo' , help='claclulate the war compo basd on fwa data sheet')
     async def warcompo(self , ctx , clan_tag=None) :
         await ctx.defer()
-        with open('userdata.pkl' , 'rb') as f :
+        with open('datasheets/userdata.pkl' , 'rb') as f :
             token = pickle.load(f)
         if clan_tag is None :
             if ctx.author.id in token.keys() :

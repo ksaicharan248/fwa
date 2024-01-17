@@ -47,7 +47,7 @@ class ClanRoleAdder(commands.Cog) :
                       usage=f'{p}approve @member')
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
     async def approve(self , ctx , member: discord.Member) :
-        with open('userdata.pkl' , 'rb') as f :
+        with open('datasheets/userdata.pkl' , 'rb') as f :
             data = pickle.load(f)
         if member.id in data.keys() :
             user_info = COC.get_user(data[member.id]['tag'])
@@ -79,7 +79,7 @@ class ClanRoleAdder(commands.Cog) :
     @commands.command(name='app-wl' , help="update the waiting list in approved channel")
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
     async def approve_waiting_list(self , ctx , level=None , up=None , down=None) :
-        with open('waitinglist.pkl' , 'rb') as f :
+        with open('datasheets/waitinglist.pkl' , 'rb') as f :
             waiting_list = pickle.load(f)
         if level is not None :
             if up == True :
@@ -120,7 +120,7 @@ class ClanRoleAdder(commands.Cog) :
             await channel.edit(name=f"TH 11 : {waiting_list[11]}")
         else :
             pass
-        with open('waitinglist.pkl' , 'wb') as f :
+        with open('datasheets/waitinglist.pkl' , 'wb') as f :
             pickle.dump(waiting_list , f)
 
     @commands.command(name="announce")
@@ -165,7 +165,7 @@ class ClanRoleAdder(commands.Cog) :
         else :
             user = member.id if member else (ctx.message.mentions[0].id if ctx.message.mentions else None)
             if user is not None :
-                with open('userdata.pkl' , 'rb') as f :
+                with open('datasheets/userdata.pkl' , 'rb') as f :
                     data = pickle.load(f)
                 tags = data[user]['tag'].strip('#')
             elif player_tag is not None :
@@ -273,7 +273,7 @@ class ClanRoleAdder(commands.Cog) :
         if ctx.author.guild_permissions.manage_messages :
             await ctx.message.delete()
             channel = self.client.get_channel(1168074780877008896)
-            with open('userdata.pkl' , 'rb') as f :
+            with open('datasheets/userdata.pkl' , 'rb') as f :
                 data = pickle.load(f)
             if member.id in data.keys() :
                 info = COC.get_user(data[member.id]['tag'])
@@ -328,7 +328,7 @@ class ClanRoleAdder(commands.Cog) :
         if ctx.author.guild_permissions.manage_messages :
             await ctx.message.delete()
             channel = self.client.get_channel(1152230941742333972)
-            with open('userdata.pkl' , 'rb') as f :
+            with open('datasheets/userdata.pkl' , 'rb') as f :
                 data = pickle.load(f)
             if member.id in data.keys() :
                 info = COC.get_user(data[member.id]['tag'])
@@ -382,7 +382,7 @@ class ClanRoleAdder(commands.Cog) :
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'BTL' , '☠️| LEADER' , 'Staff' , '🔰ADMIN🔰' ,
                            'HGL' , 'WAL')
     async def move_clan(self , ctx , clan_name , member: discord.Member) :
-        with open('clan_deltails.pkl' , 'rb') as f :
+        with open('datasheets/clan_deltails.pkl' , 'rb') as f :
             clan_data = pickle.load(f)
         if clan_name not in clan_data :
             valid_clans = '\n'.join([f"{key} - For {data['clan']}" for key , data in clan_data.items()])
@@ -396,7 +396,7 @@ class ClanRoleAdder(commands.Cog) :
 
         channel = self.client.get_channel(channel_id)
 
-        with open('userdata.pkl' , 'rb') as f :
+        with open('datasheets/userdata.pkl' , 'rb') as f :
             data = pickle.load(f)
 
         if member.id in data.keys() :

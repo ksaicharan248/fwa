@@ -19,7 +19,7 @@ class fuunctionmethods(commands.Cog) :
         elite = "";
         noneelite = "";
         fwa = ""
-        with open('userdata.pkl' , 'rb') as f :
+        with open('datasheets/userdata.pkl' , 'rb') as f :
             userdata = pickle.load(f)
         guild = self.client.get_guild(1054435038881665024)
         guild2 = self.client.get_guild(1152220160028057660)
@@ -48,7 +48,7 @@ class fuunctionmethods(commands.Cog) :
         await ctx.send(embeds=[embed , embed2 , embed3 , embed4])
         for outsider in notinanyserver :
             del userdata[outsider]
-        with open('userdata.pkl' , 'wb') as f :
+        with open('datasheets/userdata.pkl' , 'wb') as f :
             pickle.dump(userdata , f)
         await ctx.send(f'{len(userdata.keys())}')
 

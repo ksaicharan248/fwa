@@ -21,7 +21,7 @@ class profile_link(commands.Cog) :
             return
         else :
             player_tag = player_tag.strip('#')
-            with open('userdata.pkl' , 'rb') as file :
+            with open('datasheets/userdata.pkl' , 'rb') as file :
                 user_data = pickle.load(file)
             if ctx.author.id in user_data.keys() :
                 e = Embed(
@@ -41,7 +41,7 @@ class profile_link(commands.Cog) :
                                             'clan' : player['clan']['tag'] if 'clan' in player else 'no clan' ,
                                             'clanname' : player['clan']['name'] if 'clan' in player else 'no clan'}
 
-                with open('userdata.pkl' , 'wb') as file :
+                with open('datasheets/userdata.pkl' , 'wb') as file :
                     pickle.dump(user_data , file)
                 return
 
@@ -53,14 +53,14 @@ class profile_link(commands.Cog) :
         clantag = tag.strip("#")
         clan = COC.getclan(tag=clantag)
         if clan :
-            with open('leader_userdata.pkl' , 'rb') as f :
+            with open('datasheets/leader_userdata.pkl' , 'rb') as f :
                 leader_data = pickle.load(f)
             if clantag in leader_data.keys() :
                 await ctx.send(f'{clan["name"]} Leader account is already linked to {user.mention}')
                 return
             else :
                 leader_data[clantag] = user.id
-                with open('leader_userdata.pkl' , 'wb') as f :
+                with open('datasheets/leader_userdata.pkl', 'wb') as f :
                     pickle.dump(leader_data , f)
                 e = discord.Embed(title=f"{user.mention} is linked to {clan['name']}")
                 e.description = f'{clan["name"]} Leader account is now linked to {user.mention}'
@@ -82,7 +82,7 @@ class profile_link(commands.Cog) :
             return
         else :
             player_tag = player_tag.strip('#')
-            with open('userdata.pkl' , 'rb') as file :
+            with open('datasheets/userdata.pkl' , 'rb') as file :
                 user_data = pickle.load(file)
             if user_mention.id in user_data.keys() :
                 e = Embed(
@@ -102,7 +102,7 @@ class profile_link(commands.Cog) :
                 user_data[user_mention.id] = {'tag' : player['tag'].strip('#') , 'name' : player['name'] ,
                                               'clan' : player['clan']['tag'] if 'clan' in player else 'no clan' ,
                                               'clanname' : player['clan']['name'] if 'clan' in player else 'no clan'}
-                with open('userdata.pkl' , 'wb') as file :
+                with open('datasheets/userdata.pkl' , 'wb') as file :
                     pickle.dump(user_data , file)
                 return
 
@@ -110,7 +110,7 @@ class profile_link(commands.Cog) :
     @commands.command(name='setup')
     @commands.has_any_role('🔰ADMIN🔰' )
     async def setup(self , ctx , announcement_channel : int , clan_name : str , clantag : str , member_role : discord.Role ) :
-        with open('clan_deltails.pkl' , 'rb') as file :
+        with open('datasheets/clan_deltails.pkl' , 'rb') as file :
             clan_data = pickle.load(file)
         if clan_name :
             clanInfo = COC.getclan(tag=clantag.strip('#'))
@@ -119,13 +119,13 @@ class profile_link(commands.Cog) :
             await ctx.send(embed=embed)
 
 
-        with open('clan_deltails.pkl' , 'wb') as file :
+        with open('datasheets/clan_deltails.pkl' , 'wb') as file :
             pickle.dump(clan_data , file)
 
     @commands.command(name="listsetup")
     @commands.has_any_role('🔰ADMIN🔰' )
     async def listsetup(self , ctx) :
-        with open('clan_deltails.pkl' , 'rb') as file :
+        with open('datasheets/clan_deltails.pkl' , 'rb') as file :
             clan_data = pickle.load(file)
         for clan in clan_data.keys() :
             embed = Embed(title=f'{clan_data[clan]["clan"]} ' ,
@@ -139,7 +139,7 @@ class profile_link(commands.Cog) :
                       usage=f'{p}unlink <none> or <@mention>')
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML' , 'Staff')
     async def un_link(self , ctx , member: discord.Member) :
-        with open("userdata.pkl" , "rb") as file :
+        with open("datasheets/userdata.pkl" , "rb") as file :
             user_data = pickle.load(file)
         if member.id in user_data.keys() :
             tag = user_data[member.id]['tag']
@@ -154,7 +154,7 @@ class profile_link(commands.Cog) :
             e.description = f'\n<:ver:1157952898362261564>  {player["tag"]} Unlinked with {member.mention}  '
             e.set_footer(text=f"Unlinked by {ctx.author.display_name} " , icon_url=ctx.author.display_avatar)
             await ctx.send(embed=e)
-            with open("userdata.pkl" , "wb") as file :
+            with open("datasheets/userdata.pkl" , "wb") as file :
                 pickle.dump(user_data , file)
         else:
             e = Embed(title="Nothing to unlink" , color=Color.red())
@@ -165,7 +165,7 @@ class profile_link(commands.Cog) :
     @commands.has_any_role('🔰ADMIN🔰')
     async def unlink_leader(self , ctx , tags: str = None) :
         await ctx.message.delete()
-        with open('leader_userdata.pkl' , 'rb') as f :
+        with open('datasheets/leader_userdata.pkl' , 'rb') as f :
             leader_user_data = pickle.load(f)
         if ctx.message.mentions[0].id in leader_user_data.values() :
             n = list(leader_user_data.keys())[list(leader_user_data.values()).index(ctx.message.mentions[0].id)]
@@ -183,7 +183,7 @@ class profile_link(commands.Cog) :
         else :
             await ctx.send('Nothing happened as you wondered.')
 
-        with open('leader_userdata.pkl' , 'wb') as f :
+        with open('datasheets/leader_userdata.pkl', 'wb') as f :
             pickle.dump(leader_user_data , f)
 
     @commands.command(name='kick' , aliases=['k'] , help='Kick a user' , usage=f'{p}kick <user> <reason>')
