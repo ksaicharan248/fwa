@@ -218,31 +218,33 @@ class ClanRoleAdder(commands.Cog) :
     @commands.command(name="re" , aliases=['re-apply'] , help="Move player to reapply " ,
                       usage="re <member-mention> [new_nickname] \n\tor\t\n re <member-mention>")
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
-    async def re(self , ctx , member: discord.Member , * , new_nickname=None) :
+    async def re(self , ctx , *members: discord.Member ) :
         await ctx.message.delete()
         with open('datasheets/userdata.pkl' , 'rb') as f :
             data = pickle.load(f)
-        name = data[member.id]['name'] if member.id in data.keys() else member.name
-        if new_nickname is None :
-            await member.edit(nick=f"re - {name}")
-        else :
-            await member.edit(nick=f"{new_nickname}")
-        await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
-        info = {1054435038881665024 : ['re - apply' , 1055440286806966322] ,
-                1152220160028057660 : ['UN-Qualified' , 1152228011798700092]}
-        await member.add_roles(discord.utils.get(ctx.guild.roles , name=info[ctx.guild.id][0]))
-        channel = self.client.get_channel(info[ctx.guild.id][1])
-        await channel.send(f"{member.mention} has been sent to re-apply by {ctx.author.mention}")
-        e = Embed(title="RE-APPLY \nYou have been Placed here due to the Following Reasons\n" , color=Color.random())
-        e.description = f'• You have been Inactive from a Long time in our Clans. \n ' \
-                        f'• You Left without informing your Clans Leader/Co-Leader.\n' \
-                        f'• Your Activity seems Suspicious in the Server.\n' \
-                        f'• If you wish to reapply and join us again\n\n' \
-                        f'**Do the following**\n' \
-                        f'• Ping one of clan leaders using @thiername\n' \
-                        f'• Or just type " I need help reapplying "\n' \
-                        f'• We will assist you further, be kind and wait until we reply.'
-        await channel.send(embed=e)
+        for member in members:
+            name = data[member.id]['name'] if member.id in data.keys() else member.name
+            if name :
+                await member.edit(nick=f"re - {name}")
+            else :
+                await ctx.send("Member not found")
+            await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
+            info = {1054435038881665024 : ['re - apply' , 1055440286806966322] ,
+                    1152220160028057660 : ['UN-Qualified' , 1152228011798700092]}
+            await member.add_roles(discord.utils.get(ctx.guild.roles , name=info[ctx.guild.id][0]))
+            channel = self.client.get_channel(info[ctx.guild.id][1])
+            await channel.send(f"{member.mention} has been sent to re-apply by {ctx.author.mention}")
+            e = Embed(title="RE-APPLY \nYou have been Placed here due to the Following Reasons\n" ,
+                      color=Color.random())
+            e.description = f'• You have been Inactive from a Long time in our Clans. \n ' \
+                            f'• You Left without informing your Clans Leader/Co-Leader.\n' \
+                            f'• Your Activity seems Suspicious in the Server.\n' \
+                            f'• If you wish to reapply and join us again\n\n' \
+                            f'**Do the following**\n' \
+                            f'• Ping one of clan leaders using @thiername\n' \
+                            f'• Or just type " I need help reapplying "\n' \
+                            f'• We will assist you further, be kind and wait until we reply.'
+            await channel.send(embed=e)
 
     @commands.command(name="unq" , aliases=["unqualified"] , help='Move a member to unqualifed ' ,
                       usage=f'{p}unq <@mention>')
