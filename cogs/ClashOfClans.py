@@ -82,7 +82,7 @@ class My_View(View) :
         embed.description = f"{self.output_msg[self.pageno]}\n{self.last_updated}"
         embed.set_footer(text=f"{self.total_count}/50 ")
         await interaction.response.defer()
-        await interaction.message.edit(embed=embed)
+        await interaction.message.edit(embed=embed,)
 
     @discord.ui.button(style=discord.ButtonStyle.secondary , emoji='⬅️')
     async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
