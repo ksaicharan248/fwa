@@ -214,7 +214,7 @@ class profile_link(commands.Cog) :
             'clan': coc_data['clan']['tag'],
             'clanname': coc_data['clan']['name']
         }
-        if previous_data == user_info[user_id]:
+        if previous_data['tag'] == user_info[user_id]['tag']:
             embed = Embed(title=f'<:th{str(coc_data["townHallLevel"])}:{COC.get_id(coc_data["townHallLevel"])}>  {coc_data["name"]} -{coc_data["tag"]}' ,colour=Color.random())
             embed.description = f'\n```user : {ctx.author.mention if member is None else member.mention}\nname : {user_info[user_id]["name"]}\ntag  : {user_info[user_id]["tag"]}\nclanname : {user_info[user_id]["clanname"]}clan : {user_info[user_id]["clan"]}\n```'
             await ctx.send(embed=embed)
@@ -222,7 +222,7 @@ class profile_link(commands.Cog) :
             embed1 = Embed(
                 title=f'<:th{str(coc_data["townHallLevel"])}:{COC.get_id(coc_data["townHallLevel"])}>  {coc_data["name"]} -{coc_data["tag"]}' ,
                 colour=Color.random())
-            embed1.description = f'\n```user : {ctx.author.mention if member is None else member.mention}\nname : {previous_data["name"]}\ntag  : {previous_data["tag"]}\nclanname : {previous_data["clanname"]}clan : {previous_data["clan"]}\n```'
+            embed1.description = f'\n```user     : ```{ctx.author.mention if member is None else member.mention}\n```name     : {previous_data["name"]}\ntag      : {previous_data["tag"]}\nclanname : {previous_data["clanname"]}clan     : {previous_data["clan"]}\n```'
             await ctx.send(embed=embed1)
             embed = Embed(
                 title=f'<:th{str(coc_data["townHallLevel"])}:{COC.get_id(coc_data["townHallLevel"])}>  {coc_data["name"]} -{coc_data["tag"]}' ,
