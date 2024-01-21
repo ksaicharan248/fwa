@@ -168,7 +168,7 @@ class clan_list(discord.ui.View) :
 
     @discord.ui.select(placeholder="Select your clan" , options=options , min_values=1 , max_values=1)
     async def select_callback(self , interaction: discord.Interaction , select: discord.ui.select) :
-        if select.values[0] :
+        if select.values[0] and self.interacted_user.id == interaction.user.id :
             select.disabled = True
             await interaction.response.edit_message(view=self)
             clantag = select.values[0]
@@ -192,6 +192,8 @@ class clan_list(discord.ui.View) :
                             f' <:members:1161298479050670162> : {clt["members"]}/50\n\n' \
                             f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}>'
             await interaction.followup.send(embed=e , ephemeral=True, view=new(clan_tag=clantag))
+        else :
+            await interaction.response.send_message('you are not supposed to change the clan' , ephemeral=True)
 
     @discord.ui.button(style=discord.ButtonStyle.red , label="Close" , custom_id="1" , row=1)
     async def button_callback1(self , interaction: discord.Interaction , button: discord.ui.button) :
@@ -216,7 +218,7 @@ class clan_list(discord.ui.View) :
                 pickle.dump(user_data , f)
 
         else :
-            await interaction.response.send_message(f'{member.mention} does not have any of the specified roles.' ,
+            await interaction.response.send_message(f'{member.mention} you cant close the chat make sure to ping any helpers or leaders' ,
                                                     ephemeral=True)
 
     @discord.ui.button(style=discord.ButtonStyle.green , label="🔃" , custom_id="3" , row=1)
