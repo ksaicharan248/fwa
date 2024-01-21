@@ -27,13 +27,41 @@ def verify(player , token) :
 def get_user(tag) :
     reso = requests.get('https://api.clashofclans.com/v1/players/%23' + tag , headers=header)
     userinfo = reso.json()
-    return userinfo
+    if reso.status_code == 200 :
+        return userinfo
+    else :
+        raise Exception(f"{userinfo}")
 
 
 def getclan(tag) :
     resp = requests.get('https://api.clashofclans.com/v1/clans/%23' + tag , headers=header)
     claninfo = resp.json()
     return claninfo
+
+
+def getclaninfo() :
+    # resso = requests.get('https://api.clashofclans.com/v1/clans/%23U0LPRYL2/warlog?limit=1',headers=header)
+    # laninfoo = resso.json()
+    url = f'https://api.clashofclans.com/v1/clans/%23U0LPRYL2/warlog?limit=1'
+    response = requests.get(url , headers=header)
+
+    # Check if the request was successful (status code 200)
+    if response.status_code == 200 :
+        # Parse the JSON response
+        data = response.json()
+        print(data)
+
+        # Extract and print information about each member
+        for member in data['memberList'] :
+            member_name = member['name']
+            war_win_bonus = member['warWinBonus']
+            print(f"{member_name}: War Win Bonus - {war_win_bonus}")
+    else :
+        print(f"Error: {response.status_code}")
+        print(response.text)  # return claninfoo
+
+
+# Associate Professor
 
 
 def get_id(th) :
@@ -122,8 +150,6 @@ def get_hero_id(id) :
         return None
 
 
-
-
 def fwa_clan_data(tag) :
     url = f"https://fwastats.com/Clan/{tag.strip('#')}/Weight"
     clan_weight = {}
@@ -168,5 +194,5 @@ def fwa_clan_data(tag) :
 
 
 if __name__ == '__main__' :
-    sudo = get_user("#")
+    sudo = getclaninfo()
     print(sudo)

@@ -68,7 +68,7 @@ async def on_member_remove(member) :
     owner = await client.fetch_user(int(765929481311354881))
     with open("datasheets/userdata.pkl" , "rb") as file :
         user_data = pickle.load(file)
-    with open("datasheets/leader_userdata.pkl" , 'rb') as foo:
+    with open("datasheets/leader_userdata.pkl" , 'rb') as foo :
         token = pickle.load(foo)
     if member.id in user_data.keys() :
         try :
@@ -85,9 +85,9 @@ async def on_member_remove(member) :
         for clantag , ids in token.items() :
             if ids == 241897116815851530 :
                 pop_tag = clantag
-        try:
+        try :
             del token[pop_tag]
-        except:
+        except :
             token.pop(pop_tag)
         with open("datasheets/leader_userdata.pkl" , "wb") as file :
             pickle.dump(token , file)
@@ -115,7 +115,6 @@ async def on_member_join(member) :
                                 f"a space, we will recruit you. Till then we will put you in <#1055439744739315743> " \
                                 f"\n\n🚨Note - We don’t recruit FWA BANNED players."
             await welcome_channel.send(embed=embed)
-
 
 
 @client.hybrid_command(name='ask' , help="Ask any thing with AI")
@@ -150,54 +149,60 @@ async def reload(ctx) :
     await ctx.send(f"Synced {len(synced)} commands.")
 
 
-
 @commands.has_any_role('🔰ADMIN🔰')
-@client.command(name='create_category_channel',aliases=['ccc'])
-async def create_category_channel(ctx, category_name ,role_a_name:discord.Role, role_b_name:discord.Role):
+@client.command(name='create_category_channel' , aliases=['ccc'])
+async def create_category_channel(ctx , category_name , role_a_name: discord.Role , role_b_name: discord.Role) :
     guild = ctx.guild
-    overwrites = {guild.default_role : discord.PermissionOverwrite(view_channel=False) }
+    overwrites = {guild.default_role : discord.PermissionOverwrite(view_channel=False)}
     lead_role = discord.utils.get(guild.roles , name=role_a_name.name)
     meber_role = discord.utils.get(guild.roles , name=role_b_name.name)
     # Create category
     category = await guild.create_category(category_name)
-    chanel1_create = await category.create_text_channel( '『☘』leadership-chat', overwrites=overwrites)
-    await chanel1_create.set_permissions(lead_role , read_messages=True ,send_messages=True , read_message_history=True ,manage_messages=True,attach_files=True,mention_everyone=True)
-    await chanel1_create.set_permissions(meber_role , read_messages=False)
-    chanel2_create = await category.create_text_channel('『💭』clan-chat', overwrites=overwrites)
-    await chanel2_create.set_permissions(lead_role , read_messages=True , send_messages=True,
+    chanel1_create = await category.create_text_channel('『☘』leadership-chat' , overwrites=overwrites)
+    await chanel1_create.set_permissions(lead_role , read_messages=True , send_messages=True ,
                                          read_message_history=True , manage_messages=True , attach_files=True ,
-                                         mention_everyone=True,add_reactions=True)
+                                         mention_everyone=True)
+    await chanel1_create.set_permissions(meber_role , read_messages=False)
+    chanel2_create = await category.create_text_channel('『💭』clan-chat' , overwrites=overwrites)
+    await chanel2_create.set_permissions(lead_role , read_messages=True , send_messages=True ,
+                                         read_message_history=True , manage_messages=True , attach_files=True ,
+                                         mention_everyone=True , add_reactions=True)
     await chanel2_create.set_permissions(meber_role , read_messages=True , send_messages=True ,
                                          read_message_history=True , manage_messages=False , attach_files=True ,
-                                         mention_everyone=True,add_reactions=True)
-    chanel3_create = await category.create_text_channel( '『📢』clan-announcements', overwrites=overwrites)
+                                         mention_everyone=True , add_reactions=True)
+    chanel3_create = await category.create_text_channel('『📢』clan-announcements' , overwrites=overwrites)
     await chanel3_create.set_permissions(lead_role , read_messages=True , send_messages=True ,
                                          read_message_history=True , manage_messages=True , attach_files=True ,
                                          mention_everyone=True)
-    await chanel3_create.set_permissions(meber_role , read_messages=True , send_messages=False , read_message_history=True ,
-                                  manage_messages=False , use_external_emojis=False , add_reactions=True)
-    channel_names = ['『📘』war-tracker','『📗』donation-tracker','『📕』player-tracker','『📙』clan-tracker' ,'『⏱』activity-tracker','『📔』raids-tracker','『📊』boost-board','『🏓』clan-games-tracker']
-    for channel_name in channel_names:
-        channel = await category.create_text_channel(channel_name, overwrites=overwrites)
+    await chanel3_create.set_permissions(meber_role , read_messages=True , send_messages=False ,
+                                         read_message_history=True , manage_messages=False , use_external_emojis=False ,
+                                         add_reactions=True)
+    channel_names = ['『📘』war-tracker' , '『📗』donation-tracker' , '『📕』player-tracker' , '『📙』clan-tracker' ,
+                     '『⏱』activity-tracker' , '『📔』raids-tracker' , '『📊』boost-board' , '『🏓』clan-games-tracker']
+    for channel_name in channel_names :
+        channel = await category.create_text_channel(channel_name , overwrites=overwrites)
 
-        await channel.set_permissions(lead_role , read_messages=True ,send_messages=False , read_message_history=True ,manage_messages=True)
-        await channel.set_permissions(meber_role , read_messages=True , send_messages=False , read_message_history=True,manage_messages=False,use_external_emojis=False,add_reactions=False)
+        await channel.set_permissions(lead_role , read_messages=True , send_messages=False , read_message_history=True ,
+                                      manage_messages=True)
+        await channel.set_permissions(meber_role , read_messages=True , send_messages=False ,
+                                      read_message_history=True , manage_messages=False , use_external_emojis=False ,
+                                      add_reactions=False)
         await ctx.send(f'Category "{category_name}" and channel "{channel_name}" created with permissions!')
 
 
 @client.command(name='deltac')
 @commands.is_owner()
-async def delete_all_channels(ctx):
+async def delete_all_channels(ctx) :
     guild = ctx.guild
 
     # Get the category
     category = ctx.channel.category
-    if category:
+    if category :
         # Iterate through channels in the category and delete them
-        for channel in category.channels:
+        for channel in category.channels :
             await channel.delete()
         await category.delete()
-    else:
+    else :
         await ctx.send(f'Category "{category}" not found.')
 
 
@@ -340,7 +345,7 @@ async def war(ctx , target=None) :
     cid = ctx.channel.category.id
     cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682 , 'THE SHIELD'] ,
                1054458642541334599 : ["2Q8URCU88" , 1055418808833159189 , 'WARNING'] ,
-               1063290412397244587 : ["2G9URUGGC" , 1063289659586785362 , 'BROTHERS'],
+               1063290412397244587 : ["2G9URUGGC" , 1063289659586785362 , 'BROTHERS'] ,
                1188693015921950890 : ["GC8QRPUJ" , 1188693492503957514 , "AVENGERS"]}
     await ctx.message.delete()
     if cid in cidinfo.keys() :
@@ -390,68 +395,87 @@ async def war(ctx , target=None) :
         await ctx.send(file=discord.File(image_bytes , filename="template.png"))
 
 
-
 @client.command()
-async def load(ctx, extension):
-    if ctx.author.id == ctx.author.id:
+async def load(ctx , extension) :
+    if ctx.author.id == ctx.author.id :
         await client.load_extension(f'cogs.{extension}')
-        my_embed = discord.Embed(title=":white_check_mark: Command load complete",
-                                 description="Loaded " + f'{extension}!', color=0x6136c2)
+        my_embed = discord.Embed(title=":white_check_mark: Command load complete" ,
+                                 description="Loaded " + f'{extension}!' , color=0x6136c2)
         await ctx.send(embed=my_embed)
-    else:
-        my_embed = discord.Embed(title=":x: Error", description="Only the bot owner can use this command",
+    else :
+        my_embed = discord.Embed(title=":x: Error" , description="Only the bot owner can use this command" ,
                                  color=0x6136c2)
         await ctx.send(embed=my_embed)
 
 
 # Reload Cog
 @client.command()
-async def reloads(ctx):
-    if ctx.author.id == ctx.author.id:
-        for filename in os.listdir('./cogs') :
-            if filename.endswith('.py') :
-                try:
-                    await client.unload_extension(f'cogs.{filename[:-3]}')
-                except:
-                    await ctx.send("Error while unloading " + f'{filename[:-3]}')
-                try:
-                    await client.load_extension(f'cogs.{filename[:-3]}')
-                except:
-                    await ctx.send("Error while unloading " + f'{filename[:-3]}')
-                my_embed = discord.Embed(title=":white_check_mark: Command reload complete" ,
-                                         description="Reloaded " + f'{filename[:-3]}!' , color=0x6136c2)
-                await ctx.send(embed=my_embed)
+async def reloads(ctx , file_name) :
+    if file_name is None :
+        if ctx.author.id == ctx.author.id :
+            for filename in os.listdir('./cogs') :
+                if filename.endswith('.py') :
+                    try :
+                        await client.unload_extension(f'cogs.{filename[:-3]}')
+                    except :
+                        await ctx.send("Error while unloading " + f'{filename[:-3]}')
+                    try :
+                        await client.load_extension(f'cogs.{filename[:-3]}')
+                    except :
+                        await ctx.send("Error while unloading " + f'{filename[:-3]}')
+                    my_embed = discord.Embed(title=":white_check_mark: Command reload complete" ,
+                                             description="Reloaded " + f'{filename[:-3]}!' , color=0x6136c2)
+                    await ctx.send(embed=my_embed)
 
 
-    else:
-        my_embed = discord.Embed(title=":x: Error", description="Only the bot owner can use this command",
-                                 color=0x6136c2)
-        await ctx.send(embed=my_embed)
+        else :
+            my_embed = discord.Embed(title=":x: Error" , description="Only the bot owner can use this command" ,
+                                     color=0x6136c2)
+            await ctx.send(embed=my_embed)
+
+    else :
+        if ctx.author.id == ctx.author.id :
+            try :
+                await client.unload_extension(f'cogs.{file_name}')
+            except :
+                await ctx.send("Error while unloading " + f'{file_name}')
+            try :
+                await client.load_extension(f'cogs.{file_name}')
+            except :
+                await ctx.send("Error while unloading " + f'{file_name}')
+            my_embed = discord.Embed(title=":white_check_mark: Command reload complete" ,
+                                     description="Reloaded " + f'{file_name}!' , color=0x6136c2)
+            await ctx.send(embed=my_embed)
+        else :
+            my_embed = discord.Embed(title=":x: Error" , description="Only the bot owner can use this command" ,
+                                     color=0x6136c2)
+            await ctx.send(embed=my_embed)
 
 
 # Unload Cog
 @client.command()
-async def unload(ctx, extension):
-    if ctx.author.id == ctx.author.id:
+async def unload(ctx , extension) :
+    if ctx.author.id == ctx.author.id :
         await client.unload_extension(f'cogs.{extension}')
-        my_embed = discord.Embed(title=":white_check_mark: Command unload complete",
-                                 description="Unloaded " + f'{extension}!', color=0x6136c2)
+        my_embed = discord.Embed(title=":white_check_mark: Command unload complete" ,
+                                 description="Unloaded " + f'{extension}!' , color=0x6136c2)
         await ctx.send(embed=my_embed)
-    else:
-        my_embed = discord.Embed(title=":x: Error", description="Only the bot owner can use this command",
+    else :
+        my_embed = discord.Embed(title=":x: Error" , description="Only the bot owner can use this command" ,
                                  color=0x6136c2)
         await ctx.send(embed=my_embed)
 
 
-async def cogs_loader():
-    for filename in os.listdir('./cogs'):
-        if filename.endswith('.py'):
+async def cogs_loader() :
+    for filename in os.listdir('./cogs') :
+        if filename.endswith('.py') :
             await client.load_extension(f'cogs.{filename[:-3]}')
 
 
-async def start_alive():
+async def start_alive() :
     await cogs_loader()
     await client.start(keyy)
+
 
 if __name__ == '__main__' :
     keep_alive()
