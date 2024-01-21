@@ -215,6 +215,7 @@ class tickets(discord.ui.View) :
 
     @discord.ui.button(style=discord.ButtonStyle.green , label="🎟 Create Ticket" , custom_id="1" , row=1)
     async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
+        await interaction.response.defer()
         with open('datasheets/userdata.pkl' , 'rb') as file :
             user_data = pickle.load(file)
         if interaction.user.id not in user_data.keys() :
@@ -244,7 +245,6 @@ class tickets(discord.ui.View) :
                 await entrychannel.send(embed=e)
                 with open('datasheets/tickets.pkl' , 'wb') as file :
                     pickle.dump(ticket_data , file)
-
 
 class EntrySystem(commands.Cog) :
     def __init__(self , client) :
