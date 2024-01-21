@@ -221,15 +221,12 @@ class tickets(discord.ui.View) :
             e = discord.Embed(title="Please link your account here\n<#1198540991020400672>" ,
                               colour=discord.Colour.red())
             await interaction.response.send_message(embed=e , ephemeral=True)
-            await interaction.response.defer()
-
         else :
             with open('datasheets/tickets.pkl' , 'rb') as file :
                 ticket_data = pickle.load(file)
             if interaction.user.id in ticket_data.keys() :
                 e = discord.Embed(title="You already have an active ticket" , colour=discord.Colour.red())
                 await interaction.response.send_message(embed=e , ephemeral=True)
-                await interaction.response.defer()
 
             else :
                 user_coc_data = COC.get_user(tag=user_data[interaction.user.id]['tag'].strip('#'))
@@ -248,6 +245,7 @@ class tickets(discord.ui.View) :
                 await entrychannel.send(embed=e)
                 with open('datasheets/tickets.pkl' , 'wb') as file :
                     pickle.dump(ticket_data , file)
+
 
 class EntrySystem(commands.Cog) :
     def __init__(self , client) :
