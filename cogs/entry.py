@@ -67,7 +67,7 @@ class clan_list(discord.ui.View) :
             with open('datasheets/tickets.pkl','rb') as f:
                 user_data = pickle.load(f)
             player_idd = self.interacted_user.id
-            if player_idd in user_data.keys():
+            if player_idd in user_data.keys() :
                 try:
                     del user_data[player_idd]
                 except:
