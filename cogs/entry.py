@@ -6,10 +6,9 @@ import pickle
 
 
 class clan_list(discord.ui.View) :
-    def __init__(self ,interacted_user) :
+    def __init__(self , interacted_user) :
         self.interacted_user = interacted_user
         super().__init__(timeout=None)
-
 
     options_data = [
         {'label' : 'The Shield' , 'description' : 'Level : 21 | 💎FWA💎 | leader : AQUAMAN' , 'value' : 'U0LPRYL2'} ,
@@ -22,8 +21,8 @@ class clan_list(discord.ui.View) :
         {'label' : '! The Order !' , 'description' : 'Level : 3 | 💎FWA💎 | leader : Umer Raheeq' ,
          'value' : '2QR0Q8QYL'}]
 
-    options = [discord.SelectOption(label=data['label'], description=data['description'], value=data['value']) for data in options_data]
-
+    options = [discord.SelectOption(label=data['label'] , description=data['description'] , value=data['value']) for
+               data in options_data]
 
     @discord.ui.select(placeholder="Select your clan" , options=options , min_values=1 , max_values=1)
     async def select_callback(self , interaction: discord.Interaction , select: discord.ui.select) :
@@ -50,12 +49,11 @@ class clan_list(discord.ui.View) :
                             f'<:cp:1161299634916966400> : {"1" if clt["clanCapital"] == {} else clt["clanCapital"]["capitalHallLevel"]}    ' \
                             f' <:members:1161298479050670162> : {clt["members"]}/50\n\n' \
                             f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}>'
-            await interaction.followup.send(embed=e ,view=new(clan_tag=clantag))
-
+            await interaction.followup.send(embed=e , view=new(clan_tag=clantag))
 
     @discord.ui.button(style=discord.ButtonStyle.red , label="Close" , custom_id="1" , row=1)
     async def button_callback1(self , interaction: discord.Interaction , button: discord.ui.button) :
-        roles_to_check = ['🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️','LEADERS' ,'CO-LEADERS']
+        roles_to_check = ['🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'LEADERS' , 'CO-LEADERS']
         member = interaction.user
         has_any_role = any(role.name in roles_to_check for role in member.roles)
         if has_any_role :
@@ -64,20 +62,20 @@ class clan_list(discord.ui.View) :
             embed = discord.Embed(title=f"{interaction.channel.name} is closed by {interaction.user.display_name} ")
             await close_channel.send(embed=embed)
             await interaction.channel.delete()
-            with open('datasheets/tickets.pkl','rb') as f:
+            with open('datasheets/tickets.pkl' , 'rb') as f :
                 user_data = pickle.load(f)
             player_idd = self.interacted_user.id
             if player_idd in user_data.keys() :
-                try:
+                try :
                     del user_data[player_idd]
-                except:
+                except :
                     user_data[player_idd].pop()
-            with open('datasheets/tickets.pkl' , 'wb') as f:
+            with open('datasheets/tickets.pkl' , 'wb') as f :
                 pickle.dump(user_data , f)
 
         else :
-            await interaction.response.send_message(f'{member.mention} does not have any of the specified roles.',ephemeral=True)
-
+            await interaction.response.send_message(f'{member.mention} does not have any of the specified roles.' ,
+                                                    ephemeral=True)
 
     @discord.ui.button(style=discord.ButtonStyle.green , label="🔃" , custom_id="3" , row=1)
     async def button_callback3(self , interaction: discord.Interaction , button: discord.ui.button) :
@@ -97,18 +95,15 @@ class clan_list(discord.ui.View) :
         await interaction.response.send_message(embed=e , ephemeral=True)
 
 
-
-
-
 class new(discord.ui.View) :
-    def __init__(self , clan_tag ) :
+    def __init__(self , clan_tag) :
         self.clanTag = clan_tag.strip('#')
         super().__init__(timeout=None)
 
     role = {'U0LPRYL2' : ['TSL' , 'THE SHIELD - #U0LPRYL2'] , '2Q8URCU88' : ['WAL' , '♤WARNING♤ - #2Q8URCU88'] ,
             '2G9URUGGC' : ['BTL' , 'BROTHERS - #2G9URUGGC'] , 'GC8QRPUJ' : ['AVL' , 'AVENGERS - #GC8QRPUJ'] ,
-            'QL9998CC' : ['PKL' , 'Pakistan Lovers - #QL9998CC'] ,'2QR0Q8QYL' : ['TOL' , '! The Order ! - #2QR0Q8QYL'] ,
-            '2G9V8PQJP' : ['HGL' , '♤HOGWARTS♤ - #2G9V8PQJP']}
+            'QL9998CC' : ['PKL' , 'Pakistan Lovers - #QL9998CC'] ,
+            '2QR0Q8QYL' : ['TOL' , '! The Order ! - #2QR0Q8QYL'] , '2G9V8PQJP' : ['HGL' , '♤HOGWARTS♤ - #2G9V8PQJP']}
 
     @discord.ui.button(style=discord.ButtonStyle.green , emoji='✅' , custom_id="1" , row=1)
     async def button_callback(self , interaction: discord.Interaction , button: discord.ui.button) :
@@ -203,14 +198,24 @@ class tickets(discord.ui.View) :
     def __init__(self) :
         super().__init__(timeout=None)
 
-    async def send_msg(self , channel: discord.TextChannel , guild: discord.Guild ,user) :
+    async def send_msg(self , channel: discord.TextChannel , guild: discord.Guild , user) :
         embed = discord.Embed(title=f'Welcome to {guild.name}' , colour=discord.Colour.random())
-        embed.description = f'Instructions : \n' \
+        embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n" \
+                            f"If you wish to join one of our clans then please follow the steps below.\n\n" \
+                            f"- **Step 1** : Post a picture of My Profile tab\n" \
+                            f"- **Step 2** : Post a picture of your 💎FWA💎 base \n" \
+                            f"If you don’t have a 💎FWA💎 base then you can type \n```$bases```" \
+                            f" OR visit <#1054438501233479760>\n " \
+                            f"- **Step 3** : Have some patience, post the following details and select the clan below " \
+                            f"you will be assisted shortly.\n\nWe may not have an instant space but **ASAP** we have " \
+                            f"a space, we will recruit you. \n\n" \
+                            f'Instructions : \n' \
                             f'- To join a Clan select a clan below\n' \
                             f'- If you select a clan then respective team gets arrived\n' \
                             f'- If you need help use the button below\n' \
-                            f'- To close the ticket use the button below\n' \
-                            f'- Thank you '
+                            f'- To close the ticket ping any Helpers\n' \
+                            f'\n\n🚨Note - We don’t recruit FWA BANNED players'
+
         await channel.send(embed=embed , view=clan_list(user))
 
     @discord.ui.button(style=discord.ButtonStyle.green , label="🎟 Create Ticket" , custom_id="1" , row=1)
@@ -266,25 +271,23 @@ class EntrySystem(commands.Cog) :
         await ctx.message.delete()
         await ctx.send('Hello wanna join in any of our Team of clans then follow the below steps ')
         embed = discord.Embed(title=f"{ctx.guild.name}\n" , colour=discord.Colour.random())
-        embed.description=f'\n- To joins us please hit the ticket create button below \n\n**WE ACCEPT ONLY FOLLOWING Townhalls\n\n**' \
-                          f'    <:th16:1184685970814156800> <:th15:1158776040525680694> <:th14:1157934828784734299> <:th13:1157933611337666620> <:th12:1157933184529469471> <:th11:1157932788683653170>'
-        await ctx.send(embed=embed,view=tickets())
+        embed.description = f'\n- To joins us please hit the ticket create button below \n\n**WE ACCEPT ONLY FOLLOWING Townhalls\n\n**' \
+                            f'    <:th16:1184685970814156800> <:th15:1158776040525680694> <:th14:1157934828784734299> <:th13:1157933611337666620> <:th12:1157933184529469471> <:th11:1157932788683653170>'
+        await ctx.send(embed=embed , view=tickets())
 
     @commands.command(name='close')
-    async def create_close(self , ctx , user : discord.Member = None) :
-        with open('datasheets/tickets.pkl','rb') as f:
+    async def create_close(self , ctx , user: discord.Member = None) :
+        with open('datasheets/tickets.pkl' , 'rb') as f :
             user_data = pickle.load(f)
         await ctx.message.delete()
-        if user is None:
+        if user is None :
             del user_data[ctx.author.id]
-        else:
+        else :
             del user_data[user.id]
 
         await ctx.send('done')
-        with open('datasheets/tickets.pkl' , 'wb') as f:
+        with open('datasheets/tickets.pkl' , 'wb') as f :
             pickle.dump(user_data , f)
-
-
 
 
 async def setup(bot) :
