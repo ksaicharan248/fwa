@@ -14,7 +14,7 @@ class FeedbackModal(discord.ui.View) :
         modal = NewModal()
         await interaction.response.send_modal(modal)
 
-    @discord.ui.button(style=discord.ButtonStyle.gray , emoji='Unlink' , custom_id="2" , row=1)
+    @discord.ui.button(style=discord.ButtonStyle.gray , label='Unlink' , custom_id="2" , row=1)
     async def button_callback3(self , interaction: discord.Interaction , button: discord.ui.button) :
         with open('datasheets/userdata.pkl' , 'rb') as file :
             user_data = pickle.load(file)
