@@ -5,6 +5,148 @@ import COC
 import pickle
 
 
+class FeedbackModal(discord.ui.View) :
+    def __init__(self) :
+        super().__init__(timeout=None)
+
+    @discord.ui.button(style=discord.ButtonStyle.green , label="🔗 Link Account" , custom_id="1" , row=1)
+    async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
+        modal = NewModal()
+        await interaction.response.send_modal(modal)
+
+    @discord.ui.button(style=discord.ButtonStyle.gray , emoji='Unlink' , custom_id="2" , row=1)
+    async def button_callback3(self , interaction: discord.Interaction , button: discord.ui.button) :
+        with open('datasheets/userdata.pkl' , 'rb') as file :
+            user_data = pickle.load(file)
+        if interaction.user.id in user_data.keys() :
+            del user_data[interaction.user.id]
+            with open('datasheets/userdata.pkl' , 'wb') as file :
+                pickle.dump(user_data , file)
+            e = discord.Embed(title="Unlinked" , colour=discord.Color.random())
+            await interaction.response.send_message(embed=e , ephemeral=True)
+        else :
+            e = discord.Embed(title="You Don`t have any account linked yet" , colour=discord.Color.red())
+            await interaction.response.send_message(embed=e , ephemeral=True)
+
+    @discord.ui.button(style=discord.ButtonStyle.red , label="Help" , custom_id="3" , row=1)
+    async def button_callback1(self , interaction: discord.Interaction , button: discord.ui.button) :
+        e = discord.Embed(title="To Find a player tag" , colour=discord.Colour.random())
+        e.description = f'- Open Game\n' \
+                        '- Navigate to your accounts profile\n' \
+                        '- Near top left click copy icon to copy player tag to clipboard\n' \
+                        '- Make sure it is the player tag & not the clan\n' \
+                        '- View photo below for reference '
+        e.set_image(url='https://pixelcrux.com/Clash_of_Clans/Images/Game_UI/Player_Tag.png')
+        await interaction.response.send_message(embed=e , ephemeral=True)
+
+
+
+
+class NewModal(discord.ui.Modal , title="Link your profile") :
+    name = discord.ui.TextInput(label='Name' , placeholder="Please enter your in-game name " ,
+                                style=discord.TextStyle.short)
+    playe_tag = discord.ui.TextInput(label='Player Tag' , placeholder="Please enter your player tag " ,
+                                     style=discord.TextStyle.short)
+
+    async def on_submit(self , interaction: discord.Interaction) :
+        with open('datasheets/userdata.pkl' , 'rb') as file :
+            user_data = pickle.load(file)
+        if interaction.user.id in user_data.keys() :
+            e = discord.Embed(
+                title=f"<:ver:1157952898362261564> You have already linked your account \nLinked account:\n{user_data[interaction.user.id]['name']} - {user_data[interaction.user.id]['tag']}" ,
+                colour=discord.Color.random())
+            await interaction.response.send_message(embed=e , ephemeral=True)
+        else :
+            try :
+                player_data = COC.get_user(tag=self.playe_tag.value.strip('#'))
+            except Exception as e :
+                player_data = False
+            if player_data :
+                e2 = discord.Embed(
+                    title=f'<:th{str(player_data["townHallLevel"])}:{COC.get_id(player_data["townHallLevel"])}>  {player_data["name"]} -{player_data["tag"]}' ,
+                    color=discord.Color.random())
+                e2.description = f'\n<:ver:1157952898362261564> Linked {player_data["tag"]} to {interaction.user.mention}'
+                e2.set_footer(text=f"Linked by {interaction.user.display_name} ")
+                await interaction.response.send_message(embed=e2 , ephemeral=True)
+                user_data[interaction.user.id] = {'tag' : player_data['tag'].strip('#') , 'name' : player_data['name'] ,
+                                                  'clan' : player_data['clan'][
+                                                      'tag'] if 'clan' in player_data else 'no clan' ,
+                                                  'clanname' : player_data['clan'][
+                                                      'name'] if 'clan' in player_data else 'no clan'}
+
+                with open('datasheets/userdata.pkl' , 'wb') as file :
+                    pickle.dump(user_data , file)
+
+            else :
+                e = discord.Embed(title="Invalid player tag" ,
+                                  description=f'No data found on this tag \ntag : {self.playe_tag.value}' ,
+                                  colour=discord.Color.red())
+                await interaction.response.send_message(embed=e , ephemeral=True)
+
+    async def on_error(self , interaction: discord.Interaction , error: Exception) :
+        await interaction.response.send_message(error , ephemeral=True)
+
+
+
+
+class tickets(discord.ui.View) :
+    def __init__(self) :
+        super().__init__(timeout=None)
+
+    async def send_msg(self , channel: discord.TextChannel , guild: discord.Guild , user) :
+        embed = discord.Embed(title=f'Welcome to {guild.name}' , colour=discord.Colour.random())
+        embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n" \
+                            f"If you wish to join one of our clans then please follow the steps below.\n\n" \
+                            f"- **Step 1** : Post a picture of My Profile tab\n" \
+                            f"- **Step 2** : Post a picture of your 💎FWA💎 base \n" \
+                            f"If you don’t have a 💎FWA💎 base then you can type \n```$bases```" \
+                            f" OR visit <#1054438501233479760>\n " \
+                            f"**•Step 3** : Have some patience, and select the clan you wish to join. " \
+                            f"you will be assisted shortly.\n\n" \
+                            f'Instructions : \n' \
+                            f'- To join a Clan select a clan below\n' \
+                            f'- If you select a clan then respective team gets arrived\n' \
+                            f'- If you need help use the button below\n' \
+                            f'- To close the ticket ping the Helpers\n' \
+                            f'\n\n🚨Note - We don’t recruit FWA BANNED players'
+
+        await channel.send(embed=embed , view=clan_list(user))
+
+    @discord.ui.button(style=discord.ButtonStyle.green , label="🎟 Create Ticket" , custom_id="1" , row=1)
+    async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
+        with open('datasheets/userdata.pkl' , 'rb') as file :
+            user_data = pickle.load(file)
+        if interaction.user.id not in user_data.keys() :
+            e = discord.Embed(title="Please link your account here\n<#1198540991020400672>" ,
+                              colour=discord.Colour.red())
+            await interaction.response.send_message(embed=e , ephemeral=True)
+        else :
+            with open('datasheets/tickets.pkl' , 'rb') as file :
+                ticket_data = pickle.load(file)
+            if interaction.user.id in ticket_data.keys() :
+                e = discord.Embed(title="You already have an active ticket" , colour=discord.Colour.red())
+                await interaction.response.send_message(embed=e , ephemeral=True)
+
+            else :
+                user_coc_data = COC.get_user(tag=user_data[interaction.user.id]['tag'].strip('#'))
+                ticket_data[interaction.user.id] = 1
+                guild = interaction.guild
+                user = interaction.user
+                category = guild.get_channel(1198538979755180142)
+                channel_name = f'Th-{user_coc_data["townHallLevel"]}-{user_coc_data["name"]}'
+                overwrites = {guild.default_role : discord.PermissionOverwrite(read_messages=False) ,
+                              user : discord.PermissionOverwrite(read_messages=True , send_messages=True)}
+                channel1 = await guild.create_text_channel(channel_name , category=category , overwrites=overwrites)
+                await self.send_msg(channel1 , guild , user)
+                e = discord.Embed(title=f"Ticket created: {channel1.mention}" , color=discord.Color.green())
+                await interaction.response.send_message(embed=e , ephemeral=True)
+                entrychannel = guild.get_channel(1198542838699409439)
+                await entrychannel.send(embed=e)
+                with open('datasheets/tickets.pkl' , 'wb') as file :
+                    pickle.dump(ticket_data , file)
+
+
+
 class clan_list(discord.ui.View) :
     def __init__(self , interacted_user) :
         self.interacted_user = interacted_user
@@ -49,7 +191,7 @@ class clan_list(discord.ui.View) :
                             f'<:cp:1161299634916966400> : {"1" if clt["clanCapital"] == {} else clt["clanCapital"]["capitalHallLevel"]}    ' \
                             f' <:members:1161298479050670162> : {clt["members"]}/50\n\n' \
                             f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}>'
-            await interaction.followup.send(embed=e , view=new(clan_tag=clantag))
+            await interaction.followup.send(embed=e , ephemeral=True, view=new(clan_tag=clantag))
 
     @discord.ui.button(style=discord.ButtonStyle.red , label="Close" , custom_id="1" , row=1)
     async def button_callback1(self , interaction: discord.Interaction , button: discord.ui.button) :
@@ -111,8 +253,11 @@ class new(discord.ui.View) :
         await interaction.response.edit_message(view=self)
         guild = interaction.guild
         rolename = discord.utils.get(guild.roles , name=self.role[self.clanTag][0])
+        leaders = discord.utils.get(guild.roles , name='LEADERS')
         channel = interaction.channel
         await channel.set_permissions(rolename , read_messages=True , send_messages=True , read_message_history=True ,
+                                      manage_messages=True , attach_files=True , mention_everyone=True)
+        await channel.set_permissions(leaders , read_messages=True , send_messages=True , read_message_history=True ,
                                       manage_messages=True , attach_files=True , mention_everyone=True)
         embed = discord.Embed(title=f"{self.role[self.clanTag][1]}")
         embed.description = '- Respective team will be arrived shortly\n- Please wait patiently,They will get back to you soon '
@@ -128,128 +273,6 @@ class new(discord.ui.View) :
         await interaction.delete_original_response()
 
 
-class NewModal(discord.ui.Modal , title="Link your profile") :
-    name = discord.ui.TextInput(label='Name' , placeholder="Please enter your in-game name " ,
-                                style=discord.TextStyle.short)
-    playe_tag = discord.ui.TextInput(label='Player Tag' , placeholder="Please enter your player tag " ,
-                                     style=discord.TextStyle.short)
-
-    async def on_submit(self , interaction: discord.Interaction) :
-        with open('datasheets/userdata.pkl' , 'rb') as file :
-            user_data = pickle.load(file)
-        if interaction.user.id in user_data.keys() :
-            e = discord.Embed(
-                title=f"<:ver:1157952898362261564> You have already linked your account \nLinked account:\n{user_data[interaction.user.id]['name']} - {user_data[interaction.user.id]['tag']}" ,
-                colour=discord.Color.random())
-            await interaction.response.send_message(embed=e , ephemeral=True)
-        else :
-            try :
-                player_data = COC.get_user(tag=self.playe_tag.value.strip('#'))
-            except Exception as e :
-                player_data = False
-            if player_data :
-                e2 = discord.Embed(
-                    title=f'<:th{str(player_data["townHallLevel"])}:{COC.get_id(player_data["townHallLevel"])}>  {player_data["name"]} -{player_data["tag"]}' ,
-                    color=discord.Color.random())
-                e2.description = f'\n<:ver:1157952898362261564> Linked {player_data["tag"]} to {interaction.user.mention}'
-                e2.set_footer(text=f"Linked by {interaction.user.display_name} ")
-                await interaction.response.send_message(embed=e2 , ephemeral=True)
-                user_data[interaction.user.id] = {'tag' : player_data['tag'].strip('#') , 'name' : player_data['name'] ,
-                                                  'clan' : player_data['clan'][
-                                                      'tag'] if 'clan' in player_data else 'no clan' ,
-                                                  'clanname' : player_data['clan'][
-                                                      'name'] if 'clan' in player_data else 'no clan'}
-
-                with open('datasheets/userdata.pkl' , 'wb') as file :
-                    pickle.dump(user_data , file)
-
-            else :
-                e = discord.Embed(title="Invalid player tag" ,
-                                  description=f'No data found on this tag \ntag : {self.playe_tag.value}' ,
-                                  colour=discord.Color.red())
-                await interaction.response.send_message(embed=e , ephemeral=True)
-
-    async def on_error(self , interaction: discord.Interaction , error: Exception) :
-        await interaction.response.send_message(error , ephemeral=True)
-
-
-class FeedbackModal(discord.ui.View) :
-    def __init__(self) :
-        super().__init__(timeout=None)
-
-    @discord.ui.button(style=discord.ButtonStyle.green , label="🔗 Link Account" , custom_id="1" , row=1)
-    async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
-        modal = NewModal()
-        await interaction.response.send_modal(modal)
-
-    @discord.ui.button(style=discord.ButtonStyle.red , label="Help" , custom_id="2" , row=1)
-    async def button_callback1(self , interaction: discord.Interaction , button: discord.ui.button) :
-        e = discord.Embed(title="To Find a player tag" , colour=discord.Colour.random())
-        e.description = f'- Open Game\n' \
-                        '- Navigate to your accounts profile\n' \
-                        '- Near top left click copy icon to copy player tag to clipboard\n' \
-                        '- Make sure it is the player tag & not the clan\n' \
-                        '- View photo below for reference '
-        e.set_image(url='https://pixelcrux.com/Clash_of_Clans/Images/Game_UI/Player_Tag.png')
-        await interaction.response.send_message(embed=e , ephemeral=True)
-
-
-class tickets(discord.ui.View) :
-    def __init__(self) :
-        super().__init__(timeout=None)
-
-    async def send_msg(self , channel: discord.TextChannel , guild: discord.Guild , user) :
-        embed = discord.Embed(title=f'Welcome to {guild.name}' , colour=discord.Colour.random())
-        embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n" \
-                            f"If you wish to join one of our clans then please follow the steps below.\n\n" \
-                            f"- **Step 1** : Post a picture of My Profile tab\n" \
-                            f"- **Step 2** : Post a picture of your 💎FWA💎 base \n" \
-                            f"If you don’t have a 💎FWA💎 base then you can type \n```$bases```" \
-                            f" OR visit <#1054438501233479760>\n " \
-                            f"- **Step 3** : Have some patience, post the following details and select the clan below " \
-                            f"you will be assisted shortly.\n\nWe may not have an instant space but **ASAP** we have " \
-                            f"a space, we will recruit you. \n\n" \
-                            f'Instructions : \n' \
-                            f'- To join a Clan select a clan below\n' \
-                            f'- If you select a clan then respective team gets arrived\n' \
-                            f'- If you need help use the button below\n' \
-                            f'- To close the ticket ping any Helpers\n' \
-                            f'\n\n🚨Note - We don’t recruit FWA BANNED players'
-
-        await channel.send(embed=embed , view=clan_list(user))
-
-    @discord.ui.button(style=discord.ButtonStyle.green , label="🎟 Create Ticket" , custom_id="1" , row=1)
-    async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
-        with open('datasheets/userdata.pkl' , 'rb') as file :
-            user_data = pickle.load(file)
-        if interaction.user.id not in user_data.keys() :
-            e = discord.Embed(title="Please link your account here\n<#1198540991020400672>" ,
-                              colour=discord.Colour.red())
-            await interaction.response.send_message(embed=e , ephemeral=True)
-        else :
-            with open('datasheets/tickets.pkl' , 'rb') as file :
-                ticket_data = pickle.load(file)
-            if interaction.user.id in ticket_data.keys() :
-                e = discord.Embed(title="You already have an active ticket" , colour=discord.Colour.red())
-                await interaction.response.send_message(embed=e , ephemeral=True)
-
-            else :
-                user_coc_data = COC.get_user(tag=user_data[interaction.user.id]['tag'].strip('#'))
-                ticket_data[interaction.user.id] = 1
-                guild = interaction.guild
-                user = interaction.user
-                category = guild.get_channel(1198538979755180142)
-                channel_name = f'Th-{user_coc_data["townHallLevel"]}-{user_coc_data["name"]}'
-                overwrites = {guild.default_role : discord.PermissionOverwrite(read_messages=False) ,
-                              user : discord.PermissionOverwrite(read_messages=True , send_messages=True)}
-                channel1 = await guild.create_text_channel(channel_name , category=category , overwrites=overwrites)
-                await self.send_msg(channel1 , guild , user)
-                e = discord.Embed(title=f"Ticket created: {channel1.mention}" , color=discord.Color.green())
-                await interaction.response.send_message(embed=e , ephemeral=True)
-                entrychannel = guild.get_channel(1198542838699409439)
-                await entrychannel.send(embed=e)
-                with open('datasheets/tickets.pkl' , 'wb') as file :
-                    pickle.dump(ticket_data , file)
 
 
 class EntrySystem(commands.Cog) :
