@@ -230,7 +230,6 @@ class tickets(discord.ui.View) :
             else :
                 user_coc_data = COC.get_user(tag=user_data[interaction.user.id]['tag'].strip('#'))
                 ticket_data[interaction.user.id] = 1
-                # Create a private text channel for the user
                 guild = interaction.guild
                 user = interaction.user
                 category = guild.get_channel(1198538979755180142)
@@ -238,11 +237,11 @@ class tickets(discord.ui.View) :
                 overwrites = {guild.default_role : discord.PermissionOverwrite(read_messages=False) ,
                               user : discord.PermissionOverwrite(read_messages=True , send_messages=True)}
                 channel1 = await guild.create_text_channel(channel_name , category=category , overwrites=overwrites)
+                await self.send_msg(channel1 , guild , user)
                 e = discord.Embed(title=f"Ticket created: {channel1.mention}" , color=discord.Color.green())
                 await interaction.response.send_message(embed=e , ephemeral=True)
                 entrychannel = guild.get_channel(1198542838699409439)
                 await entrychannel.send(embed=e)
-                await self.send_msg(channel1 , guild , interaction.user)
                 with open('datasheets/tickets.pkl' , 'wb') as file :
                     pickle.dump(ticket_data , file)
 
