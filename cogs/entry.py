@@ -215,19 +215,22 @@ class tickets(discord.ui.View) :
 
     @discord.ui.button(style=discord.ButtonStyle.green , label="🎟 Create Ticket" , custom_id="1" , row=1)
     async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
-        await interaction.response.defer()
         with open('datasheets/userdata.pkl' , 'rb') as file :
             user_data = pickle.load(file)
         if interaction.user.id not in user_data.keys() :
             e = discord.Embed(title="Please link your account here\n<#1198540991020400672>" ,
                               colour=discord.Colour.red())
             await interaction.response.send_message(embed=e , ephemeral=True)
+            await interaction.response.defer()
+
         else :
             with open('datasheets/tickets.pkl' , 'rb') as file :
                 ticket_data = pickle.load(file)
             if interaction.user.id in ticket_data.keys() :
                 e = discord.Embed(title="You already have an active ticket" , colour=discord.Colour.red())
                 await interaction.response.send_message(embed=e , ephemeral=True)
+                await interaction.response.defer()
+
             else :
                 user_coc_data = COC.get_user(tag=user_data[interaction.user.id]['tag'].strip('#'))
                 ticket_data[interaction.user.id] = 1
