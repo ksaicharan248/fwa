@@ -237,6 +237,7 @@ class clan_list(discord.ui.View) :
         await interaction.response.send_message(embed=e , ephemeral=True)
 
 
+
 class new(discord.ui.View) :
     def __init__(self , clan_tag) :
         self.clanTag = clan_tag.strip('#')
