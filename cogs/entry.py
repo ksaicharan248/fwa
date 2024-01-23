@@ -167,7 +167,7 @@ class clan_list(discord.ui.View) :
                 self.select_callback.add_option(label=label , value=value , description=description)
 
 
-    @discord.ui.select(placeholder="Select your clan" , min_values=1 , max_values=1)
+    @discord.ui.select(placeholder="currently available clans" , min_values=1 , max_values=1)
     async def select_callback(self , interaction: discord.Interaction , select: discord.ui.select) :
         if select.values[0] and self.interacted_user.id == interaction.user.id :
             select.disabled = True
