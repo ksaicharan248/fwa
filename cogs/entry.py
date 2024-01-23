@@ -93,7 +93,7 @@ class tickets(discord.ui.View) :
     def __init__(self) :
         super().__init__(timeout=None)
 
-    async def send_msg(self , channel: discord.TextChannel , guild: discord.Guild , user) :
+    async def send_msg(self , channel: discord.TextChannel , guild: discord.Guild , user , th) :
         embed = discord.Embed(title=f'Welcome to {guild.name}' , colour=discord.Colour.random())
         embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n" \
                             f"If you wish to join one of our clans then please follow the steps below.\n\n" \
@@ -109,8 +109,7 @@ class tickets(discord.ui.View) :
                             f'- If you need help use the button below\n' \
                             f'- To close the ticket ping the Helpers\n' \
                             f'\n\n🚨Note - We don’t recruit FWA BANNED players'
-
-        await channel.send(embed=embed , view=clan_list(user))
+        await channel.send(embed=embed , view=clan_list(user , th))
 
     @discord.ui.button(style=discord.ButtonStyle.green , label="🎟 Create Ticket" , custom_id="1" , row=1)
     async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
@@ -137,36 +136,38 @@ class tickets(discord.ui.View) :
                 overwrites = {guild.default_role : discord.PermissionOverwrite(read_messages=False) ,
                               user : discord.PermissionOverwrite(read_messages=True , send_messages=True)}
                 channel1 = await guild.create_text_channel(channel_name , category=category , overwrites=overwrites)
-                await self.send_msg(channel1 , guild , user)
-                e = discord.Embed(title=f"Ticket created: {channel1.mention}" , color=discord.Color.green())
+                e = discord.Embed(title=f"Ticket created: {channel1.name} by {user.name}" , color=discord.Color.green())
                 await interaction.response.send_message(embed=e , ephemeral=True)
                 entrychannel = guild.get_channel(1198542838699409439)
                 await entrychannel.send(embed=e)
+                await self.send_msg(channel1 , guild , user , user_coc_data["townHallLevel"])
+                await interaction.response.defer()
                 with open('datasheets/tickets.pkl' , 'wb') as file :
                     pickle.dump(ticket_data , file)
 
 
-
 class clan_list(discord.ui.View) :
-    def __init__(self , interacted_user) :
-        self.interacted_user = interacted_user
+
+    def __init__(self , interacted_user , th) :
         super().__init__(timeout=None)
+        self.interacted_user = interacted_user
+        self.th = th
+        self.optionsd()
 
-    options_data = [
-        {'label' : 'The Shield' , 'description' : 'Level : 21 | 💎FWA💎 | leader : AQUAMAN' , 'value' : 'U0LPRYL2'} ,
-        {'label' : 'Pakistan Lovers' , 'description' : 'Level : 20 | 💎FWA💎 | leader : king802' , 'value' : 'QL9998CC'} ,
-        {'label' : 'Avengers' , 'description' : 'Level : 18 | 💎FWA💎 | leader : Mai2' , 'value' : 'GC8QRPUJ'} ,
-        {'label' : '♤WARNING♤' , 'description' : 'Level : 12 | 💎FWA💎 | leader : Tiger' , 'value' : '2Q8URCU88'} ,
-        {'label' : 'BROTHERS' , 'description' : 'Level : 7 | 💎FWA💎 | leader : ᵀᵒᵖᴳᵘⁿ『Maverick' ,
-         'value' : '2G9URUGGC'} ,
-        {'label' : '♤HOGWARTS♤' , 'description' : 'Level : 4 | 💎FWA💎 | leader : Tiger' , 'value' : '2G9V8PQJP'} ,
-        {'label' : '! The Order !' , 'description' : 'Level : 3 | 💎FWA💎 | leader : Umer Raheeq' ,
-         'value' : '2QR0Q8QYL'}]
+    def optionsd(self) :
+        townhall = self.th
+        with open('datasheets/optimaltownhall.pkl' , 'rb') as file :
+            options_data = pickle.load(file)
+        self.select_callback.options = []
+        for values , data in options_data.items() :
+            if townhall in data['Townhall'] :
+                label = data['label']
+                description = data['description']
+                value = data['value']
+                self.select_callback.add_option(label=label , value=value , description=description)
 
-    options = [discord.SelectOption(label=data['label'] , description=data['description'] , value=data['value']) for
-               data in options_data]
 
-    @discord.ui.select(placeholder="Select your clan" , options=options , min_values=1 , max_values=1)
+    @discord.ui.select(placeholder="Select your clan" , min_values=1 , max_values=1)
     async def select_callback(self , interaction: discord.Interaction , select: discord.ui.select) :
         if select.values[0] and self.interacted_user.id == interaction.user.id :
             select.disabled = True
@@ -191,7 +192,7 @@ class clan_list(discord.ui.View) :
                             f'<:cp:1161299634916966400> : {"1" if clt["clanCapital"] == {} else clt["clanCapital"]["capitalHallLevel"]}    ' \
                             f' <:members:1161298479050670162> : {clt["members"]}/50\n\n' \
                             f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}>'
-            await interaction.followup.send(embed=e , ephemeral=True, view=new(clan_tag=clantag))
+            await interaction.followup.send(embed=e , ephemeral=True , view=new(clan_tag=clantag))
         else :
             await interaction.response.send_message('you are not supposed to change the clan' , ephemeral=True)
 
@@ -218,8 +219,8 @@ class clan_list(discord.ui.View) :
                 pickle.dump(user_data , f)
 
         else :
-            await interaction.response.send_message(f'{member.mention} you cant close the chat make sure to ping any helpers or leaders' ,
-                                                    ephemeral=True)
+            await interaction.response.send_message(
+                f'{member.mention} you cant close the chat make sure to ping any helpers or leaders' , ephemeral=True)
 
     @discord.ui.button(style=discord.ButtonStyle.green , label="🔃" , custom_id="3" , row=1)
     async def button_callback3(self , interaction: discord.Interaction , button: discord.ui.button) :
@@ -237,7 +238,6 @@ class clan_list(discord.ui.View) :
         e = discord.Embed(title="Human support" , colour=discord.Colour.random())
         e.description = '<@&1198545083117617173> \n will assist you further here'
         await interaction.response.send_message(embed=e , ephemeral=True)
-
 
 
 class new(discord.ui.View) :
@@ -277,7 +277,6 @@ class new(discord.ui.View) :
 
 
 
-
 class EntrySystem(commands.Cog) :
     def __init__(self , client) :
         self.client = client
@@ -292,7 +291,7 @@ class EntrySystem(commands.Cog) :
             url='https://static.wikia.nocookie.net/clashofclans/images/1/1e/Boat.png/revision/latest/scale-to-width-down/100?cb=20230109004815')
         await ctx.send(embed=e , view=FeedbackModal())
 
-    @commands.command(name='tickets' , aliases=['tok'])
+    @commands.command(name='ticketsi' , aliases=['toki'])
     async def create_tickets(self , ctx) :
         await ctx.message.delete()
         await ctx.send('Hello wanna join in any of our Team of clans then follow the below steps ')
@@ -314,6 +313,8 @@ class EntrySystem(commands.Cog) :
         await ctx.send('done')
         with open('datasheets/tickets.pkl' , 'wb') as f :
             pickle.dump(user_data , f)
+
+
 
 
 async def setup(bot) :

@@ -7,9 +7,65 @@ from discord import Embed , Color
 from main import p
 
 
+class townhall(discord.ui.View) :
+    def __init__(self) :
+        super().__init__(timeout=80)
+
+    async def update(self , interaction: discord.Interaction , value: int) :
+        with open('datasheets/optimaltownhall.pkl' , 'rb') as file :
+            options = pickle.load(file)
+        if interaction.channel.category.id in options.keys() :
+            if value in options[interaction.channel.category.id]['Townhall'] :
+                options[interaction.channel.category.id]['Townhall'].remove(value)
+            else :
+                options[interaction.channel.category.id]['Townhall'].append(value)
+                options[interaction.channel.category.id]['Townhall'].sort(reverse=True)
+        embed = discord.Embed(title='Priority update')
+        basic = f'- Please tell us which town hall you needed \n- Then press the required town hall\n- if ' \
+                f'you dont want ' \
+                f'the town listed below press the same town hall button you will see the list updated'
+        embed.description = basic + '\n'
+        maskThevalue = '\n'.join([f'TH : {i}' for i in options[interaction.channel.category.id]["Townhall"]])
+        embed.add_field(name='Town hall required' , value=f'```{maskThevalue}```')
+        embed.add_field(name='This interaction will be deleted in 80 seconds')
+        await interaction.message.edit(embed=embed)
+        await interaction.response.defer()
+        with open('datasheets/optimaltownhall.pkl' , 'wb') as file :
+            pickle.dump(options , file)
+
+    @discord.ui.button(style=discord.ButtonStyle.green , emoji=f'<:th16:1184685970814156800>' , custom_id="16" , row=1)
+    async def button_callback16(self , interaction: discord.Interaction , button: discord.ui.button) :
+        await self.update(interaction , 16)
+
+    @discord.ui.button(style=discord.ButtonStyle.green , emoji=f'<:th15:1158776040525680694>' , custom_id="15" , row=1)
+    async def button_callback15(self , interaction: discord.Interaction , button: discord.ui.button) :
+        await self.update(interaction , 15)
+
+    @discord.ui.button(style=discord.ButtonStyle.green , emoji=f'<:th14:1157934828784734299>' , custom_id="14" , row=1)
+    async def button_callback14(self , interaction: discord.Interaction , button: discord.ui.button) :
+        await self.update(interaction , 14)
+
+    @discord.ui.button(style=discord.ButtonStyle.green , emoji=f'<:th13:1157933611337666620>' , custom_id="13" , row=2)
+    async def button_callback13(self , interaction: discord.Interaction , button: discord.ui.button) :
+        await self.update(interaction , 13)
+
+    @discord.ui.button(style=discord.ButtonStyle.green , emoji=f'<:th12:1157933184529469471>' , custom_id="12" , row=2)
+    async def button_callback12(self , interaction: discord.Interaction , button: discord.ui.button) :
+        await self.update(interaction , 12)
+
+    @discord.ui.button(style=discord.ButtonStyle.green , emoji=f'<:th11:1157932788683653170>' , custom_id="11" , row=2)
+    async def button_callback11(self , interaction: discord.Interaction , button: discord.ui.button) :
+        await self.update(interaction , 11)
+
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+        await self.message.edit(view=self)
+
+
 class profile_link(commands.Cog) :
     def __init__(self , client) :
-        self.client = client\
+        self.client = client
 
     @commands.hybrid_command(name='link' , help='To link your clash of clans account with your discord account' ,
                              usage=f'{p}link <#player_tag> \nexample : {p}link #2UVH89FH\n/link #2UVH89FH')
@@ -60,7 +116,7 @@ class profile_link(commands.Cog) :
                 return
             else :
                 leader_data[clantag] = user.id
-                with open('datasheets/leader_userdata.pkl', 'wb') as f :
+                with open('datasheets/leader_userdata.pkl' , 'wb') as f :
                     pickle.dump(leader_data , f)
                 e = discord.Embed(title=f"{user.mention} is linked to {clan['name']}")
                 e.description = f'{clan["name"]} Leader account is now linked to {user.mention}'
@@ -70,9 +126,9 @@ class profile_link(commands.Cog) :
             await ctx.send('Please provide a valid clan tag.')
 
     @commands.hybrid_command(name='force-link' , aliases=['fl' , 'force_link' , 'force'] ,
-                           help='To  link a player clash of clans account with a discord account' ,
-                           usage=f'{p}force_link <@mention> <#player_tag> \nexample : {p}force_link @moon #JJ0Y71L2' ,
-                           hidden=True)
+                             help='To  link a player clash of clans account with a discord account' ,
+                             usage=f'{p}force_link <@mention> <#player_tag> \nexample : {p}force_link @moon #JJ0Y71L2' ,
+                             hidden=True)
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML' , 'Staff')
     async def force_link(self , ctx , user_mention: discord.Member = None , player_tag=None) :
         await ctx.message.delete()
@@ -106,34 +162,35 @@ class profile_link(commands.Cog) :
                     pickle.dump(user_data , file)
                 return
 
-
     @commands.command(name='setup')
-    @commands.has_any_role('🔰ADMIN🔰' )
-    async def setup(self , ctx , announcement_channel : int , clan_name : str , clantag : str , member_role : discord.Role ) :
+    @commands.has_any_role('🔰ADMIN🔰')
+    async def setup(self , ctx , announcement_channel: int , clan_name: str , clantag: str ,
+                    member_role: discord.Role) :
         with open('datasheets/clan_deltails.pkl' , 'rb') as file :
             clan_data = pickle.load(file)
         if clan_name :
             clanInfo = COC.getclan(tag=clantag.strip('#'))
-            clan_data[clan_name] = {'channel_id' : ctx.channel.id , 'roles' : [member_role.name , '🔰THE FARMERS MEMBERS🔰'] , 'clan' : clanInfo["name"] , 'announcement_channel' : announcement_channel}
-            embed = Embed(title=f'setup completed' , description=f'channel id : <#{ctx.channel.id}> \nroles : <@&{member_role.id}> \nclan : {clanInfo["name"]} \nannouncement channel : <#{announcement_channel}>' , color=Color.random())
+            clan_data[clan_name] = {'channel_id' : ctx.channel.id ,
+                                    'roles' : [member_role.name , '🔰THE FARMERS MEMBERS🔰'] , 'clan' : clanInfo["name"] ,
+                                    'announcement_channel' : announcement_channel}
+            embed = Embed(title=f'setup completed' ,
+                          description=f'channel id : <#{ctx.channel.id}> \nroles : <@&{member_role.id}> \nclan : {clanInfo["name"]} \nannouncement channel : <#{announcement_channel}>' ,
+                          color=Color.random())
             await ctx.send(embed=embed)
-
 
         with open('datasheets/clan_deltails.pkl' , 'wb') as file :
             pickle.dump(clan_data , file)
 
     @commands.command(name="listsetup")
-    @commands.has_any_role('🔰ADMIN🔰' )
+    @commands.has_any_role('🔰ADMIN🔰')
     async def listsetup(self , ctx) :
         with open('datasheets/clan_deltails.pkl' , 'rb') as file :
             clan_data = pickle.load(file)
         for clan in clan_data.keys() :
             embed = Embed(title=f'{clan_data[clan]["clan"]} ' ,
-                              description=f'channel id : <#{clan_data[clan]["channel_id"]}> \nroles : <@&{clan_data[clan]["roles"][0]}> \nclan : {clan_data[clan]["clan"]} \nannouncement channel : <#{clan_data[clan]["announcement_channel"]}>' ,
+                          description=f'channel id : <#{clan_data[clan]["channel_id"]}> \nroles : <@&{clan_data[clan]["roles"][0]}> \nclan : {clan_data[clan]["clan"]} \nannouncement channel : <#{clan_data[clan]["announcement_channel"]}>' ,
                           color=Color.random())
             await ctx.send(embed=embed)
-
-
 
     @commands.command(name='unlink' , help='To unlink your clash of clans account with your discord account' ,
                       usage=f'{p}unlink <none> or <@mention>')
@@ -156,12 +213,12 @@ class profile_link(commands.Cog) :
             await ctx.send(embed=e)
             with open("datasheets/userdata.pkl" , "wb") as file :
                 pickle.dump(user_data , file)
-        else:
+        else :
             e = Embed(title="Nothing to unlink" , color=Color.red())
             await ctx.send(embed=e)
 
     @commands.command(name='unlink-leader' , aliases=['ull'] , help="unlink a clan tag to a leader discord account" ,
-                    usage=f"{p}unlink-leader <@metion user> or <tag>\neg : {p}link-leader @user or #2Q8URCU88")
+                      usage=f"{p}unlink-leader <@metion user> or <tag>\neg : {p}link-leader @user or #2Q8URCU88")
     @commands.has_any_role('🔰ADMIN🔰')
     async def unlink_leader(self , ctx , tags: str = None) :
         await ctx.message.delete()
@@ -183,7 +240,7 @@ class profile_link(commands.Cog) :
         else :
             await ctx.send('Nothing happened as you wondered.')
 
-        with open('datasheets/leader_userdata.pkl', 'wb') as f :
+        with open('datasheets/leader_userdata.pkl' , 'wb') as f :
             pickle.dump(leader_user_data , f)
 
     @commands.command(name='kick' , aliases=['k'] , help='Kick a user' , usage=f'{p}kick <user> <reason>')
@@ -196,29 +253,28 @@ class profile_link(commands.Cog) :
         await owner.send(f'{member} removed from data base')
         await member.kick(reason=reason)
 
-
-    @commands.command(name='update_info',aliases=['uinfo'] , help='To update your clash of clans account details with your discord account' ,usage=f'{p}update_info')
-    async def update_information(self , ctx , member : discord.Member = None) :
+    @commands.command(name='update_info' , aliases=['uinfo'] ,
+                      help='To update your clash of clans account details with your discord account' ,
+                      usage=f'{p}update_info')
+    async def update_information(self , ctx , member: discord.Member = None) :
         with open('datasheets/userdata.pkl' , 'rb') as file :
             user_info = pickle.load(file)
-        if member is None:
+        if member is None :
             user_id = ctx.author.id
-        else:
+        else :
             user_id = member.id
 
         previous_data = user_info[user_id]
         coc_data = COC.get_user(tag=user_info[user_id]['tag'])
-        user_info[user_id] = {
-            'tag': coc_data['tag'].strip('#'),
-            'name': coc_data['name'],
-            'clan': coc_data['clan']['tag'].strip('#'),
-            'clanname': coc_data['clan']['name']
-        }
-        if previous_data['tag'] == user_info[user_id]['tag']:
-            embed = Embed(title=f'<:th{str(coc_data["townHallLevel"])}:{COC.get_id(coc_data["townHallLevel"])}>  {coc_data["name"]} -{coc_data["tag"]}' ,colour=Color.random())
+        user_info[user_id] = {'tag' : coc_data['tag'].strip('#') , 'name' : coc_data['name'] ,
+                              'clan' : coc_data['clan']['tag'].strip('#') , 'clanname' : coc_data['clan']['name']}
+        if previous_data['tag'] == user_info[user_id]['tag'] :
+            embed = Embed(
+                title=f'<:th{str(coc_data["townHallLevel"])}:{COC.get_id(coc_data["townHallLevel"])}>  {coc_data["name"]} -{coc_data["tag"]}' ,
+                colour=Color.random())
             embed.description = f'\n```user     : {ctx.author.display_name if member is None else member.display_name}\nname     : {user_info[user_id]["name"]}\ntag      : {user_info[user_id]["tag"]}\nclanname : {user_info[user_id]["clanname"]}\nclan     : {user_info[user_id]["clan"]}\n```'
             await ctx.send(embed=embed)
-        else:
+        else :
             embed1 = Embed(
                 title=f'<:th{str(coc_data["townHallLevel"])}:{COC.get_id(coc_data["townHallLevel"])}>  {coc_data["name"]} -{coc_data["tag"]}' ,
                 colour=Color.random())
@@ -230,14 +286,22 @@ class profile_link(commands.Cog) :
             embed.description = f'\n```user     : {ctx.author.display_name if member is None else member.display_name}\nname     : {user_info[user_id]["name"]}\ntag     : {user_info[user_id]["tag"]}\nclanname : {user_info[user_id]["clanname"]}\nclan    : {user_info[user_id]["clan"]}\n```'
             await ctx.send(embed=embed)
             with open('datasheets/userdata.pkl' , 'wb') as file :
-                pickle.dump(user_info, file)
+                pickle.dump(user_info , file)
             await ctx.send('Updated')
 
-
-
-
-
-
+    @commands.command(name='update_townhall' , aliases=['uth','update_th'] , help='' , usage=f'{p}update_townhall')
+    async def update_townhall(self , ctx) :
+        print(ctx.channel.category.id)
+        with open('datasheets/optimaltownhall.pkl' , 'rb') as file :
+            options = pickle.load(file)
+        embed = discord.Embed(title='Priority update')
+        basic = f'- Please tell us which town hall you needed \n- Then press the required town hall\n- if ' \
+                f'you dont want ' \
+                f'the town listed below press the same town hall button you will see the list updated'
+        embed.description = basic + '\n'
+        maskThevalue = '\n'.join([f'TH : {i}' for i in options[ctx.channel.category.id]["Townhall"]])
+        embed.add_field(name='Town hall required' , value=f'```{maskThevalue}```')
+        await ctx.send(embed=embed , view=townhall())
 
 
 async def setup(client) :
