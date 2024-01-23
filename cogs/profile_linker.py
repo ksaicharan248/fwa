@@ -27,7 +27,7 @@ class townhall(discord.ui.View) :
         embed.description = basic + '\n'
         maskThevalue = '\n'.join([f'TH : {i}' for i in options[interaction.channel.category.id]["Townhall"]])
         embed.add_field(name='Town hall required' , value=f'```{maskThevalue}```')
-        embed.add_field(name='This interaction will be deleted in 80 seconds')
+        embed.add_field(name='This interaction will be disabled in 80 seconds' ,value='thankyou')
         await interaction.message.edit(embed=embed)
         await interaction.response.defer()
         with open('datasheets/optimaltownhall.pkl' , 'wb') as file :
@@ -58,9 +58,7 @@ class townhall(discord.ui.View) :
         await self.update(interaction , 11)
 
     async def on_timeout(self):
-        for child in self.children:
-            child.disabled = True
-        await self.message.edit(view=self)
+        self.clear_items()
 
 
 class profile_link(commands.Cog) :
@@ -291,7 +289,6 @@ class profile_link(commands.Cog) :
 
     @commands.command(name='update_townhall' , aliases=['uth','update_th'] , help='' , usage=f'{p}update_townhall')
     async def update_townhall(self , ctx) :
-        print(ctx.channel.category.id)
         with open('datasheets/optimaltownhall.pkl' , 'rb') as file :
             options = pickle.load(file)
         embed = discord.Embed(title='Priority update')
