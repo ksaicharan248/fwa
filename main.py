@@ -346,7 +346,7 @@ async def war(ctx , target=None) :
     cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682 , 'THE SHIELD'] ,
                1054458642541334599 : ["2Q8URCU88" , 1055418808833159189 , 'WARNING'] ,
                1063290412397244587 : ["2G9URUGGC" , 1063289659586785362 , 'BROTHERS'] ,
-               1196099446203744256 : ["QL9998CC" , 1196090548193345667 , "Pakistan Lovers"],
+               1196099434333880361 : ["QL9998CC" , 1196090548193345667 , "Pakistan Lovers"],
                1188693015921950890 : ["GC8QRPUJ" , 1188693492503957514 , "AVENGERS"] }
     await ctx.message.delete()
     if cid in cidinfo.keys() :
