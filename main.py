@@ -34,7 +34,7 @@ async def on_ready() :
 owener_info: int = 765929481311354881
 
 
-@client.event
+'''@client.event
 async def on_command_error(ctx , error) :
     owner = await client.fetch_user(int(owener_info))
     if isinstance(error , commands.MissingRequiredArgument) :
@@ -62,7 +62,7 @@ async def on_command_error(ctx , error) :
                               color=discord.Color.red())
         await ctx.send(embed=embed)
 
-
+'''
 @client.event
 async def on_member_remove(member) :
     owner = await client.fetch_user(int(765929481311354881))
