@@ -109,9 +109,9 @@ class clashofclansmethods(commands.Cog) :
 
     @commands.hybrid_command(name="bases" , help="offical fwa bases" , usage=f"{p}bases")
     async def bases(self , ctx) :
-        url16 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH16%3AWB%3AAAAABQAAAAKcAGJgUQU0g1MinQ20mGcn"
-        url15 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH15%3AWB%3AAAAAKQAAAAIPb7TMztzbem-F0y7oXluK"
-        url14 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH14%3AWB%3AAAAAQAAAAAG_WV2seLzVBV38HVTPRJCY"
+        url16 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH16%3AWB%3AAAAABQAAAAKdkupDxXH2zHolZEYsi4Jy"
+        url15 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH15%3AWB%3AAAAAQAAAAAHyGoAkx6dj6GPei5fv9aC4"
+        url14 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH14%3AWB%3AAAAAKwAAAAIy_E5glvJjSIWnUv2njqcR"
         url13 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH13%3AWB%3AAAAAKwAAAAH9cXxV00w-5lJ2qCJCm8_v"
         url12 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH12%3AWB%3AAAAACwAAAAIzCgaxwgW1UGFUuSFMFvCu"
         url11 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH11%3AWB%3AAAAAKgAAAAH9X8-koI5OUOzBGQx4SKwQ"
@@ -309,7 +309,7 @@ class clashofclansmethods(commands.Cog) :
             e = Embed(title=f"{player['name']} - {player['tag']}" , url=url , color=Color.random())
             emoj = discord.utils.get(ctx.guild.emojis , id=int(COC.get_id(player["townHallLevel"])))
             ptag = player["tag"].strip('#')
-            player_details = f'[{player["clan"]["name"]}](https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{player["clan"]["tag"]}) \n Role : **{COC.get_role(player["role"])}**' if "clan" in player else "NO clan"
+            player_details = f'[{player["clan"]["name"]}](https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{player["clan"]["tag"].strip("#")}) \n Role : **{COC.get_role(player["role"])}**' if "clan" in player else "NO clan"
             e.description = f'[CCNS](https://fwa.chocolateclash.com/cc_n/member.php?tag=%23{ptag})   [COS](https://www.clashofstats.com/players/{ptag})\n' \
                             f'\n🏆 {player["trophies"]} \n{player_details}'
             heros = []

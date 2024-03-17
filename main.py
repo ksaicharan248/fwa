@@ -117,29 +117,31 @@ async def on_member_join(member) :
             await welcome_channel.send(embed=embed)
 
 
-@client.hybrid_command(name='ask' , help="Ask any thing with AI")
+@client.hybrid_command(name='Image-to-Text' , help="Ask any thing with AI")
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
-async def ask(ctx , general: typing.Optional[str] = None , clash_of_clans: typing.Optional[str] = None) :
+async def ask(ctx , prompt: typing.Optional[str] = "clash of clans" ) :
     await ctx.defer()
-    with open('datasheets/userdata.pkl' , 'rb') as f :
-        data = pickle.load(f)
-    if clash_of_clans is not None and ctx.author.id in data.keys() :
-        info = COC.get_user(data[ctx.author.id]['tag'])
-    else :
-        info: str = ' '
-    API_KEY = "AIzaSyCexfS8zCMI_mlyswWf7k3LSO-uOq8ebgE"
-    palm.configure(api_key=API_KEY)
-    model = palm.GenerativeModel('gemini-pro')
-    if clash_of_clans is None :
-        question = f'{general}'
-    elif general is None :
-        question = f'{clash_of_clans} Note:if any data needed use {info}'
-    else :
-        question = f'{ctx.message.content[5 :]} Note:if any data needed use {info}'
 
-    answer = model.generate_content(question)
-    embed = discord.Embed(description=answer.text)
-    await ctx.reply(embed=embed)
+
+    API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
+    headers = {"Authorization" : "Bearer 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"}
+
+    def query(payload) :
+        response = requests.post(API_URL , headers=headers , json=payload)
+        return response.content
+
+    
+    image_bytes = query({"inputs" : f"{prompt}" , })
+
+    image = Image.open(io.BytesIO(image_bytes))
+
+
+    with BytesIO() as image_binary:
+        image.save(image_binary, 'PNG')
+        image_binary.seek(0)
+        file = discord.File(fp=image_binary, filename='image.png')
+        await ctx.send(file=file)
+
 
 
 @client.command(name='reload' , help="updated the slash command list")
@@ -235,11 +237,7 @@ class Selectmenu1(discord.ui.View) :
                 await interaction.message.edit(embed=embed1)
             elif select.values[0] == '2' :
                 embed2 = discord.Embed(title='LEADER COMMANDS' , colour=Color.random())
-                embed2.description = f"`{p}ts-m`        - add player to THE SHIELD \n" \
-                                     f"`{p}bt-m`        - add player to BROTHERS\n" \
-                                     f"`{p}av-m`        - add player to AVENGERS\n" \
-                                     f"`{p}wa-m`        - add player to WARNING \n" \
-                                     f"`{p}wfx-m`       - add player to WAR FARMER X44\n" \
+                embed2.description = f"`{p}mc`          - move a player to your clan chat\n" \
                                      f"`{p}unq`         - add player to unqualified\n" \
                                      f"`{p}app`         - approve the player\n" \
                                      f"`{p}re`          - send the player to reapply \n" \
@@ -255,7 +253,9 @@ class Selectmenu1(discord.ui.View) :
                 embed3.description = f"`{p}ping`         - Show latency\n" \
                                      f"`{p}link`       - link the bot with player tag \n" \
                                      f"`{p}profile`    - profile of player\n" \
-                                     f"`{p}clan`       - clan info\n\nfor more info type " \
+                                     f"`{p}clan`       - clan info\n\nfor more info type "\
+                                     f"`{p}listcompo   - lists the clan composition`\n"\
+                                     f"`{p}warcompo`        - show war composition\n"\
                                      f"```{p}usage <command name>```"
 
                 await interaction.response.defer()
