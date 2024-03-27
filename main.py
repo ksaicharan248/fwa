@@ -34,7 +34,7 @@ async def on_ready() :
 owener_info: int = 765929481311354881
 
 
-'''@client.event
+@client.event
 async def on_command_error(ctx , error) :
     owner = await client.fetch_user(int(owener_info))
     if isinstance(error , commands.MissingRequiredArgument) :
@@ -62,7 +62,7 @@ async def on_command_error(ctx , error) :
                               color=discord.Color.red())
         await ctx.send(embed=embed)
 
-'''
+
 @client.event
 async def on_member_remove(member) :
     owner = await client.fetch_user(int(765929481311354881))
@@ -344,7 +344,7 @@ async def ping(ctx) :
 async def war(ctx , target=None) :
     cid = ctx.channel.category.id
     cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682 , 'THE SHIELD'] ,
-               1054458642541334599 : ["2Q8URCU88" , 1055418808833159189 , 'WARNING'] ,
+               1222214889859321919 : ["8G2RJCP0" , 1222212841373696010 , 'GOODVIBES 24/7'] ,
                1063290412397244587 : ["2G9URUGGC" , 1063289659586785362 , 'BROTHERS'] ,
                1196099434333880361 : ["QL9998CC" , 1196090548193345667 , "Pakistan Lovers"],
                1188693015921950890 : ["GC8QRPUJ" , 1188693492503957514 , "AVENGERS"] }

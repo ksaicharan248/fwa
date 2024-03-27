@@ -179,6 +179,21 @@ class profile_link(commands.Cog) :
         with open('datasheets/clan_deltails.pkl' , 'wb') as file :
             pickle.dump(clan_data , file)
 
+    @commands.hybrid_command(name='remove-setup')
+    @commands.has_any_role('🔰ADMIN🔰')
+    async def setup(self , ctx , clan_name) :
+        with open('datasheets/clan_deltails.pkl' , 'rb') as file :
+            clan_data = pickle.load(file)
+        if clan_name :
+            clanname = clan_data[clan_name]['clan']
+            embed = Embed(title=f'{clanname} has removed from the link setup' ,
+                          color=Color.random())
+            clan_data.pop(clan_name)
+            await ctx.send(embed=embed)
+
+        with open('datasheets/clan_deltails.pkl' , 'wb') as file :
+            pickle.dump(clan_data , file)
+
     @commands.command(name="listsetup")
     @commands.has_any_role('🔰ADMIN🔰')
     async def listsetup(self , ctx) :

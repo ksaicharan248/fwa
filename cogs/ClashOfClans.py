@@ -210,7 +210,7 @@ class clashofclansmethods(commands.Cog) :
     async def list_clan(self , ctx) :
         await ctx.message.delete()
         clans_list = {'8G2RJCP0':852634100895973436 ,'U0LPRYL2' : 775168480969621586 , 'QL9998CC' : 1102485434933727252 ,
-                      'GC8QRPUJ' : 241897116815851530 , '2G9V8PQJP' : 1034730502701203467}
+                      'GC8QRPUJ' : 241897116815851530 , '2G9URUGGC' : 1102485434933727252}
         for clan_tag in clans_list.keys() :
             await self.clan(ctx , target=clan_tag , render=False)
             await asyncio.sleep(1)
@@ -371,6 +371,7 @@ class clashofclansmethods(commands.Cog) :
             average = f'★ AvgTh : {round(average_townhalls / len(clan_weight.keys()) , 2)}  ~  {round(average_equivalent / len(clan_weight.keys()) , 2)}'
             e.description = output + f"\n{endingline}\n{average}\n{claninfoo[2]}"
             await ctx.reply(embed=e , ephemeral=True)
+
 
 
 async def setup(bot) :
