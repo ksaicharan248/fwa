@@ -33,8 +33,8 @@ def get_user(tag) :
         raise Exception(f"{userinfo}")
 
 
-def getclan(tag) :
-    resp = requests.get('https://api.clashofclans.com/v1/clans/%23' + tag , headers=header)
+def getclan(tag: str) :
+    resp = requests.get('https://api.clashofclans.com/v1/clans/%23' + tag.strip('#') , headers=header)
     claninfo = resp.json()
     return claninfo
 
