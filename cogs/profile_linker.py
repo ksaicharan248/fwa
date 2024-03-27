@@ -160,7 +160,7 @@ class profile_link(commands.Cog) :
                     pickle.dump(user_data , file)
                 return
 
-    @commands.command(name='setup')
+    @commands.hybrid_command(name='setup')
     @commands.has_any_role('🔰ADMIN🔰')
     async def setup(self , ctx , announcement_channel: int , clan_name: str , clantag: str ,
                     member_role: discord.Role) :

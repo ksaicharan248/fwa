@@ -277,7 +277,7 @@ class ClanRoleAdder(commands.Cog) :
     @commands.command(name='move-clan' , aliases=['mc'] , help='Move a player to a specific clan chat' ,
                       usage=f'\n{p}move-clan <clan_name> <@mention> \n{p}move-clan tsm @moon\nclan_name are :\nbtm\navm\ntsm\nwam\nhgm\netc...')
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'BTL' , '☠️| LEADER' , 'Staff' , '🔰ADMIN🔰' ,
-                           'HGL' , 'WAL')
+                           'GVL' , 'AVL' )
     async def move_clan(self , ctx , clan_name , member: discord.Member) :
         with open('datasheets/clan_deltails.pkl' , 'rb') as f :
             clan_data = pickle.load(f)

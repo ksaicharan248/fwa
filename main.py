@@ -117,7 +117,7 @@ async def on_member_join(member) :
             await welcome_channel.send(embed=embed)
 
 
-@client.hybrid_command(name='image-to-text' , help="Ask any thing with AI")
+@client.hybrid_command(name='text-to-image' , help="Ask any thing with AI")
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
 async def ask(ctx , prompt: typing.Optional[str] = "clash of clans" ) :
     await ctx.defer()

@@ -8,6 +8,7 @@ from discord.ui import Button , View , Select
 
 from main import p
 
+
 class cwlbutton(View) :
     def __init__(self , ctx , round) :
         super().__init__(timeout=None)
@@ -63,7 +64,6 @@ class cwlbutton(View) :
             await interaction.response.send_message("You have not enrolled for the CWL." , ephemeral=True)
 
 
-
 class My_View(View) :
     def __init__(self , ctx , clan_name , last_updated , total_count , output) :
         super().__init__(timeout=100)
@@ -99,8 +99,6 @@ class My_View(View) :
             await self.update_embed(interaction)
         else :
             await interaction.response.defer()
-
-
 
 
 class clashofclansmethods(commands.Cog) :
@@ -139,13 +137,13 @@ class clashofclansmethods(commands.Cog) :
                 idd = ctx.author.id
             if idd in user_data.keys() :
                 clantag = user_data[idd]['clan']
-            else:
+            else :
                 embeed = Embed(title=f"No id is linked with the specific account" , color=Color.red())
                 await ctx.send(embed=embeed)
                 return
         else :
             if len(target) <= 3 :
-                ctags = {'w' : "2Q8URCU88" , "ts" : "U0LPRYL2" , 'h' : "2G9V8PQJP" }
+                ctags = {'pl': 'QL9998CC','gv': '8G2RJCP0' , "ts" : "U0LPRYL2" , 'bt': '2G9URUGGC' ,'av': 'GC8QRPUJ'}
                 clantag = ctags[target]
             elif len(target) >= 4 :
                 clantag = target.strip('#')
@@ -175,7 +173,7 @@ class clashofclansmethods(commands.Cog) :
         await ctx.send(embed=e)
 
     @commands.command(name="cwl" , help="get clan war league clan info" ,
-                    usage=f"{p}cwl <tag> <th level> \neg :{p}cwl #2Q8URCU88 12 13 14")
+                      usage=f"{p}cwl <tag> <th level> \neg :{p}cwl #2Q8URCU88 12 13 14")
     async def cwl(self , ctx , tag=None , *th) :
         await ctx.message.delete()
         if tag is None :
@@ -204,15 +202,15 @@ class clashofclansmethods(commands.Cog) :
     @commands.command(name="rest-cwl" , aliases=['rstcwl'] , help="CWL rooster rester")
     async def cwl_compo_rest(self , ctx) :
         user_data = [{} , {}]
-        with open('datasheets/cwlrooster.pkl', "wb") as f :
+        with open('datasheets/cwlrooster.pkl' , "wb") as f :
             pickle.dump(user_data , f)
         await ctx.send("CWL roster reseted")
 
     @commands.command(name="list_clan" , aliases=["lc"] , help="list all the clans" , usage=f"{p}list_clan")
-    async def list_clan(self ,ctx) :
-        clans_list = {'U0LPRYL2' : 775168480969621586  ,'QL9998CC':1102485434933727252 ,'GC8QRPUJ' : 241897116815851530 ,
-                      '2Q8URCU88' : 1034730502701203467 , '2G9URUGGC' : 1102485434933727252 ,
-                      '2G9V8PQJP' : 1034730502701203467 , '2QR0Q8QYL': ''}
+    async def list_clan(self , ctx) :
+        await ctx.message.delete()
+        clans_list = {'8G2RJCP0':852634100895973436 ,'U0LPRYL2' : 775168480969621586 , 'QL9998CC' : 1102485434933727252 ,
+                      'GC8QRPUJ' : 241897116815851530 , '2G9V8PQJP' : 1034730502701203467}
         for clan_tag in clans_list.keys() :
             await self.clan(ctx , target=clan_tag , render=False)
             await asyncio.sleep(1)
@@ -266,9 +264,8 @@ class clashofclansmethods(commands.Cog) :
             view = My_View(ctx , clan_name , last_updated , counter_num , output)
             await ctx.reply(embed=e , view=view)
 
-
     @commands.hybrid_command(name="profile" , help="Shows the profile of the user" ,
-                           usage=f"{p}profile <none> or <user> \nexample: {p}profile @user")
+                             usage=f"{p}profile <none> or <user> \nexample: {p}profile @user")
     async def profile(self , ctx , player_tag=None , user: discord.Member = None) :
         with open('datasheets/userdata.pkl' , 'rb') as f :
             user_data = pickle.load(f)
@@ -298,7 +295,7 @@ class clashofclansmethods(commands.Cog) :
                 await ctx.send(embed=e)
                 return
         if player_tags is not None :
-            try:
+            try :
                 player = COC.get_user(tag=player_tags)
             except Exception as e :
                 e = Embed(title="Error while fetching" , color=Color.red())
@@ -373,10 +370,8 @@ class clashofclansmethods(commands.Cog) :
             e = Embed(title=f"War Compo - {claninfoo[0]} " , color=Color.random())
             average = f'★ AvgTh : {round(average_townhalls / len(clan_weight.keys()) , 2)}  ~  {round(average_equivalent / len(clan_weight.keys()) , 2)}'
             e.description = output + f"\n{endingline}\n{average}\n{claninfoo[2]}"
-            await ctx.reply(embed=e, ephemeral=True)
+            await ctx.reply(embed=e , ephemeral=True)
 
 
-
-async def setup(bot):
+async def setup(bot) :
     await bot.add_cog(clashofclansmethods(bot))
-
