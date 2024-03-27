@@ -194,6 +194,7 @@ class profile_link(commands.Cog) :
         with open('datasheets/clan_deltails.pkl' , 'wb') as file :
             pickle.dump(clan_data , file)
 
+
     @commands.command(name="listsetup")
     @commands.has_any_role('🔰ADMIN🔰')
     async def listsetup(self , ctx) :
