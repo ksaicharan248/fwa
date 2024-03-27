@@ -160,9 +160,9 @@ class profile_link(commands.Cog) :
                     pickle.dump(user_data , file)
                 return
 
-    @commands.hybrid_command(name='setup')
+    @commands.hybrid_command(name='setups')
     @commands.has_any_role('🔰ADMIN🔰')
-    async def setup(self , ctx , announcement_channel: int , clan_name: str , clantag: str ,
+    async def setup(self , ctx , announcement_channel , clan_name: str , clantag: str ,
                     member_role: discord.Role) :
         with open('datasheets/clan_deltails.pkl' , 'rb') as file :
             clan_data = pickle.load(file)
@@ -181,7 +181,7 @@ class profile_link(commands.Cog) :
 
     @commands.hybrid_command(name='remove-setup')
     @commands.has_any_role('🔰ADMIN🔰')
-    async def setup(self , ctx , clan_name) :
+    async def rmove_set_up(self , ctx , clan_name) :
         with open('datasheets/clan_deltails.pkl' , 'rb') as file :
             clan_data = pickle.load(file)
         if clan_name :
