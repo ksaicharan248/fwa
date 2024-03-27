@@ -169,7 +169,7 @@ class profile_link(commands.Cog) :
 
         await ctx.message.delete()
         if clantag :
-            clanInfo = COC.get_clan_by_tag(clantag)
+            clanInfo = COC.getclan(clantag)
             if not clanInfo :
                 await ctx.send('Please provide a valid clan tag.')
                 return
