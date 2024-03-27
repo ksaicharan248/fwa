@@ -167,7 +167,7 @@ class profile_link(commands.Cog) :
         with open('datasheets/clan_deltails.pkl' , 'rb') as file :
             clan_data = pickle.load(file)
 
-        await ctx.message.delete()
+        #await ctx.message.delete()
         if clantag :
             clanInfo = COC.getclan(tag=clantag.strip('#'))
             if not clanInfo :
