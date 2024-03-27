@@ -169,8 +169,10 @@ class profile_link(commands.Cog) :
 
         await ctx.message.delete()
         if clantag :
-            clanInfo =COC.getclan(tag=clantag.strip('#'))
-            print(ctx.channel.id , member_role.id,member_role.name , announcement_channel)
+            clanInfo = COC.get_clan_by_tag(clantag)
+            if not clanInfo :
+                await ctx.send('Please provide a valid clan tag.')
+                return
             clan_data[clan_name] = {'channel_id' : ctx.channel.id ,
                                     'roles' : [member_role.name , '🔰THE FARMERS MEMBERS🔰'] , 'clan' : clanInfo["name"] ,
                                     'announcement_channel' : int(announcement_channel)}
