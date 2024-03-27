@@ -173,6 +173,7 @@ class profile_link(commands.Cog) :
             if not clanInfo :
                 await ctx.send('Please provide a valid clan tag.')
                 return
+
             clan_data[clan_name] = {'channel_id' : ctx.channel.id ,
                                     'roles' : [member_role.name , '🔰THE FARMERS MEMBERS🔰'] , 'clan' : clanInfo["name"] ,
                                     'announcement_channel' : announcement_channel}
