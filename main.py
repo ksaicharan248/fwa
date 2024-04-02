@@ -411,7 +411,7 @@ async def load(ctx , extension) :
 
 # Reload Cog
 @client.command()
-async def reloads(ctx , file_name) :
+async def reloads(ctx , file_name = None) :
     if file_name is None :
         if ctx.author.id == ctx.author.id :
             for filename in os.listdir('./cogs') :
