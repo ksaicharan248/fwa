@@ -13,11 +13,11 @@ class fuunctionmethods(commands.Cog) :
     @commands.is_owner()
     async def audit(self , ctx) :
         x , y , z = 0 , 0 , 0
-        notinanyserver = [];
-        elites = [];
+        notinanyserver = []
+        elites = []
         fwaa = []
-        elite = "";
-        noneelite = "";
+        elite = ""
+        noneelite = ""
         fwa = ""
         with open('datasheets/userdata.pkl' , 'rb') as f :
             userdata = pickle.load(f)
@@ -74,6 +74,25 @@ class fuunctionmethods(commands.Cog) :
                 pass
         else :
             await ctx.send('This command can only be used in a thread.')
+
+    @commands.command(name='win-check' , aliases=['wc' , 'wincheck' ,  'winc'])
+    async def win_check(self , ctx , tag : str= None) :
+        with open('datasheets/userdata.pkl' , 'rb') as f :
+            user_data = pickle.load(f)
+        if ctx.message.mentions and ctx.message.mentions[0].id in user_data.keys():
+            tag = user_data[ctx.message.mentions[0].id]['clan']
+        if tag is None :
+            if ctx.author.id in user_data.keys():
+                tag = user_data[ctx.author.id]['clan']
+            else:
+                await ctx.send('Please provide a tag.')
+                return
+        else:
+            tag = tag.strip('#')
+        data = COC.get_points(tag)
+        embed = discord.Embed(title=f"Win Check - {tag}" , colour=Color.random())
+        embed.description = f"{data}"
+        await ctx.send(embed=embed)
 
 
 

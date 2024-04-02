@@ -77,6 +77,35 @@ class NewModal(discord.ui.Modal , title="Link your profile") :
                 with open('datasheets/userdata.pkl' , 'wb') as file :
                     pickle.dump(user_data , file)
 
+                role_name = '🔸ENTRY🔸'
+
+                if role_name in [role.name for role in interaction.user.roles] :
+                    verification = COC.ccns_check(tag=self.playe_tag.value.strip('#'))
+                    if verification[1] == True :
+                        if not verification[0] :
+                            await interaction.user.edit(nick=f'TH {player_data["townHallLevel"]} - {player_data["name"]} (flagged)')
+                        else :
+                            await interaction.user.edit(nick=f'TH {player_data["townHallLevel"]} - {player_data["name"]}')
+                        await interaction.user.remove_roles(
+                            *[role for role in interaction.user.roles if role != interaction.user.guild.default_role])
+                        channel_info = {1054435038881665024 : ['approved✅' , 1055439744739315743 , 1126856734095462511]}
+                        await interaction.user.add_roles(
+                            discord.utils.get(interaction.user.guild.roles , name=channel_info[interaction.user.guild.id][0]))
+                        channel = interaction.user.guild.get_channel(channel_info[interaction.user.guild.id][1])
+                        await channel.send(f"{interaction.user.mention} has been approved by <@1154381056900870174>")
+                        e = discord.Embed(title="APPROVED " , color=discord.Color.random())
+                        e.description = f'❯ Clan spots will be posted in this {interaction.user.guild.get_channel(channel_info[interaction.user.guild.id][1]).mention}, make sure to check it\n' \
+                                        f'❯ You will be **@notified** if a spot available for your TH level.\n' \
+                                        f'❯ Just make sure to reply as fast as possible to ensure your spot.\n' \
+                                        f'❯ Donot request to join in game unless instructed to do so.\n' \
+                                        f'❯ You may stay in your **current clan** or join a random clan while waiting for a **spot**.\n' \
+                                        f'❯ Make sure to have **NO war timer** when you answer for spots.\n' \
+                                        f'❯ Ask in {interaction.user.guild.get_channel(channel_info[interaction.user.guild.id][2]).mention} if you have any questions. \nDone by : <@1154381056900870174>'
+                        await channel.send(embed=e)
+                    else :
+                        channel = interaction.user.guild.get_channel(1158812576604504225)
+                        await channel.send(f"{interaction.user.mention} is fwa  banned player")
+
             else :
                 e = discord.Embed(title="Invalid player tag" ,
                                   description=f'No data found on this tag \ntag : {self.playe_tag.value}' ,

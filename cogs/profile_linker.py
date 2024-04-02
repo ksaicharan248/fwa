@@ -97,7 +97,38 @@ class profile_link(commands.Cog) :
 
                 with open('datasheets/userdata.pkl' , 'wb') as file :
                     pickle.dump(user_data , file)
+
+                role_name = '🔸ENTRY🔸'
+
+                if role_name in [role.name for role in ctx.author.roles] :
+                    verification = COC.ccns_check(tag=player_tag)
+                    if verification[1] == True:
+                        if not verification[0] :
+                            await ctx.author.edit(nick=f'TH {player["townHallLevel"]} - {player["name"]} (flagged)')
+                        else:
+                            await ctx.author.edit(nick=f'TH {player["townHallLevel"]} - {player["name"]}')
+                        await ctx.author.remove_roles(*[role for role in ctx.author.roles if role != ctx.guild.default_role])
+                        channel_info = {1054435038881665024 : ['approved✅' , 1055439744739315743 , 1126856734095462511]}
+                        await ctx.author.add_roles(discord.utils.get(ctx.guild.roles , name=channel_info[ctx.guild.id][0]))
+                        channel = self.client.get_channel(channel_info[ctx.guild.id][1])
+                        await channel.send(f"{ctx.author.mention} has been approved by <@1154381056900870174>")
+                        e = Embed(title="APPROVED " , color=Color.random())
+                        e.description = f'❯ Clan spots will be posted in this {self.client.get_channel(channel_info[ctx.guild.id][1]).mention}, make sure to check it\n' \
+                                        f'❯ You will be **@notified** if a spot available for your TH level.\n' \
+                                        f'❯ Just make sure to reply as fast as possible to ensure your spot.\n' \
+                                        f'❯ Donot request to join in game unless instructed to do so.\n' \
+                                        f'❯ You may stay in your **current clan** or join a random clan while waiting for a **spot**.\n' \
+                                        f'❯ Make sure to have **NO war timer** when you answer for spots.\n' \
+                                        f'❯ Ask in {self.client.get_channel(channel_info[ctx.guild.id][2]).mention} if you have any questions. \nDone by : <@1154381056900870174>'
+                        await channel.send(embed=e)
+                    else:
+                        channel = self.client.get_channel(1158812576604504225)
+                        await channel.send(f"{ctx.author.mention} is fwa  banned player")
                 return
+
+
+
+
 
     @commands.command(name='link-leader' , aliases=['ll'] , help="link a clan tag to a leader discord account" ,
                       usage=f"{p}link-leader <@metion user> <tag>\n =eg : {p}link-leader @user #2Q8URCU88")
@@ -167,7 +198,6 @@ class profile_link(commands.Cog) :
         with open('datasheets/clan_deltails.pkl' , 'rb') as file :
             clan_data = pickle.load(file)
 
-        #await ctx.message.delete()
         if clantag :
             clanInfo = COC.getclan(tag=clantag.strip('#'))
             if not clanInfo :

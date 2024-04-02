@@ -53,8 +53,7 @@ class ClanRoleAdder(commands.Cog) :
             user_info = COC.get_user(data[member.id]['tag'])
             await member.edit(nick=f'TH {user_info["townHallLevel"]} - {user_info["name"]} ')
             await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
-            channel_info = {1054435038881665024 : ['approved✅' , 1055439744739315743 , 1126856734095462511] ,  # elites
-                            1152220160028057660 : ['approved✅' , 1167482592254238740 , 1152229286305079307]}  # jigg
+            channel_info = {1054435038881665024 : ['approved✅' , 1055439744739315743 , 1126856734095462511]}  # jigg
             await member.add_roles(discord.utils.get(ctx.guild.roles , name=channel_info[ctx.guild.id][0]))
             channel = self.client.get_channel(channel_info[ctx.guild.id][1])
             await channel.send(f"{member.mention} has been approved by {ctx.author.mention}")

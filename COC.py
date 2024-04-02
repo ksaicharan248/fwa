@@ -137,6 +137,43 @@ def leaugeid(id) :
         return "https://static.wikia.nocookie.net/clashofclans/images/e/e3/WarChampionI.png/revision/latest/?cb=20181024140228"
 
 
+def ccns_check(tag: str) :
+    url = f"https://fwa.chocolateclash.com/cc_n/member.php?tag={tag.strip('#')}"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text , "html.parser")
+    if soup.select_one('#top > span > b') is not None :
+        return [False , False]
+    elif soup.select_one('#top > span:nth-child(1)') is not None :
+        return [False , True]
+    else :
+        return [True , True]
+
+
+def get_points(tag) :
+    url = f'https://fwapoints.chocolateclash.com/clan?tag={tag.strip("#")}'
+    response = requests.get(url)
+    html_content = response.content
+    soup = BeautifulSoup(html_content , 'html.parser')
+    winbox = soup.select_one('body > p.winner-box').text
+
+    def find_numeric_positions(tsing) :
+        count = 0
+        for i in range(len(tsing)) :
+            if tsing[i].isdigit() :
+                count += 1
+        return count
+
+    # Find the index where the string needs to be broken
+    break_index_i = winbox.find('Sync #')
+    soppe = winbox[break_index_i :break_index_i + 6 + 10]
+
+    break_index_1 = winbox.find('Sync #') + len('Sync #') + find_numeric_positions(soppe)
+    break_index_2 = winbox.find('):') + 2
+
+    line1 = winbox[:break_index_1] + '\n' + winbox[break_index_1 :break_index_2] + '\n' + winbox[break_index_2 :]
+    return line1
+
+
 def get_hero_id(id) :
     if id == "Barbarian King" :
         return 1172564470984347678
