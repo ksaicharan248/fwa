@@ -122,8 +122,8 @@ class profile_link(commands.Cog) :
                                         f'❯ Ask in {self.client.get_channel(channel_info[ctx.guild.id][2]).mention} if you have any questions. \nDone by : <@1154381056900870174>'
                         await channel.send(embed=e)
                     else:
-                        channel = self.client.get_channel(1158812576604504225)
-                        await channel.send(f"{ctx.author.mention} is fwa  banned player")
+                        channel = self.client.get_channel(1072557906509189191)
+                        await channel.send(f"{ctx.author.mention} is a fwa Banned player")
                 return
 
 

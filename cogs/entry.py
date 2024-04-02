@@ -103,7 +103,7 @@ class NewModal(discord.ui.Modal , title="Link your profile") :
                                         f'❯ Ask in {interaction.user.guild.get_channel(channel_info[interaction.user.guild.id][2]).mention} if you have any questions. \nDone by : <@1154381056900870174>'
                         await channel.send(embed=e)
                     else :
-                        channel = interaction.user.guild.get_channel(1158812576604504225)
+                        channel = interaction.user.guild.get_channel(1072557906509189191)
                         await channel.send(f"{interaction.user.mention} is fwa  banned player")
 
             else :
