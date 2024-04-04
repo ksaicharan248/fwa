@@ -63,6 +63,17 @@ class fuunctionmethods(commands.Cog) :
                                                  invitable=False)
         await thread.send(output_message)
 
+    @commands.command(name='thread-remove' , aliases=['rt'])
+    @commands.has_any_role('🔰ADMIN🔰')
+    async def remve_from_thread(self , ctx , *members : discord.Member) :
+        # Ensure the context is within a thread
+        if isinstance(ctx.channel , discord.Thread) :
+            # Remove the member from the current thread
+            for member in members:
+                await ctx.channel.remove_user(member)
+        else :
+            await ctx.send("This command can only be used inside a thread.")
+
     @commands.command(name='deletethread' , aliases=['dt'])
     @commands.has_any_role('🔰ADMIN🔰')
     async def thread_delete(self , ctx) :
