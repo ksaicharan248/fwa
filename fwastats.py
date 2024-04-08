@@ -9,10 +9,10 @@ async def fetch_data(url) :
                 return await response.json()
 
 
-async def get_nope() :
+async def get_nope(clan_tag="U0LPRYL2") :
     tasks = []
     for i in [3 , 2 , 1] :
-        url = f"https://fwastats.com/Clan/U0LPRYL2/WarMembers.json?warNo={i}"
+        url = f"https://fwastats.com/Clan/{clan_tag.strip('#')}/WarMembers.json?warNo={i}"
         tasks.append(fetch_data(url))
     results = await asyncio.gather(*tasks)
     return results

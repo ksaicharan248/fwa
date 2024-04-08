@@ -4,7 +4,7 @@ import io
 import discord
 import matplotlib.pyplot as plt
 import typing
-
+import warnings
 import numpy as np
 from PIL import Image , ImageDraw , ImageFont
 import requests
@@ -29,6 +29,7 @@ client.remove_command("help")
 
 p = client.command_prefix
 
+warnings.filterwarnings("ignore" , category=UserWarning , message="Glyph.*missing from current font." ,module="tkinter")
 
 @client.event
 async def on_ready() :
@@ -483,6 +484,7 @@ class war_buttons(discord.ui.View) :
             buffer = io.BytesIO()
             plt.savefig(buffer , format='png')
             buffer.seek(0)
+
             file = discord.File(buffer , filename='plot.png')
             embed = discord.Embed(color=discord.Color.blue())
             embed.description = "List of common missed attacks\nNote: This data may be captured on the preparation day of the war and may not be accurate if the war has not started yet , please check and ensure if needed"
@@ -491,8 +493,25 @@ class war_buttons(discord.ui.View) :
 
 
 @client.command(name='warst')
-async def warst(ctx) :
-    data = await get_nope()
+async def warst(ctx , tag = None) :
+    with open('datasheets/userdata.pkl' , 'rb') as f :
+        user_data = pickle.load(f)
+    if ctx.message.mentions  :
+        if ctx.message.mentions[0].id in user_data.keys():
+            tag = user_data[ctx.message.mentions[0].id]['clan']
+        else:
+            await ctx.send("The user you mentioned doest have any linked ID`s ")
+            return
+    if tag is None :
+        if ctx.author.id in user_data.keys() :
+            tag = user_data[ctx.author.id]['clan']
+        else :
+            await ctx.send('Please provide a tag.')
+            return
+    else :
+        tag = tag.strip('#')
+    print(tag)
+    data = await get_nope(clan_tag=tag)
     clan_data = {}
 
     for i in [0 , 1 , 2] :
