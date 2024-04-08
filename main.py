@@ -2,11 +2,16 @@ import asyncio
 import os
 import io
 import discord
+import matplotlib.pyplot as plt
 import typing
+
+import numpy as np
 from PIL import Image , ImageDraw , ImageFont
 import requests
 from io import BytesIO
 from discord.ext import commands
+import fwastats
+from fwastats import get_nope
 import COC
 from discord import Embed , Color
 from discord.ui import Button , View , Select
@@ -119,9 +124,8 @@ async def on_member_join(member) :
 
 @client.hybrid_command(name='text-to-image' , help="Ask any thing with AI")
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
-async def ask(ctx , prompt: typing.Optional[str] = "clash of clans" ) :
+async def ask(ctx , prompt: typing.Optional[str] = "clash of clans") :
     await ctx.defer()
-
 
     API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
     headers = {"Authorization" : "Bearer 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"}
@@ -130,18 +134,15 @@ async def ask(ctx , prompt: typing.Optional[str] = "clash of clans" ) :
         response = requests.post(API_URL , headers=headers , json=payload)
         return response.content
 
-    
     image_bytes = query({"inputs" : f"{prompt}" , })
 
     image = Image.open(io.BytesIO(image_bytes))
 
-
-    with BytesIO() as image_binary:
-        image.save(image_binary, 'PNG')
+    with BytesIO() as image_binary :
+        image.save(image_binary , 'PNG')
         image_binary.seek(0)
-        file = discord.File(fp=image_binary, filename='image.png')
+        file = discord.File(fp=image_binary , filename='image.png')
         await ctx.send(file=file)
-
 
 
 @client.command(name='reload' , help="updated the slash command list")
@@ -253,9 +254,9 @@ class Selectmenu1(discord.ui.View) :
                 embed3.description = f"`{p}ping`         - Show latency\n" \
                                      f"`{p}link`       - link the bot with player tag \n" \
                                      f"`{p}profile`    - profile of player\n" \
-                                     f"`{p}clan`       - clan info\n\nfor more info type "\
-                                     f"`{p}listcompo   - lists the clan composition`\n"\
-                                     f"`{p}warcompo`        - show war composition\n"\
+                                     f"`{p}clan`       - clan info\n\nfor more info type " \
+                                     f"`{p}listcompo   - lists the clan composition`\n" \
+                                     f"`{p}warcompo`        - show war composition\n" \
                                      f"```{p}usage <command name>```"
 
                 await interaction.response.defer()
@@ -346,8 +347,8 @@ async def war(ctx , target=None) :
     cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682 , 'THE SHIELD'] ,
                1222214889859321919 : ["8G2RJCP0" , 1222212841373696010 , 'GOODVIBES 24/7'] ,
                1063290412397244587 : ["2G9URUGGC" , 1063289659586785362 , 'BROTHERS'] ,
-               1196099434333880361 : ["QL9998CC" , 1196090548193345667 , "Pakistan Lovers"],
-               1188693015921950890 : ["GC8QRPUJ" , 1188693492503957514 , "AVENGERS"] }
+               1196099434333880361 : ["QL9998CC" , 1196090548193345667 , "Pakistan Lovers"] ,
+               1188693015921950890 : ["GC8QRPUJ" , 1188693492503957514 , "AVENGERS"]}
     await ctx.message.delete()
     if cid in cidinfo.keys() :
         clani = COC.getclan(tag=f"{cidinfo[cid][0]}/currentwar")
@@ -409,9 +410,146 @@ async def load(ctx , extension) :
         await ctx.send(embed=my_embed)
 
 
+class war_buttons(discord.ui.View) :
+    def __init__(self , clan_data: dict , common_clan_data) :
+        self.common_clan_data = common_clan_data
+        self.clan_data = clan_data
+        self.page = 0
+        self.lastpage = 3
+        super().__init__(timeout=100)
+
+    async def update_embed(self , interaction) :
+        clan_list = list(self.clan_data.keys())
+        clan = clan_list[self.page]
+        embed = discord.Embed(title=f"{clan}" , color=discord.Color.blue())
+
+        # Adding fields for zero attacks
+        zero_attacks_field = ""
+        attc0 = self.clan_data[clan][0]
+        for player in attc0 :
+            zero_attacks_field += f"{player['position'] if player['position'] >= 10 else '0' + str(player['position'])}    -   {player['townHall'] if player['townHall'] >= 10 else '0' + str(player['townHall'])}   -  {player['name']}\n"
+        embed.description = "**MISSED BOTH ATTACKS**\n" + f"```POSITION  TH  NAME\n{zero_attacks_field}```"
+
+        # Adding fields for single attacks
+        single_attacks_field = ""
+        attc1 = self.clan_data[clan][1]
+        for player in attc1 :
+            single_attacks_field += f"{player['position'] if player['position'] >= 10 else '0' + str(player['position'])}   -   {player['townHall'] if player['townHall'] >= 10 else '0' + str(player['townHall'])}   -  {player['name']}\n"
+        embed.add_field(name="**MISSED SINGLE ATTACK**\n" , value=f"```POSITION TH  NAME\n{single_attacks_field}```" ,
+                        inline=False)
+        await interaction.response.defer()
+        await interaction.message.edit(embed=embed , attachments=[])
+
+    @discord.ui.button(emoji='⏪' , style=discord.ButtonStyle.secondary)
+    async def button1_callback1(self , interaction: discord.Interaction , button: discord.ui.button) :
+        if self.page > 0 :
+            self.page -= 1
+            await self.update_embed(interaction)
+        else :
+            await interaction.response.defer()
+
+    @discord.ui.button(emoji='⏩' , style=discord.ButtonStyle.secondary)
+    async def button1_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
+        if self.page < self.lastpage - 1 :
+            self.page += 1
+            await self.update_embed(interaction)
+        else :
+            await interaction.response.defer()
+
+    @discord.ui.button(emoji='🚀' , style=discord.ButtonStyle.danger)
+    async def button1_callback3(self , interaction: discord.Interaction , button: discord.ui.button) :
+        await interaction.response.defer()
+        data = self.common_clan_data
+        data[1] = []
+        for sublist in data :
+            filtered_data = [(name , counts) for name , counts in sublist if counts['zero'] > 1 or counts['single'] > 1]
+            if not filtered_data :
+                continue
+            names = [item[0] for item in filtered_data]
+            zeros = [item[1]['zero'] for item in filtered_data]
+            singles = [item[1]['single'] for item in filtered_data]
+            fig , ax = plt.subplots()
+            width = 0.4
+            ind = np.arange(len(names))
+            ax.bar(ind - width / 2 , zeros , width , label='Zero attacks used')
+            ax.bar(ind + width / 2 , singles , width , label='Single attacks used')
+            ax.set_ylabel('Number of missed attacks')
+            ax.set_title('Frequency of Names')
+            ax.set_xticks(ind)
+            ax.set_xticklabels(names)
+            ax.legend()
+            plt.xticks(rotation=45 , ha='right')
+            plt.subplots_adjust(bottom=0.25)
+            buffer = io.BytesIO()
+            plt.savefig(buffer , format='png')
+            buffer.seek(0)
+            file = discord.File(buffer , filename='plot.png')
+            embed = discord.Embed(color=discord.Color.blue())
+            embed.description = "List of common missed attacks\nNote: This data may be captured on the preparation day of the war and may not be accurate if the war has not started yet , please check and ensure if needed"
+            embed.set_image(url='attachment://plot.png')
+            await interaction.message.edit(embed=embed,attachments=[file])
+
+
+@client.command(name='warst')
+async def warst(ctx) :
+    data = await get_nope()
+    clan_data = {}
+
+    for i in [0 , 1 , 2] :
+        clanname = data[i][0]['opponentName']
+        zeroattcks = []
+        oneattacks = []
+        for player in data[i] :
+            if player['stars1'] == 0 and player['stars2'] == 0 :
+                zeroattcks.append(player)
+            elif player['stars1'] == 0 or player['stars2'] == 0 :
+                oneattacks.append(player)
+            clan_data[clanname] = [zeroattcks , oneattacks]
+
+    clan = list(clan_data.keys())[0]
+    clan_attacks = clan_data[clan]
+    embed = discord.Embed(title=f"{clan}" , color=discord.Color.blue())
+
+    # Adding fields for zero attacks
+    zero_attacks_field = ""
+    attc0 = clan_attacks[0]
+    for player in attc0 :
+        zero_attacks_field += f"{player['position'] if player['position'] >= 10 else '0' + str(player['position'])}    -   {player['townHall'] if player['townHall'] >= 10 else '0' + str(player['townHall'])}   -  {player['name']}\n"
+    embed.description = "**MISSED BOTH ATTACKS**\n" + f"```POSITION  TH  NAME\n------------------\n{zero_attacks_field}```"
+
+    # Adding fields for single attacks
+    single_attacks_field = ""
+    attc1 = clan_attacks[1]
+    for player in attc1 :
+        single_attacks_field += f"{player['position'] if player['position'] >= 10 else '0' + str(player['position'])}   -   {player['townHall'] if player['townHall'] >= 10 else '0' + str(player['townHall'])}   -  {player['name']}\n"
+    embed.add_field(name="**MISSED SINGLE ATTACK**\n" ,
+                    value=f"```POSITION TH  NAME\n------------------\n{single_attacks_field}```" , inline=False)
+    common_clan_data = get_common_clan_data(clan_data)
+    await ctx.send(embed=embed , view=war_buttons(clan_data=clan_data , common_clan_data=common_clan_data))
+
+
+def get_common_clan_data(clan_data) :
+    name_counts = {}
+    for clan , clanattcks in clan_data.items() :
+        for attack0 in clanattcks[0] :
+            name = attack0['name']
+            if name not in name_counts :
+                name_counts[name] = {"zero" : 0 , "single" : 0}
+            name_counts[name]["zero"] += 1
+        for attc1 in clanattcks[1] :
+            name = attc1['name']
+            if name not in name_counts :
+                name_counts[name] = {"zero" : 0 , "single" : 0}
+            name_counts[name]["single"] += 1
+
+    sorted_zero = sorted(name_counts.items() , key=lambda x : x[1]['zero'] , reverse=True)
+    sorted_single = sorted(name_counts.items() , key=lambda x : x[1]['single'] , reverse=True)
+    return [sorted_zero , sorted_single]
+
+
 # Reload Cog
 @client.command()
-async def reloads(ctx , file_name = None) :
+async def reloads(ctx , file_name=None) :
     if file_name is None :
         if ctx.author.id == ctx.author.id :
             for filename in os.listdir('./cogs') :
