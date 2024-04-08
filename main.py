@@ -492,7 +492,7 @@ class war_buttons(discord.ui.View) :
             await interaction.message.edit(embed=embed,attachments=[file])
 
 
-@client.command(name='warst')
+@client.command(name='attack-summary',aliases=['warstats','as'], help=f"Shows the war stats of the clan\n example: {p}attack-summary <#clan_tag> or<user_mention>")
 async def warst(ctx , tag = None) :
     with open('datasheets/userdata.pkl' , 'rb') as f :
         user_data = pickle.load(f)
@@ -510,41 +510,46 @@ async def warst(ctx , tag = None) :
             return
     else :
         tag = tag.strip('#')
-    print(tag)
-    data = await get_nope(clan_tag=tag)
-    clan_data = {}
 
-    for i in [0 , 1 , 2] :
-        clanname = data[i][0]['opponentName']
-        zeroattcks = []
-        oneattacks = []
-        for player in data[i] :
-            if player['stars1'] == 0 and player['stars2'] == 0 :
-                zeroattcks.append(player)
-            elif player['stars1'] == 0 or player['stars2'] == 0 :
-                oneattacks.append(player)
-            clan_data[clanname] = [zeroattcks , oneattacks]
+    try:
+        data = await get_nope(clan_tag=tag)
+        clan_data = {}
 
-    clan = list(clan_data.keys())[0]
-    clan_attacks = clan_data[clan]
-    embed = discord.Embed(title=f"{clan}" , color=discord.Color.blue())
+        for i in [0 , 1 , 2] :
+            clanname = data[i][0]['opponentName']
+            zeroattcks = []
+            oneattacks = []
+            for player in data[i] :
+                if player['stars1'] == 0 and player['stars2'] == 0 :
+                    zeroattcks.append(player)
+                elif player['stars1'] == 0 or player['stars2'] == 0 :
+                    oneattacks.append(player)
+                clan_data[clanname] = [zeroattcks , oneattacks]
 
-    # Adding fields for zero attacks
-    zero_attacks_field = ""
-    attc0 = clan_attacks[0]
-    for player in attc0 :
-        zero_attacks_field += f"{player['position'] if player['position'] >= 10 else '0' + str(player['position'])}    -   {player['townHall'] if player['townHall'] >= 10 else '0' + str(player['townHall'])}   -  {player['name']}\n"
-    embed.description = "**MISSED BOTH ATTACKS**\n" + f"```POSITION  TH  NAME\n------------------\n{zero_attacks_field}```"
+        clan = list(clan_data.keys())[0]
+        clan_attacks = clan_data[clan]
+        embed = discord.Embed(title=f"{clan}" , color=discord.Color.blue())
 
-    # Adding fields for single attacks
-    single_attacks_field = ""
-    attc1 = clan_attacks[1]
-    for player in attc1 :
-        single_attacks_field += f"{player['position'] if player['position'] >= 10 else '0' + str(player['position'])}   -   {player['townHall'] if player['townHall'] >= 10 else '0' + str(player['townHall'])}   -  {player['name']}\n"
-    embed.add_field(name="**MISSED SINGLE ATTACK**\n" ,
-                    value=f"```POSITION TH  NAME\n------------------\n{single_attacks_field}```" , inline=False)
-    common_clan_data = get_common_clan_data(clan_data)
-    await ctx.send(embed=embed , view=war_buttons(clan_data=clan_data , common_clan_data=common_clan_data))
+        # Adding fields for zero attacks
+        zero_attacks_field = ""
+        attc0 = clan_attacks[0]
+        for player in attc0 :
+            zero_attacks_field += f"{player['position'] if player['position'] >= 10 else '0' + str(player['position'])}    -   {player['townHall'] if player['townHall'] >= 10 else '0' + str(player['townHall'])}   -  {player['name']}\n"
+        embed.description = "**MISSED BOTH ATTACKS**\n" + f"```POSITION  TH  NAME\n------------------\n{zero_attacks_field}```"
+
+        # Adding fields for single attacks
+        single_attacks_field = ""
+        attc1 = clan_attacks[1]
+        for player in attc1 :
+            single_attacks_field += f"{player['position'] if player['position'] >= 10 else '0' + str(player['position'])}   -   {player['townHall'] if player['townHall'] >= 10 else '0' + str(player['townHall'])}   -  {player['name']}\n"
+        embed.add_field(name="**MISSED SINGLE ATTACK**\n" ,
+                        value=f"```POSITION TH  NAME\n------------------\n{single_attacks_field}```" , inline=False)
+        common_clan_data = get_common_clan_data(clan_data)
+        await ctx.send(embed=embed , view=war_buttons(clan_data=clan_data , common_clan_data=common_clan_data))
+
+    except:
+        embed = Embed(title="Attack summary not found on this Tag or ID")
+        await ctx.send(embed=embed)
 
 
 def get_common_clan_data(clan_data) :
