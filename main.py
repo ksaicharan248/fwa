@@ -503,6 +503,7 @@ async def warstats(ctx , limit=20) :
         await ctx.send('Please provide a tag.')
         return
     try :
+
         data = {}
         clan_user_tags = get_clan_tags(tags=tag)
         pins = get_pins(tag=tag , limit=limit)

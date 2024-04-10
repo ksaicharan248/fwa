@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 fwa_count = 0
 
 
+
 def get_clan_tags(tags) :
     url = f"https://fwa.chocolateclash.com/cc_n/clan.php?tag={tags.strip('#')}"
     response = requests.get(url)
