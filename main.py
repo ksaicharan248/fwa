@@ -489,17 +489,65 @@ class war_buttons(discord.ui.View) :
             embed = discord.Embed(color=discord.Color.blue())
             embed.description = "List of common missed attacks\nNote: This data may be captured on the preparation day of the war and may not be accurate if the war has not started yet , please check and ensure if needed"
             embed.set_image(url='attachment://plot.png')
-            await interaction.message.edit(embed=embed,attachments=[file])
+            await interaction.message.edit(embed=embed , attachments=[file])
 
 
-@client.command(name='attack-summary',aliases=['warstats','as'], help=f"Shows the war stats of the clan\n example: {p}attack-summary <#clan_tag> or<user_mention>")
-async def warst(ctx , tag = None) :
+@client.command(name='war-stats' , aliases=['ws'] , help="Shows the war stats of the clan")
+async def warstats(ctx , limit=20) :
     with open('datasheets/userdata.pkl' , 'rb') as f :
         user_data = pickle.load(f)
-    if ctx.message.mentions  :
-        if ctx.message.mentions[0].id in user_data.keys():
+    if ctx.author.id in user_data.keys() :
+        tag = user_data[ctx.author.id]['clan']
+    else :
+        await ctx.send('Please provide a tag.')
+        return
+    try :
+        data = {}
+        clan_user_tags = get_clan_tags(tags=tag)
+        pins = get_pins(tag=tag , limit=limit)
+        offline , _ = await fetch_and_count_offline(pins)
+        sorted_players = sorted(offline[1].items() , key=lambda x : x[1]['zero'] , reverse=True)
+        for key , value in sorted_players :
+            if key in clan_user_tags and (value['zero'] > 1 or value['single'] > 1) :
+                data[key] = value
+        count = offline[0]
+        players = list(data.keys())
+        names = [data[player]['name'] for player in data]
+        zeros = [data[player]['zero'] for player in players]
+        singles = [data[player]['single'] for player in players]
+        bar_width = 0.35
+        r1 = np.arange(len(players))
+        r2 = [x + bar_width for x in r1]
+        plt.figure(figsize=(12 , 8))
+        plt.barh(r1 , zeros , color='skyblue' , height=bar_width , edgecolor='grey' ,
+                 label=f'Number of Zero attacks in past {count} wars')
+        plt.barh(r2 , singles , color='salmon' , height=bar_width , edgecolor='grey' ,
+                 label=f'Number of Single attack in past {count} wars')
+        plt.xlabel('Number of missed attacks')
+        plt.ylabel('Player')
+        plt.title(f'Out of past {count} FWA wars')
+        plt.yticks([r + bar_width / 2 for r in range(len(players))] , names)
+        plt.legend()
+        plt.grid(visible=True , axis='x' , which="both")
+        buffer = io.BytesIO()
+        plt.savefig(buffer , format='png')
+        buffer.seek(0)
+        file = discord.File(buffer , filename='plot.png')
+        await ctx.send(f"List of common missed attacks \n{user_data[ctx.author.id]['clanname']} - {tag}" , file=file)
+    except :
+        await ctx.send("An error occured. Please try again later.")
+        return
+
+
+@client.command(name='attack-summary' , aliases=['attacks' , 'as'] ,
+                help=f"Shows the war stats of the clan\n example: {p}attack-summary <#clan_tag> or<user_mention>")
+async def warst(ctx , tag=None) :
+    with open('datasheets/userdata.pkl' , 'rb') as f :
+        user_data = pickle.load(f)
+    if ctx.message.mentions :
+        if ctx.message.mentions[0].id in user_data.keys() :
             tag = user_data[ctx.message.mentions[0].id]['clan']
-        else:
+        else :
             await ctx.send("The user you mentioned doest have any linked ID`s ")
             return
     if tag is None :
@@ -511,7 +559,7 @@ async def warst(ctx , tag = None) :
     else :
         tag = tag.strip('#')
 
-    try:
+    try :
         data = await get_nope(clan_tag=tag)
         clan_data = {}
 
@@ -547,7 +595,7 @@ async def warst(ctx , tag = None) :
         common_clan_data = get_common_clan_data(clan_data)
         await ctx.send(embed=embed , view=war_buttons(clan_data=clan_data , common_clan_data=common_clan_data))
 
-    except:
+    except :
         embed = Embed(title="Attack summary not found on this Tag or ID")
         await ctx.send(embed=embed)
 
