@@ -43,7 +43,8 @@ def get_pins(tag , limit=15) :
     return hrefs[:limit]
 
 
-async def fetch_data(pin , offline , tag) :
+async def fetch_data(pin , offline , c_tag) :
+    tag = c_tag.strip("#")
     async with aiohttp.ClientSession() as session :
         url = f"https://fwa.chocolateclash.com/cc_n/warinspect.php?n={pin}"
         async with session.get(url) as response :
@@ -103,9 +104,10 @@ if __name__ == "__main__" :
     start = time.time()
 
     data = {}
-    clan_user_tags = get_clan_tags(tags="#U0LPRYL2")
-    pins = get_pins(tag="#U0LPRYL2",limit=20)
-    offline , _ = asyncio.run(fetch_and_count_offline(pins))
+    tag = '#QL9998CC'
+    clan_user_tags = get_clan_tags(tags=tag)
+    pins = get_pins(tag=tag,limit=20)
+    offline , _ = asyncio.run(fetch_and_count_offline(pins,tag))
     sorted_players = sorted(offline[1].items() , key=lambda x : x[1]['zero'] , reverse=True)
     for key , value in sorted_players :
         if key in clan_user_tags and (value['zero'] > 1 or value['single'] > 1) :
