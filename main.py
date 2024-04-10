@@ -18,7 +18,8 @@ from discord.ui import Button , View , Select
 from setkey import keyy
 from webser import keep_alive
 import pickle
-import google.generativeai as palm
+from warattacksummary import get_pins , get_clan_tags , fetch_and_count_offline , fetch_data , main , fwa_count
+
 
 # Define the intents
 intents = discord.Intents.all()
