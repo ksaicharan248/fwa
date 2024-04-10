@@ -506,7 +506,7 @@ async def warstats(ctx , limit=20) :
         data = {}
         clan_user_tags = get_clan_tags(tags=tag)
         pins = get_pins(tag=tag , limit=limit)
-        offline , _ = await fetch_and_count_offline(pins)
+        offline , _ = await fetch_and_count_offline(pins , tag=tag)
         sorted_players = sorted(offline[1].items() , key=lambda x : x[1]['zero'] , reverse=True)
         for key , value in sorted_players :
             if key in clan_user_tags and (value['zero'] > 1 or value['single'] > 1) :

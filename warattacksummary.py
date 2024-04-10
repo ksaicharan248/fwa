@@ -42,7 +42,7 @@ def get_pins(tag , limit=15) :
     return hrefs[:limit]
 
 
-async def fetch_data(pin , offline ) :
+async def fetch_data(pin , offline , tag) :
     async with aiohttp.ClientSession() as session :
         url = f"https://fwa.chocolateclash.com/cc_n/warinspect.php?n={pin}"
         async with session.get(url) as response :
@@ -52,12 +52,12 @@ async def fetch_data(pin , offline ) :
             if datta and len(datta) > 1 :
                 data_list = datta[1].get_text(separator=",").split(',')
                 if data_list[6][0] == "O" and data_list[16][0] == "O" and (
-                        data_list[4] == "#U0LPRYL2" or data_list[14] == "#U0LPRYL2") :
+                        data_list[4] == f"#{tag}" or data_list[14] == f"#{tag}") :
                     offline[0] += 1
                     for i in range(3 , 53) :
                         pos = i - 2
                         entries = datta[i].get_text(separator=",").split(',')
-                        clan_index = data_list.index("#U0LPRYL2")
+                        clan_index = data_list.index(f"#{tag}")
                         if clan_index == 4 :
                             player_attack = entries[:entries[1 :].index(str(pos)) + 1]
                         elif clan_index == 14 :
@@ -85,16 +85,16 @@ async def fetch_data(pin , offline ) :
                 pass
 
 
-async def main(pins , offline ) :
-    tasks = [fetch_data(pin , offline ) for pin in pins]
+async def main(pins , offline ,tag) :
+    tasks = [fetch_data(pin , offline ,tag) for pin in pins]
     await asyncio.gather(*tasks)
 
 
-async def fetch_and_count_offline(pins) :
+async def fetch_and_count_offline(pins , tag) :
     offline = [0,{}]
     global fwa_count
     fwa_count = 0
-    await main(pins , offline )
+    await main(pins , offline ,tag )
     return offline , fwa_count
 
 
