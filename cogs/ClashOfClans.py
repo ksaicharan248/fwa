@@ -26,7 +26,7 @@ class cwlbutton(View) :
 
     @discord.ui.button(style=discord.ButtonStyle.blurple , label="LAZY CWL 15" , custom_id="1" , row=1)
     async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
-        with open('datasheets/cwlrooster.pkl', 'rb') as file :
+        with open('datasheets/cwlrooster.pkl' , 'rb') as file :
             user_data = pickle.load(file)
         if interaction.user.id in user_data[0] :
             await interaction.response.send_message("You have already enrolled for the CWL." , ephemeral=True)
@@ -105,6 +105,41 @@ class clashofclansmethods(commands.Cog) :
     def __init__(self , client) :
         self.client = client
 
+    @commands.hybrid_command(name="th" , help="Shows FWA bases for the town hall \nex : $th 12" , usage=f"{p}war")
+    async def war(self , ctx , thlevel : int=None) :
+        url16 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH16%3AWB%3AAAAABQAAAAKdkupDxXH2zHolZEYsi4Jy"
+        url15 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH15%3AWB%3AAAAAQAAAAAHyGoAkx6dj6GPei5fv9aC4"
+        url14 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH14%3AWB%3AAAAAKwAAAAIy_E5glvJjSIWnUv2njqcR"
+        url13 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH13%3AWB%3AAAAAKwAAAAH9cXxV00w-5lJ2qCJCm8_v"
+        url12 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH12%3AWB%3AAAAACwAAAAIzCgaxwgW1UGFUuSFMFvCu"
+        url11 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH11%3AWB%3AAAAAKgAAAAH9X8-koI5OUOzBGQx4SKwQ"
+
+        if thlevel is None :
+            embed = Embed(title=f"➡ NOTE :" , colour=Color.random())
+            embed.description = f"We Are Currently Recruiting The Players Of The Following TownHalls"
+            image = r'templates/thall.png'
+            image = discord.File(image)
+            embed.set_image(url="attachment://thall.png")
+            await ctx.send(embed=embed , file=image)
+            for i in [16 , 15 , 14 , 13 , 12 , 11] :
+                embed = Embed(title=f"<:th{i}:{COC.get_id(i)}>TH {i} FWA BASE LINK" , colour=Color.random())
+                thlink = url16 if i == 16 else url15 if i == 15 else url14 if i == 14 else url13 if i == 13 else url12 if i == 12 else url11
+                emoji = discord.utils.get(ctx.guild.emojis , id=int(COC.get_id(i)))
+                if emoji is not None :
+                    embed.set_thumbnail(url=emoji.url)
+                embed.description = f'\n[💎Click here for base link💎]({thlink}) \n'
+                embed.set_image(url=f"http://walkwithusclan.com/img/th{i}.jpg")
+                await ctx.send(embed=embed)
+        else :
+            embed = Embed(title=f"<:th{thlevel}:{COC.get_id(int(thlevel))}>TH {thlevel} FWA BASE" , colour=Color.random())
+            thlink = url16 if thlevel == 16 else url15 if thlevel == 15 else url14 if thlevel == 14 else url13 if thlevel == 13 else url12 if thlevel == 12 else url11
+            emoji = discord.utils.get(ctx.guild.emojis , id=int(COC.get_id(thlevel)))
+            if emoji is not None :
+                embed.set_thumbnail(url=emoji.url)
+            embed.description = f'[💎Click here for base link💎]({thlink})'
+            embed.set_image(url=f"http://walkwithusclan.com/img/th{thlevel}.jpg")
+            await ctx.send(embed=embed)
+
     @commands.hybrid_command(name="bases" , help="offical fwa bases" , usage=f"{p}bases")
     async def bases(self , ctx) :
         url16 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH16%3AWB%3AAAAABQAAAAKdkupDxXH2zHolZEYsi4Jy"
@@ -143,7 +178,8 @@ class clashofclansmethods(commands.Cog) :
                 return
         else :
             if len(target) <= 3 :
-                ctags = {'pl': 'QL9998CC','gv': '8G2RJCP0' , "ts" : "U0LPRYL2" , 'bt': '2G9URUGGC' ,'av': 'GC8QRPUJ'}
+                ctags = {'pl' : 'QL9998CC' , 'gv' : '8G2RJCP0' , "ts" : "U0LPRYL2" , 'bt' : '2G9URUGGC' ,
+                         'av' : 'GC8QRPUJ'}
                 clantag = ctags[target]
             elif len(target) >= 4 :
                 clantag = target.strip('#')
@@ -209,8 +245,9 @@ class clashofclansmethods(commands.Cog) :
     @commands.command(name="list_clan" , aliases=["lc"] , help="list all the clans" , usage=f"{p}list_clan")
     async def list_clan(self , ctx) :
         await ctx.message.delete()
-        clans_list = {'8G2RJCP0':852634100895973436 ,'U0LPRYL2' : 775168480969621586 , 'QL9998CC' : 1102485434933727252 ,
-                      'GC8QRPUJ' : 241897116815851530 , '2G9URUGGC' : 1102485434933727252}
+        clans_list = {'8G2RJCP0' : 852634100895973436 , 'U0LPRYL2' : 775168480969621586 ,
+                      'QL9998CC' : 1102485434933727252 , 'GC8QRPUJ' : 241897116815851530 ,
+                      '2G9URUGGC' : 1102485434933727252}
         for clan_tag in clans_list.keys() :
             await self.clan(ctx , target=clan_tag , render=False)
             await asyncio.sleep(1)
@@ -264,7 +301,7 @@ class clashofclansmethods(commands.Cog) :
             view = My_View(ctx , clan_name , last_updated , counter_num , output)
             await ctx.reply(embed=e , view=view)
 
-    @commands.hybrid_command(name="profile" , help="Shows the profile of the user" ,
+    @commands.hybrid_command(name="profile" , aliases=['p'] ,  help="Shows the profile of the user" ,
                              usage=f"{p}profile <none> or <user> \nexample: {p}profile @user")
     async def profile(self , ctx , player_tag=None , user: discord.Member = None) :
         with open('datasheets/userdata.pkl' , 'rb') as f :
@@ -371,7 +408,6 @@ class clashofclansmethods(commands.Cog) :
             average = f'★ AvgTh : {round(average_townhalls / len(clan_weight.keys()) , 2)}  ~  {round(average_equivalent / len(clan_weight.keys()) , 2)}'
             e.description = output + f"\n{endingline}\n{average}\n{claninfoo[2]}"
             await ctx.reply(embed=e , ephemeral=True)
-
 
 
 async def setup(bot) :
