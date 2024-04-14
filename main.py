@@ -666,8 +666,9 @@ async def reloads(ctx , file_name=None) :
 
 
 
-# Command: changerole
+
 @client.command(name="clan_revoke", aliases=["cr"], help="Revoke all roles and assign new role to members")
+@commands.has_any_role('🔰ADMIN🔰')
 async def clan_revoke(ctx, role_to_remove: discord.Role, new_role: discord.Role):
     # Check if the user has administrator permissions
     if not ctx.author.guild_permissions.administrator:
