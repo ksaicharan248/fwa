@@ -1,7 +1,7 @@
 # https://fwa.chocolateclash.com/cc_n/clan.php?tag=U0LPRYL2
 import asyncio
 import time
-import nope4
+
 import aiohttp
 import bs4
 import re
@@ -114,4 +114,3 @@ if __name__ == "__main__" :
             data[key] = value
             print(f"{key}: {value}")
     print(f"Total time taken: {time.time() - start:.2f} seconds")
-    nope4.plot1(data , offline[0])

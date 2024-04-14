@@ -680,7 +680,7 @@ async def clan_revoke(ctx, role_to_remove: discord.Role, new_role: discord.Role)
     for member in members_with_role:
         try:
             # Remove all roles except @everyone role
-            await member.edit(roles=[new_role])
+            await member.edit(roles=[new_role], nick=f"re - {member.name}")
         except discord.Forbidden:
             await ctx.send(f"Failed to change role for {member.display_name}")
 
