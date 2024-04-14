@@ -259,6 +259,7 @@ class clashofclansmethods(commands.Cog) :
             if ctx.author.id in token.keys() :
                 clan_tag = token[ctx.author.id]['clan']
             else :
+
                 e = Embed(title="Please provide me a tag" , color=Color.red())
                 await ctx.reply(embed=e)
                 return
