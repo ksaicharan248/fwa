@@ -665,6 +665,29 @@ async def reloads(ctx , file_name=None) :
             await ctx.send(embed=my_embed)
 
 
+
+# Command: changerole
+@client.command(name="clan_revoke", aliases=["cr"], help="Revoke all roles and assign new role to members")
+async def clan_revoke(ctx, role_to_remove: discord.Role, new_role: discord.Role):
+    # Check if the user has administrator permissions
+    if not ctx.author.guild_permissions.administrator:
+        return await ctx.send("You do not have permission to use this command.")
+
+    # Get all members with the specified role
+    members_with_role = [member for member in ctx.guild.members if role_to_remove in member.roles]
+
+    # Change the role for each member
+    for member in members_with_role:
+        try:
+            # Remove all roles except @everyone role
+            await member.edit(roles=[new_role])
+        except discord.Forbidden:
+            await ctx.send(f"Failed to change role for {member.display_name}")
+
+    await ctx.send(f"Removed all roles and assigned {new_role.name} to {len(members_with_role)} members.")
+
+
+
 # Unload Cog
 @client.command()
 async def unload(ctx , extension) :
