@@ -221,8 +221,6 @@ class clashofclansmethods(commands.Cog) :
             with open(r'datasheets/leader_userdata.pkl' , 'rb') as file :
                 lead = pickle.load(file)
             clandata = await COC.list_of_clans()
-            print(clandata)
-            print(lead)
             for tag , clt in clandata.items() :
                 e = Embed(title=f'**{clt["name"]}** - {tag}' ,
                           url=f'https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{tag.strip("#")}' ,
