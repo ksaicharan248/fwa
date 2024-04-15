@@ -218,7 +218,7 @@ class clashofclansmethods(commands.Cog) :
     async def list_clan(self , ctx) :
         try:
             await ctx.message.delete()
-            with open(r'datasheets\leader_userdata.pkl' , 'rb') as f :
+            with open('datasheets\leader_userdata.pkl' , 'rb') as f :
                 lead = pickle.load(f)
             clandata = await COC.list_of_clans()
             print(clandata)
