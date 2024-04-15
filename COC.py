@@ -231,5 +231,5 @@ def fwa_clan_data(tag) :
 
 
 if __name__ == '__main__' :
-    sudo = getclaninfo()
+    sudo = getclan('29R0QLL80')
     print(sudo)
