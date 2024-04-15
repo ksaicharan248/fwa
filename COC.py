@@ -255,7 +255,6 @@ async def list_of_clans():
         tasks = [fetch_clan_info(session, tag, header, clan_info) for tag in clan_tags]
         await asyncio.gather(*tasks)
 
-    #sort the dictonary by clan level in a readable way
     clan_info = dict(sorted(clan_info.items(), key=lambda item: item[1]['clan_level'], reverse=True))
     return clan_info
 
