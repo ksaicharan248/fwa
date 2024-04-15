@@ -216,30 +216,33 @@ class clashofclansmethods(commands.Cog) :
 
     @commands.command(name="list_clan" , aliases=["lc"] , help="list all the clans" , usage=f"{p}list_clan")
     async def list_clan(self , ctx) :
-        await ctx.message.delete()
-        with open(r'datasheets\leader_userdata.pkl' , 'rb') as f :
-            lead = pickle.load(f)
-        clandata = await COC.list_of_clans()
-        print(clandata)
-        print(lead)
-        for tag , clt in clandata.items() :
-            e = Embed(title=f'**{clt["name"]}** - {tag}' ,
-                      url=f'https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{tag.strip("#")}' ,
-                      color=discord.Colour.random())
-            e.set_thumbnail(url=clt["badge"])
-            ccns = f'https://fwa.chocolateclash.com/cc_n/clan.php?tag={tag.strip("#")}'
-            fwa = "https://sites.google.com/site/fwaguide/"
-            cwl = "https://clashofclans.fandom.com/wiki/Clan_War_Leagues"
-            cos = f'https://www.clashofstats.com/clans/{tag.strip("#")}'
-            e.description = f'**Info** :\n\n' \
-                            f'<:ccns:1159494607760003132> [**Clash of stats**]({cos})\n' \
-                            f'💎 [**FWA**]({fwa})\n' \
-                            f'<:see:1159496511701385297> [**CCNS**]({ccns})\n' \
-                            f'⚔️ [**CWL**]({cwl})\n\n' \
-                            f'<:cp:1161299634916966400> : {clt["clancapital"]}    ' \
-                            f' <:members:1161298479050670162> : {clt["members"]}/50\n\n' \
-                            f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[tag.strip("#")] if tag.strip("#") in lead.keys() else "UNKOWN"}>'
-            await ctx.send(embed=e)
+        try:
+            await ctx.message.delete()
+            with open(r'datasheets\leader_userdata.pkl' , 'rb') as f :
+                lead = pickle.load(f)
+            clandata = await COC.list_of_clans()
+            print(clandata)
+            print(lead)
+            for tag , clt in clandata.items() :
+                e = Embed(title=f'**{clt["name"]}** - {tag}' ,
+                          url=f'https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{tag.strip("#")}' ,
+                          color=discord.Colour.random())
+                e.set_thumbnail(url=clt["badge"])
+                ccns = f'https://fwa.chocolateclash.com/cc_n/clan.php?tag={tag.strip("#")}'
+                fwa = "https://sites.google.com/site/fwaguide/"
+                cwl = "https://clashofclans.fandom.com/wiki/Clan_War_Leagues"
+                cos = f'https://www.clashofstats.com/clans/{tag.strip("#")}'
+                e.description = f'**Info** :\n\n' \
+                                f'<:ccns:1159494607760003132> [**Clash of stats**]({cos})\n' \
+                                f'💎 [**FWA**]({fwa})\n' \
+                                f'<:see:1159496511701385297> [**CCNS**]({ccns})\n' \
+                                f'⚔️ [**CWL**]({cwl})\n\n' \
+                                f'<:cp:1161299634916966400> : {clt["clancapital"]}    ' \
+                                f' <:members:1161298479050670162> : {clt["members"]}/50\n\n' \
+                                f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[tag.strip("#")] if tag.strip("#") in lead.keys() else "UNKOWN"}>'
+                await ctx.send(embed=e)
+        except Exception as e :
+            print(e)
 
 
     @commands.command(name="cwl" , help="get clan war league clan info" ,
