@@ -665,20 +665,29 @@ async def reloads(ctx , file_name=None) :
             await ctx.send(embed=my_embed)
 
 
-
 @client.command(name="get_back" , aliases=["gb"] , help="Revoke all roles and assign new role to members")
 @commands.has_any_role('🔰ADMIN🔰')
-async def get_back(ctx) :
-    with open('datasheets/userdata.pkl' , 'rb') as file :
-        user_data = pickle.load(file)
-    for member in ctx.channel.members :
-        try:
-            info = COC.get_user(user_data[member.id]['tag'])
-            new_nickname = f'{COC.get_prefix(info["role"]) if info["role"] else "Mb - "}{info["name"]}'
-            await member.edit(nick=new_nickname)
-            await ctx.send(f'Changed nickname of {member.display_name} to {new_nickname}')
-        except:
-            pass
+async def get_back(ctx , role: discord.Role) :
+    try :
+        with open('datasheets/userdata.pkl' , 'rb') as file :
+            user_data = pickle.load(file)
+
+        for member in ctx.channel.members :
+            if role in member.roles :
+                try :
+                    info = COC.get_user(user_data[member.id]['tag'])
+                    new_nickname = f'{COC.get_prefix(info["role"]) if info["role"] else "Mb - "}{info["name"]}'
+                    await member.edit(nick=new_nickname)
+                    await ctx.send(f'Changed nickname of {member.display_name} to {new_nickname}')
+                except Exception as e :
+                    pass
+    except Exception as e :
+        pass
+
+
+
+
+
 
 
 @client.command(name="clan_revoke", aliases=["cr"], help="Revoke all roles and assign new role to members")

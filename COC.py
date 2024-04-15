@@ -1,5 +1,8 @@
 import requests
 from setkey import auth
+import asyncio
+import aiohttp
+import pickle
 import random
 import time
 from bs4 import BeautifulSoup
@@ -230,6 +233,34 @@ def fwa_clan_data(tag) :
     return clan_name , sorted_clan_weight , last_date
 
 
+
+async def fetch_clan_info(session, tag, header, clan_info):
+    async with session.get('https://api.clashofclans.com/v1/clans/%23' + tag.strip('#'), headers=header) as resp:
+        clt = await resp.json()
+        clan_info[tag] = {
+            "name": clt["name"],
+            "badge": clt["badgeUrls"]["large"],
+            'clancapital': "1" if clt["clanCapital"] == {} else clt["clanCapital"]["capitalHallLevel"]
+            , 'clan_level': clt["clanLevel"]
+            , 'members': clt["members"]
+        }
+
+async def list_of_clans():
+    header = {'Accept' : 'application/json' , 'Authorization' : auth}
+    clan_info = {}
+    with open('datasheets/clan_deltails.pkl', 'rb') as f:
+        data = pickle.load(f)
+    clan_tags = [data[key]['clantag'] for key in data.keys()]
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch_clan_info(session, tag, header, clan_info) for tag in clan_tags]
+        await asyncio.gather(*tasks)
+
+    #sort the dictonary by clan level in a readable way
+    clan_info = dict(sorted(clan_info.items(), key=lambda item: item[1]['clan_level'], reverse=True))
+    return clan_info
+
+
 if __name__ == '__main__' :
-    sudo = getclaninfo()
-    print(sudo)
+    data = asyncio.run(list_of_clans())
+    for tag , clt in data.items() :
+        print(clt)

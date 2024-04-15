@@ -1,12 +1,17 @@
 import asyncio
 import discord
+import requests
 from discord.ext import commands
 import COC
 import pickle
 from discord import Embed , Color
 from discord.ui import Button , View , Select
-
+from setkey import auth
 from main import p
+
+header = {'Accept' : 'application/json' , 'Authorization' : auth}
+
+verifyheaders = {'Content-Type' : 'application/json' , 'Authorization' : auth}
 
 
 class cwlbutton(View) :
@@ -106,7 +111,7 @@ class clashofclansmethods(commands.Cog) :
         self.client = client
 
     @commands.hybrid_command(name="th" , help="Shows FWA bases for the town hall \nex : $th 12" , usage=f"{p}war")
-    async def war(self , ctx , thlevel : int=None) :
+    async def war(self , ctx , thlevel: int = None) :
         url16 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH16%3AWB%3AAAAABQAAAAKdkupDxXH2zHolZEYsi4Jy"
         url15 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH15%3AWB%3AAAAAQAAAAAHyGoAkx6dj6GPei5fv9aC4"
         url14 = "https://link.clashofclans.com/en?action=OpenLayout&id=TH14%3AWB%3AAAAAKwAAAAIy_E5glvJjSIWnUv2njqcR"
@@ -131,7 +136,8 @@ class clashofclansmethods(commands.Cog) :
                 embed.set_image(url=f"http://walkwithusclan.com/img/th{i}.jpg")
                 await ctx.send(embed=embed)
         else :
-            embed = Embed(title=f"<:th{thlevel}:{COC.get_id(int(thlevel))}>TH {thlevel} FWA BASE" , colour=Color.random())
+            embed = Embed(title=f"<:th{thlevel}:{COC.get_id(int(thlevel))}>TH {thlevel} FWA BASE" ,
+                          colour=Color.random())
             thlink = url16 if thlevel == 16 else url15 if thlevel == 15 else url14 if thlevel == 14 else url13 if thlevel == 13 else url12 if thlevel == 12 else url11
             emoji = discord.utils.get(ctx.guild.emojis , id=int(COC.get_id(thlevel)))
             if emoji is not None :
@@ -208,6 +214,32 @@ class clashofclansmethods(commands.Cog) :
                         f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[clt["tag"].strip("#")] if clt["tag"].strip("#") in lead.keys() else "UNKOWN"}>'
         await ctx.send(embed=e)
 
+    @commands.command(name="list_clan" , aliases=["lc"] , help="list all the clans" , usage=f"{p}list_clan")
+    async def list_clan(self , ctx) :
+        await ctx.message.delete()
+        with open(r'datasheets\leader_userdata.pkl' , 'rb') as f :
+            lead = pickle.load(f)
+        clandata = await COC.list_of_clans()
+        for tag , clt in clandata.items() :
+            e = Embed(title=f'**{clt["name"]}** - {tag}' ,
+                      url=f'https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{tag.strip("#")}' ,
+                      color=discord.Colour.random())
+            e.set_thumbnail(url=clt["badge"])
+            ccns = f'https://fwa.chocolateclash.com/cc_n/clan.php?tag={tag.strip("#")}'
+            fwa = "https://sites.google.com/site/fwaguide/"
+            cwl = "https://clashofclans.fandom.com/wiki/Clan_War_Leagues"
+            cos = f'https://www.clashofstats.com/clans/{tag.strip("#")}'
+            e.description = f'**Info** :\n\n' \
+                            f'<:ccns:1159494607760003132> [**Clash of stats**]({cos})\n' \
+                            f'💎 [**FWA**]({fwa})\n' \
+                            f'<:see:1159496511701385297> [**CCNS**]({ccns})\n' \
+                            f'⚔️ [**CWL**]({cwl})\n\n' \
+                            f'<:cp:1161299634916966400> : {clt["clancapital"]}    ' \
+                            f' <:members:1161298479050670162> : {clt["members"]}/50\n\n' \
+                            f'<:saw:1159496168347291698> **Leader**  : \n<@{lead[tag.strip("#")] if tag.strip("#") in lead.keys() else "UNKOWN"}>'
+            await ctx.send(embed=e)
+
+
     @commands.command(name="cwl" , help="get clan war league clan info" ,
                       usage=f"{p}cwl <tag> <th level> \neg :{p}cwl #2Q8URCU88 12 13 14")
     async def cwl(self , ctx , tag=None , *th) :
@@ -242,14 +274,11 @@ class clashofclansmethods(commands.Cog) :
             pickle.dump(user_data , f)
         await ctx.send("CWL roster reseted")
 
-    @commands.command(name="list_clan" , aliases=["lc"] , help="list all the clans" , usage=f"{p}list_clan")
-    async def list_clan(self , ctx) :
-        await ctx.message.delete()
-        clans_list = {'8G2RJCP0' : 852634100895973436 , 'U0LPRYL2' : 775168480969621586 ,
-                      'QL9998CC' : 1102485434933727252  ,'GC8QRPUJ': 128645140789973,'2G9URUGGC' : 1102485434933727252}
-        for clan_tag in clans_list.keys() :
-            await self.clan(ctx , target=clan_tag , render=False)
-            await asyncio.sleep(1)
+    @commands.command(name="cwl-roster-info" , aliases=['cwlr-info'] , help="CWL rooster info")
+    async def cwl_compo_info(self , ctx) :
+        with open('datasheets/cwlrooster.pkl' , 'rb') as file :
+            user_data = pickle.load(file)
+        embed = Embed(title=f"CWL ROSTER -ROUND {self.round}" , colour=Color.random())
 
     @commands.hybrid_command(name='listcompo' , help='list the individual war compo for every player in the clan ')
     async def listcompo(self , ctx , clan_tag: str = None) :
@@ -301,7 +330,7 @@ class clashofclansmethods(commands.Cog) :
             view = My_View(ctx , clan_name , last_updated , counter_num , output)
             await ctx.reply(embed=e , view=view)
 
-    @commands.hybrid_command(name="profile" , aliases=['p'] ,  help="Shows the profile of the user" ,
+    @commands.hybrid_command(name="profile" , aliases=['p'] , help="Shows the profile of the user" ,
                              usage=f"{p}profile <none> or <user> \nexample: {p}profile @user")
     async def profile(self , ctx , player_tag=None , user: discord.Member = None) :
         with open('datasheets/userdata.pkl' , 'rb') as f :
