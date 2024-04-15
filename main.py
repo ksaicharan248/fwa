@@ -669,6 +669,7 @@ async def reloads(ctx , file_name=None) :
 async def get_back(ctx, clan_tag: str , role_a = discord.Role , role_b = discord.Role):
     with open('datasheets/userdata.pkl' , 'rb') as file :
         user_data = pickle.load(file)
+    print(clan_tag)
     in_clan_mebers = ['20LR822LP' , '29Y2G8PJQ' , '2JPYLP0V0' , '2LYQVCY2G' , '2P0RPPLRP' , '2U88JVR8J' , '2UJPU080J' ,
                       '2VUL2J2' , '2VYUPJ9' , '2YPVVLYGV' , '8282CUCC0' , '8CCCJQRVU' , '8V808RUG0' , '8VJLQPUYR' ,
                       '98JPVJV2J' , '9CJRGCCP' , '9JP8J892P' , '9PU9LPYQV' , '9QLLUVL8V' , '9ULL8J0PP' , '9UPJ0YQJP' ,
