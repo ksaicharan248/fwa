@@ -246,7 +246,7 @@ class clashofclansmethods(commands.Cog) :
     async def list_clan(self , ctx) :
         await ctx.message.delete()
         clans_list = {'8G2RJCP0' : 852634100895973436 , 'U0LPRYL2' : 775168480969621586 ,
-                      'QL9998CC' : 1102485434933727252  ,'2G9URUGGC' : 1102485434933727252}
+                      'QL9998CC' : 1102485434933727252  ,'GC8QRPUJ': 128645140789973,'2G9URUGGC' : 1102485434933727252}
         for clan_tag in clans_list.keys() :
             await self.clan(ctx , target=clan_tag , render=False)
             await asyncio.sleep(1)
