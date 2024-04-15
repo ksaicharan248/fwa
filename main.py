@@ -665,7 +665,9 @@ async def reloads(ctx , file_name=None) :
             await ctx.send(embed=my_embed)
 
 
+
 @client.command(name="get_back" , aliases=["gb"] , help="Revoke all roles and assign new role to members")
+@commands.has_any_role('🔰ADMIN🔰')
 async def get_back(ctx) :
     with open('datasheets/userdata.pkl' , 'rb') as file :
         user_data = pickle.load(file)
