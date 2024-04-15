@@ -25,7 +25,7 @@ from warattacksummary import get_pins , get_clan_tags , fetch_and_count_offline 
 intents = discord.Intents.all()
 intents.message_content = True
 
-client = commands.Bot(command_prefix="$" , intents=intents)
+client = commands.Bot(command_prefix=">>" , intents=intents)
 client.remove_command("help")
 
 p = client.command_prefix
@@ -669,10 +669,22 @@ async def reloads(ctx , file_name=None) :
 async def get_back(ctx, clan_tag: str , role_a = discord.Role , role_b = discord.Role):
     with open('datasheets/userdata.pkl' , 'rb') as file :
         user_data = pickle.load(file)
-    for member in ctx.guild.members :
-        if user_data[member.id]['clan'] == clan_tag :
-            await member.edit(roles=[role_a , role_b], nick=f"Mb - {member.name}")
+    in_clan_mebers = ['20LR822LP' , '29Y2G8PJQ' , '2JPYLP0V0' , '2LYQVCY2G' , '2P0RPPLRP' , '2U88JVR8J' , '2UJPU080J' ,
+                      '2VUL2J2' , '2VYUPJ9' , '2YPVVLYGV' , '8282CUCC0' , '8CCCJQRVU' , '8V808RUG0' , '8VJLQPUYR' ,
+                      '98JPVJV2J' , '9CJRGCCP' , '9JP8J892P' , '9PU9LPYQV' , '9QLLUVL8V' , '9ULL8J0PP' , '9UPJ0YQJP' ,
+                      'C80PL0CV' , 'CY80PJ0R' , 'G0Q899GYP' , 'G8QVCQU29' , 'L220LLQPJ' , 'LGUC8QUY9' , 'LJ9YCPU8' ,
+                      'LJV0QJ08R' , 'P8JVJ2LQQ' , 'P8LQC8Q8' , 'PCRV28C08' , 'PLC00LLUL' , 'PPCJ0QVVJ' , 'PRL9JPLGQ' ,
+                      'Q22RY0YQ0' , 'Q28LCJQVU' , 'Q28LQY9VL' , 'Q2U8C0V9' , 'Q99RGVYQR' , 'QUJG9LP8U' , 'QUQL828U8' ,
+                      'QV2VJC2Y' , 'QVYU9L0RJ' , 'UCY0Y2UC' , 'VGLVUY0Q' , 'Y09C9R0' , 'YJR0GLV9L' , 'YRRV9G0PJ' ,
+                      'YY9PY89LC']
 
+    i = 0
+    for member in ctx.guild.members :
+        if user_data[member.id]['tag'] in in_clan_mebers :
+            await member.edit(roles=[role_a , role_b], nick=f"Mb - {member.name}")
+            await ctx.send(f"Moved {member.display_name}")
+
+    await ctx.send("Done")
 
 
 @client.command(name="clan_revoke", aliases=["cr"], help="Revoke all roles and assign new role to members")
