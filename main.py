@@ -665,6 +665,14 @@ async def reloads(ctx , file_name=None) :
             await ctx.send(embed=my_embed)
 
 
+@client.command(name="get_back", aliases=["gb"], help="Revoke all roles and assign new role to members")
+async def get_back(ctx, clan_tag: str , role_a = discord.Role , role_b = discord.Role):
+    with open('datasheets/userdata.pkl' , 'rb') as file :
+        user_data = pickle.load(file)
+    for member in ctx.guild.members :
+        if user_data[member.id]['clan'] == clan_tag :
+            await member.edit(roles=[role_a , role_b], nick=f"Mb - {member.name}")
+
 
 
 @client.command(name="clan_revoke", aliases=["cr"], help="Revoke all roles and assign new role to members")
