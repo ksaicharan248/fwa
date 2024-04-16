@@ -27,7 +27,7 @@ class townhall(discord.ui.View) :
         embed.description = basic + '\n'
         maskThevalue = '\n'.join([f'TH : {i}' for i in options[interaction.channel.category.id]["Townhall"]])
         embed.add_field(name='Town hall required' , value=f'```{maskThevalue}```')
-        embed.add_field(name='This interaction will be disabled in 80 seconds' ,value='thankyou')
+        embed.add_field(name='This interaction will be disabled in 80 seconds' , value='thankyou')
         await interaction.message.edit(embed=embed)
         await interaction.response.defer()
         with open('datasheets/optimaltownhall.pkl' , 'wb') as file :
@@ -57,7 +57,7 @@ class townhall(discord.ui.View) :
     async def button_callback11(self , interaction: discord.Interaction , button: discord.ui.button) :
         await self.update(interaction , 11)
 
-    async def on_timeout(self):
+    async def on_timeout(self) :
         self.clear_items()
 
 
@@ -102,14 +102,16 @@ class profile_link(commands.Cog) :
 
                 if role_name in [role.name for role in ctx.author.roles] :
                     verification = COC.ccns_check(tag=player_tag)
-                    if verification[1] == True:
+                    if verification[1] == True :
                         if not verification[0] :
                             await ctx.author.edit(nick=f'TH {player["townHallLevel"]} - {player["name"]} (flagged)')
-                        else:
+                        else :
                             await ctx.author.edit(nick=f'TH {player["townHallLevel"]} - {player["name"]}')
-                        await ctx.author.remove_roles(*[role for role in ctx.author.roles if role != ctx.guild.default_role])
+                        await ctx.author.remove_roles(
+                            *[role for role in ctx.author.roles if role != ctx.guild.default_role])
                         channel_info = {1054435038881665024 : ['approved✅' , 1055439744739315743 , 1126856734095462511]}
-                        await ctx.author.add_roles(discord.utils.get(ctx.guild.roles , name=channel_info[ctx.guild.id][0]))
+                        await ctx.author.add_roles(
+                            discord.utils.get(ctx.guild.roles , name=channel_info[ctx.guild.id][0]))
                         channel = self.client.get_channel(channel_info[ctx.guild.id][1])
                         await channel.send(f"{ctx.author.mention} has been approved by <@1154381056900870174>")
                         e = Embed(title="APPROVED " , color=Color.random())
@@ -121,14 +123,10 @@ class profile_link(commands.Cog) :
                                         f'❯ Make sure to have **NO war timer** when you answer for spots.\n' \
                                         f'❯ Ask in {self.client.get_channel(channel_info[ctx.guild.id][2]).mention} if you have any questions. \nDone by : <@1154381056900870174>'
                         await channel.send(embed=e)
-                    else:
+                    else :
                         channel = self.client.get_channel(1072557906509189191)
                         await channel.send(f"{ctx.author.mention} is a fwa Banned player")
                 return
-
-
-
-
 
     @commands.command(name='link-leader' , aliases=['ll'] , help="link a clan tag to a leader discord account" ,
                       usage=f"{p}link-leader <@metion user> <tag>\n =eg : {p}link-leader @user #2Q8URCU88")
@@ -193,29 +191,33 @@ class profile_link(commands.Cog) :
 
     @commands.hybrid_command(name='setup')
     @commands.has_any_role('🔰ADMIN🔰')
-    async def setup(self , ctx , announcement_channel , clan_name: str , clantag: str ,
-                    member_role: discord.Role) :
+    async def setup(self , ctx , announcement_channel , clan_name: str , clantag: str , member_role: discord.Role) :
         with open('datasheets/clan_deltails.pkl' , 'rb') as file :
             clan_data = pickle.load(file)
+
+        with open('datasheets/war_announcements.pkl' , 'rb') as f :
+            data = pickle.load(f)
 
         if clantag :
             clanInfo = COC.getclan(tag=clantag.strip('#'))
             if not clanInfo :
                 await ctx.send('Please provide a valid clan tag.')
                 return
-
+            data[ctx.category.id] = [clantag.strip("#") , member_role.id , clanInfo["name"]]
             clan_data[clan_name] = {'channel_id' : ctx.channel.id ,
                                     'roles' : [member_role.name , '🔰THE FARMERS MEMBERS🔰'] , 'clan' : clanInfo["name"] ,
-                                    'announcement_channel' : announcement_channel , 'clantag':clantag.strip("#")}
+                                    'announcement_channel' : announcement_channel , 'clantag' : clantag.strip("#")}
             embed = Embed(title=f'setup completed' ,
                           description=f'channel id : <#{ctx.channel.id}> \nroles : <@&{member_role.id}> \nclan : {clanInfo["name"]} \nannouncement channel : <#{announcement_channel}>' ,
                           color=Color.random())
             await ctx.send(embed=embed)
-        else:
+        else :
             await ctx.send('Please provide a valid clan tag.')
 
         with open('datasheets/clan_deltails.pkl' , 'wb') as file :
             pickle.dump(clan_data , file)
+        with open('datasheets/war_announcements.pkl' , 'wb') as f :
+            pickle.dump(data , f)
 
     @commands.hybrid_command(name='remove-setup')
     @commands.has_any_role('🔰ADMIN🔰')
@@ -224,14 +226,12 @@ class profile_link(commands.Cog) :
             clan_data = pickle.load(file)
         if clan_name :
             clanname = clan_data[clan_name]['clan']
-            embed = Embed(title=f'{clanname} has removed from the link setup' ,
-                          color=Color.random())
+            embed = Embed(title=f'{clanname} has removed from the link setup' , color=Color.random())
             clan_data.pop(clan_name)
             await ctx.send(embed=embed)
 
         with open('datasheets/clan_deltails.pkl' , 'wb') as file :
             pickle.dump(clan_data , file)
-
 
     @commands.command(name="listsetup")
     @commands.has_any_role('🔰ADMIN🔰')
@@ -341,7 +341,7 @@ class profile_link(commands.Cog) :
                 pickle.dump(user_info , file)
             await ctx.send('Updated')
 
-    @commands.command(name='update_townhall' , aliases=['uth','update_th'] , help='' , usage=f'{p}update_townhall')
+    @commands.command(name='update_townhall' , aliases=['uth' , 'update_th'] , help='' , usage=f'{p}update_townhall')
     async def update_townhall(self , ctx) :
         with open('datasheets/optimaltownhall.pkl' , 'rb') as file :
             options = pickle.load(file)

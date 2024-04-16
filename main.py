@@ -20,7 +20,6 @@ from webser import keep_alive
 import pickle
 from warattacksummary import get_pins , get_clan_tags , fetch_and_count_offline , fetch_data , main , fwa_count
 
-
 # Define the intents
 intents = discord.Intents.all()
 intents.message_content = True
@@ -30,7 +29,9 @@ client.remove_command("help")
 
 p = client.command_prefix
 
-warnings.filterwarnings("ignore" , category=UserWarning , message="Glyph.*missing from current font." ,module="tkinter")
+warnings.filterwarnings("ignore" , category=UserWarning , message="Glyph.*missing from current font." ,
+                        module="tkinter")
+
 
 @client.event
 async def on_ready() :
@@ -344,13 +345,11 @@ async def ping(ctx) :
 @client.command(name='war' , help="war announcement either win or loose or mis match or blacklist clan war" ,
                 usage=f"{p}war <win/loose/mismatch/bl> \nexample : {p}war win ,{p}war loose")
 @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML' , 'Staff')
-async def war(ctx , target=None) :
+async def war_info(ctx , target=None) :
     cid = ctx.channel.category.id
-    cidinfo = {1054453503084482580 : ["U0LPRYL2" , 1055418276546629682 , 'THE SHIELD'] ,
-               1222214889859321919 : ["8G2RJCP0" , 1222212841373696010 , 'GOODVIBES 24/7'] ,
-               1063290412397244587 : ["2G9URUGGC" , 1063289659586785362 , 'BROTHERS'] ,
-               1196099434333880361 : ["QL9998CC" , 1196090548193345667 , "Pakistan Lovers"] ,
-               1188693015921950890 : ["GC8QRPUJ" , 1188693492503957514 , "AVENGERS"]}
+    with open('datasheets/war_announcements.pkl' , 'rb') as f :
+        cidinfo  = pickle.load(f)
+
     await ctx.message.delete()
     if cid in cidinfo.keys() :
         clani = COC.getclan(tag=f"{cidinfo[cid][0]}/currentwar")
@@ -685,31 +684,25 @@ async def get_back(ctx , role: discord.Role) :
         pass
 
 
-
-
-
-
-
-@client.command(name="clan_revoke", aliases=["cr"], help="Revoke all roles and assign new role to members")
+@client.command(name="clan_revoke" , aliases=["cr"] , help="Revoke all roles and assign new role to members")
 @commands.has_any_role('🔰ADMIN🔰')
-async def clan_revoke(ctx, role_to_remove: discord.Role, new_role: discord.Role):
+async def clan_revoke(ctx , role_to_remove: discord.Role , new_role: discord.Role) :
     # Check if the user has administrator permissions
-    if not ctx.author.guild_permissions.administrator:
+    if not ctx.author.guild_permissions.administrator :
         return await ctx.send("You do not have permission to use this command.")
 
     # Get all members with the specified role
     members_with_role = [member for member in ctx.guild.members if role_to_remove in member.roles]
 
     # Change the role for each member
-    for member in members_with_role:
-        try:
+    for member in members_with_role :
+        try :
             # Remove all roles except @everyone role
-            await member.edit(roles=[new_role], nick=f"re - {member.name}")
-        except discord.Forbidden:
+            await member.edit(roles=[new_role] , nick=f"re - {member.name}")
+        except discord.Forbidden :
             await ctx.send(f"Failed to change role for {member.display_name}")
 
     await ctx.send(f"Removed all roles and assigned {new_role.name} to {len(members_with_role)} members.")
-
 
 
 # Unload Cog
