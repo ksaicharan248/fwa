@@ -203,7 +203,8 @@ class profile_link(commands.Cog) :
             if not clanInfo :
                 await ctx.send('Please provide a valid clan tag.')
                 return
-            data[ctx.category.id] = [clantag.strip("#") , member_role.id , clanInfo["name"]]
+
+            data[ctx.channel.category.id] = [clantag.strip("#") , member_role.id , clanInfo["name"]]
             clan_data[clan_name] = {'channel_id' : ctx.channel.id ,
                                     'roles' : [member_role.name , '🔰THE FARMERS MEMBERS🔰'] , 'clan' : clanInfo["name"] ,
                                     'announcement_channel' : announcement_channel , 'clantag' : clantag.strip("#")}
