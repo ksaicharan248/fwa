@@ -122,7 +122,7 @@ class basicfuctions(commands.Cog) :
                             embed_linked_updated_description += f"{nickname} to {member.nick} \n"
                         elif role == "member" and nickname[0] != 'M' :
                             nick = "Mb - "
-                            await member.edit(nick=f'{nick}{player_data["name"]}')
+                            #await member.edit(nick=f'{nick}{player_data["name"]}')
                             embed_linked_updated_description += f"{nickname} to {member.nick} \n"
                         else:
                             embed_linked_no_update_description += f"{member.nick} \n"
