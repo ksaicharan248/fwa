@@ -177,8 +177,8 @@ class basicfuctions(commands.Cog) :
 
         except Exception as e :
             embed = Embed(title="ERROR" , color=Color.red())
-            error_message = f"An error occurred:```{traceback.format_exc()}```"
-            embed.description = error_message
+
+            embed.description = f"```{e}```"
             await ctx.send(embed=embed)
 
     @commands.command(name='usage' , aliases=['u'])
