@@ -122,15 +122,18 @@ class basicfuctions(commands.Cog) :
                             embed_linked_updated_description += f"{nickname} to {member.nick} \n"
                         elif role == "member" and nickname[0] != 'M' :
                             nick = "Mb - "
-                            #await member.edit(nick=f'{nick}{player_data["name"]}')
+                            await member.edit(nick=f'{nick}{player_data["name"]}')
                             embed_linked_updated_description += f"{nickname} to {member.nick} \n"
                         else:
                             embed_linked_no_update_description += f"{member.nick} \n"
+                elif player_data['role']:
+                    if player_data['role'] == "leader" or player_data['role'] == "coLeader" :
+                        pass
                 else :
                     if member :
                         embed_linked_reapply_description += f"{member.nick} \n"
                         re_apply_tags.append(member.id)
-                        await member.edit(nick=f're - {member.name}' , roles=[re_apply])
+                        #await member.edit(nick=f're - {member.name}' , roles=[re_apply])
             else :
                 if member :
                    embed_no_data_description += f"{member.nick} \n"
