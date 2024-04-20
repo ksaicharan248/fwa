@@ -108,12 +108,10 @@ class basicfuctions(commands.Cog) :
                                               'name'] if 'clan' in player_data else 'no clan'}
 
 
-                    if player_data.get('clan') and player_data['clan'].get('tag').strip('#') == clan_tag:
-                        print(member.nick)
+                    if player_data.get('clan') and player_data['clan'].get('tag').strip('#') == clan_tag.strip("#"):
                         if member :
                             role = player_data['role']
                             nickname = member.nick
-                            print(nickname)
                             if role == "leader" and nickname[0] != 'L' :
                                 nick = "Lead - "
                                 await member.edit(nick=f'{nick}{player_data["name"]}')
