@@ -73,7 +73,9 @@ class basicfuctions(commands.Cog) :
         except discord.HTTPException :
             await ctx.send("An error occurred while removing the user's nickname.")
 
+
     @commands.command(name='checkall' , aliases=['ca'])
+    @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' )
     async def checkall(self , ctx , member_role: discord.Role = None , clan_tag=None) :
         try:
             re_apply = ctx.guild.get_role(1055440440968617994)
