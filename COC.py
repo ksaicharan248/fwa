@@ -259,6 +259,24 @@ async def list_of_clans():
     return clan_info
 
 
+async def fetch_user_info(tag , id , headers , session) :
+    url = f'https://api.clashofclans.com/v1/players/%23{tag}'
+    async with session.get(url , headers=headers) as response :
+        userinfo = await response.json()
+        if response.status == 200 :
+            return id , userinfo
+        else :
+            raise Exception(f"Error fetching user info for tag #{tag}: {userinfo}")
+
+
+async def fetch_users_info(tags_dict , headers=header) :
+    async with aiohttp.ClientSession() as session :
+        tasks = [fetch_user_info(tag , id , headers , session) for id , tag in tags_dict.items() if tag is not None]
+        results = await asyncio.gather(*tasks)
+        return {user[0] : user[1] for user in results}
+
+
+
 if __name__ == '__main__' :
     data = asyncio.run(list_of_clans())
     for tag , clt in data.items() :
