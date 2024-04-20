@@ -130,9 +130,7 @@ class basicfuctions(commands.Cog) :
                                 embed_linked_updated_description += f"{nickname} to {member.nick} \n"
                             else :
                                 embed_linked_no_update_description += f"{member.nick} \n"
-                    elif player_data.get('role') is not None :
-                        if player_data['role'] == "leader" or player_data['role'] == "coLeader" :
-                            pass
+
                     else :
                         if member :
                             embed_linked_reapply_description += f"{member.nick} \n"
