@@ -65,9 +65,10 @@ async def on_command_error(ctx , error) :
         pass
 
     else :
-        embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" ,
+        embed = discord.Embed(title="ERROR" ,
                               description="Something went wrong. Please contact the developer." ,
                               color=discord.Color.red())
+        embed.add_field(name="Error" , value=error)
         await ctx.send(embed=embed)
 
 
@@ -214,7 +215,10 @@ async def delete_all_channels(ctx) :
 
 @client.command()
 async def emoji(ctx) :
-    await ctx.send("<:blueBadge:1007628410375372892>")
+
+    embed = Embed(title="Emoji")
+    embed.description = f"<a:ra:1221838183378194563> hello and welcome"
+    await ctx.send(embed=embed)
 
 
 class Selectmenu1(discord.ui.View) :
