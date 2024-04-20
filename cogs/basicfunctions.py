@@ -81,13 +81,17 @@ class basicfuctions(commands.Cog) :
             re_apply = ctx.guild.get_role(1055440440968617994)
             re_apply_tags = []
             re_apply_channel = ctx.guild.get_channel(1055440286806966322)
+            with open("datasheets/war_announcements.pkl" , "rb") as file :
+                clan_data = pickle.load(file)
             with open('datasheets/userdata.pkl' , 'rb') as file :
                 user_data = pickle.load(file)
+            if member_role is None :
+                member_role = ctx.guild.get_role(clan_data[ctx.channel.category.id][1])
             if clan_tag is None :
-                clan_tag = user_data[ctx.author.id]['clan']
+                clan_tag = clan_data[ctx.channel.category.id][0]
             else :
                 clan_tag = clan_tag.strip('#')
-            member_ids = [member.id for member in ctx.guild.members if member_role in member.roles]
+            member_ids = [member.id for member in ctx.channel.members if member_role in member.roles]
             user_data_tags = {}
             for member_id in member_ids :
                 try :
