@@ -1,3 +1,5 @@
+import traceback
+
 import discord
 from discord.ext import commands
 import COC
@@ -83,7 +85,7 @@ class basicfuctions(commands.Cog) :
                 clan_tag = user_data[ctx.author.id]['clan']
             else :
                 clan_tag = clan_tag.strip('#')
-            member_ids = [member.id for member in ctx.channel.members if member_role in member.roles]
+            member_ids = [member.id for member in ctx.guild.members if member_role in member.roles]
             user_data_tags = {}
             for member_id in member_ids :
                 try :
@@ -91,25 +93,27 @@ class basicfuctions(commands.Cog) :
                 except KeyError :
                     user_data_tags[member_id] = None
             updated_data = await COC.fetch_users_info(user_data_tags)
-            embed_no_data = Embed(title="NON LINKED USERS" , color=Color.red())
-            embed_linked_no_update = Embed(title="LINKED USERS" , color=Color.green())
-            embed_linked_reapply = Embed(title="REMOVED USERS" , color=Color.random())
-            embed_linked_updated = Embed(title="UPDATED USERS DATA" , color=Color.green())
+            embed = Embed(title="MEMBERS AUDIT" , color=Color.red())
             embed_no_data_description = f"NO DATA EXITS \nfor the following users :\n\n"
             embed_linked_updated_description = ""
             embed_linked_no_update_description = ""
             embed_linked_reapply_description = ""
-            for user_id , player_data in updated_data :
-                member = await ctx.guild.get_member(user_id)
+
+            for user_id , player_data in updated_data.items() :
+                member = ctx.guild.get_member(user_id)
                 if player_data :
                     user_data[user_id] = {'tag' : player_data['tag'].strip('#') , 'name' : player_data['name'] ,
                                           'clan' : player_data['clan']['tag'] if 'clan' in player_data else 'no clan' ,
                                           'clanname' : player_data['clan'][
                                               'name'] if 'clan' in player_data else 'no clan'}
-                    if player_data['clan'] and player_data['clan']['tag'] == clan_tag :
+
+
+                    if player_data.get('clan') and player_data['clan'].get('tag').strip('#') == clan_tag:
+                        print(member.nick)
                         if member :
                             role = player_data['role']
-                            nickname = await member.nick
+                            nickname = member.nick
+                            print(nickname)
                             if role == "leader" and nickname[0] != 'L' :
                                 nick = "Lead - "
                                 await member.edit(nick=f'{nick}{player_data["name"]}')
@@ -128,28 +132,51 @@ class basicfuctions(commands.Cog) :
                                 embed_linked_updated_description += f"{nickname} to {member.nick} \n"
                             else :
                                 embed_linked_no_update_description += f"{member.nick} \n"
-                    elif player_data['role'] :
+                    elif player_data.get('role') is not None :
                         if player_data['role'] == "leader" or player_data['role'] == "coLeader" :
                             pass
                     else :
                         if member :
                             embed_linked_reapply_description += f"{member.nick} \n"
-                            re_apply_tags.append(
-                                member.id)  # await member.edit(nick=f're - {member.name}' , roles=[re_apply])
+                            re_apply_tags.append(member.id)
+                            await member.edit(nick=f're - {member.name}' , roles=[re_apply])
                 else :
                     if member :
                         embed_no_data_description += f"{member.nick} \n"
+            if embed_linked_reapply_description != "" :
+                embed.add_field(name="REAPPLY" , value=f'```{embed_linked_reapply_description}```' ,inline=False)
+            if embed_linked_no_update_description != "" :
+                embed.add_field(name="NO UPDATE" , value=f'```{embed_linked_no_update_description}```' ,inline=False)
+            if embed_linked_updated_description != "" :
+                embed.add_field(name="UPDATED" , value=f'```{embed_linked_updated_description}```' ,inline=False)
+            if embed_no_data_description != "" :
+                embed.description = f'```{embed_no_data_description}```'
+            await ctx.send(embed=embed)
 
-            embed_linked_reapply.description = embed_linked_reapply_description
-            embed_linked_updated.description = embed_linked_updated_description
-            embed_linked_no_update.description = embed_linked_no_update_description
-            embed_no_data.description = embed_no_data_description
-            await ctx.send(
-                embeds=[embed_linked_no_update , embed_linked_updated , embed_no_data , embed_linked_reapply])
+            if len(re_apply_tags) > 0 :
+                txt1 = ""
+                for mbid in re_apply_tags:
+                    txt1 += f'<@{mbid}> , '
+                txt1 = txt1[:-2]
+                e = Embed(title="RE-APPLY \nYou have been Placed here due to the Following Reasons\n" ,
+                          color=Color.random())
+                e.description = f'• You have been Inactive from a Long time in our Clans. \n ' \
+                                f'• You Left without informing your Clans Leader/Co-Leader.\n' \
+                                f'• Your Activity seems Suspicious in the Server.\n' \
+                                f'• If you wish to reapply and join us again\n\n' \
+                                f'**Do the following**\n' \
+                                f'• Ping one of clan leaders using @thiername\n' \
+                                f'• Or just type " I need help reapplying "\n' \
+                                f'• We will assist you further, be kind and wait until we reply.'
+
+                await re_apply_channel.send(f'{txt1} has been sent to re-apply by <@{ctx.author.id}>')
+                await re_apply_channel.send(embed=e)
+
 
         except Exception as e :
             embed = Embed(title="ERROR" , color=Color.red())
-            embed.add_field(name="Error" , value=str(e) , inline=False)
+            error_message = f"An error occurred:```{traceback.format_exc()}```"
+            embed.description = error_message
             await ctx.send(embed=embed)
 
     @commands.command(name='usage' , aliases=['u'])

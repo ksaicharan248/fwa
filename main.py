@@ -1,6 +1,7 @@
 import asyncio
 import os
 import io
+import traceback
 import discord
 import matplotlib.pyplot as plt
 import typing
@@ -44,7 +45,14 @@ owener_info: int = 765929481311354881
 
 @client.event
 async def on_command_error(ctx , error) :
-    owner = await client.fetch_user(int(owener_info))
+    error_log_channel = client.get_channel(1231221798939660338)
+    if not isinstance(error , commands.CommandError) :
+        embed = discord.Embed(title="ERROR" , color=discord.Color.red())
+        embed.add_field(name="author" , value=ctx.author.nick)
+        error_message = f"An error occurred:```{traceback.format_exc()}```"
+        embed.description = error_message
+        await error_log_channel.send(embed=embed)
+
     if isinstance(error , commands.MissingRequiredArgument) :
         embed = discord.Embed(title="WARNING ⚠️⚠️⚠️" ,
                               description="You forgot to mention the user. Please use the command again by mentioning the user" ,
@@ -60,16 +68,16 @@ async def on_command_error(ctx , error) :
         await ctx.send(embed=embed)
     elif isinstance(error , commands.CommandInvokeError) and isinstance(error.original , discord.HTTPException) :
         await ctx.send("check and try agian..")
-
     elif isinstance(error , commands.CommandNotFound) :
         pass
-
     else :
         embed = discord.Embed(title="ERROR" ,
-                              description="Something went wrong. Please contact the developer." ,
                               color=discord.Color.red())
-        embed.add_field(name="Error" , value=error)
+        embed.add_field(name="..........." , value=f'{error} \nSomething went wrong. Please contact the developer.')
         await ctx.send(embed=embed)
+
+
+
 
 
 @client.event
