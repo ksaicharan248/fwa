@@ -266,7 +266,7 @@ async def fetch_user_info(tag , id , headers , session) :
             if response.status == 200 :
                 return id , userinfo
             else :
-                raise Exception(f"Error fetching user info for tag #{tag}: {userinfo}")
+                return id , None
     else:
         return id , None
 
