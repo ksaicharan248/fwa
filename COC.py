@@ -113,7 +113,6 @@ def get_prefix(role: str) :
     else :
         return "Mb - "
 
-
 def getcoc(tag) :
     link = f"https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{tag}"
     return link

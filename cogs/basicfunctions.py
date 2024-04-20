@@ -89,7 +89,6 @@ class basicfuctions(commands.Cog) :
                 user_data_tags[member_id] = user_data[member_id]['tag']
             except KeyError :
                 user_data_tags[member_id] = None
-
         updated_data = await COC.fetch_users_info(user_data_tags)
         embed_no_data = Embed(title="NON LINKED USERS" , color=Color.red())
         embed_linked_no_update = Embed(title="LINKED USERS" , color=Color.green())
