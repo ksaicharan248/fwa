@@ -121,7 +121,7 @@ async def on_member_join(member) :
             embed = Embed(title=f"Welcome  to  ⚔️TEAM ELITES⚔️!" , color=Color.random())
             embed.description = f"You can read our rules and details about 💎FWA💎 in <#1054438569378332754> \n\n" \
                                 f"If you wish to join one of our clans then please follow the steps below.\n\n" \
-                                f"**•Step 1** : Link your account with your player\n Type this to **link your account** ```{p}link #your_player_tag``` \n" \
+                                f"**•Step 1** : Link your account with your player tag\n Type this to **link your account** ```{p}link #your_player_tag``` \n" \
                                 f"**•Step 2** : Post a picture of My Profile tab\n" \
                                 f"**•Step 3** : Post a picture of your 💎FWA💎 base \n" \
                                 f"If you don’t have a 💎FWA💎 base then you can type \n```{p}bases```" \

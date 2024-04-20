@@ -177,7 +177,6 @@ class basicfuctions(commands.Cog) :
 
         except Exception as e :
             embed = Embed(title="ERROR" , color=Color.red())
-
             embed.description = f"```{e}```"
             await ctx.send(embed=embed)
 
