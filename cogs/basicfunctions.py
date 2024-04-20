@@ -82,7 +82,7 @@ class basicfuctions(commands.Cog) :
             clan_tag = user_data[ctx.author.id]['clan']
         else :
             clan_tag = clan_tag.strip('#')
-        member_ids = [member.id for member in ctx.guild.members if member_role in member.roles]
+        member_ids = [member.id for member in ctx.channel.members if member_role in member.roles]
         user_data_tags = {}
         for member_id in member_ids :
             try :
