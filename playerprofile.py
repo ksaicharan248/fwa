@@ -1,6 +1,7 @@
 import io
 import os
 
+import requests
 from PIL import Image , ImageDraw , ImageFont , ImageFilter , ImageChops
 import urllib.request
 import datetime
@@ -61,7 +62,9 @@ def draw_image(image , path , x , y , resize=44) :
     paste_image = Image.open(path).convert("RGBA")
     paste_image = paste_image.resize((resize , resize))
     image.paste(paste_image , (x , y) , paste_image)
-
+def draw_url_image(image , img , x , y , resize=44) :
+    img= img.resize((resize , resize))
+    image.paste(img , (x , y) , img)
 
 def draw_image_troop(image , path , x , y , font , data , resize=44 , size=10) :
     paste_image = Image.open(path).convert("RGBA")
@@ -71,13 +74,13 @@ def draw_image_troop(image , path , x , y , font , data , resize=44 , size=10) :
         level = Image.open("resources/icons/level-label.png").resize((16 , 16))
     textdraw = ImageDraw.Draw(level)
     draw_shadow_troops(textdraw , 4 , 1 , font , str(data[0]) , size)
-    paste_image = paste_image.resize((resize , resize))
+    paste_image = paste_image
     paste_image.paste(level , (1 , 44 - 18) , level)
     image.paste(paste_image , (x , y) , paste_image)
 
 
 def draw_image_super_troop(image , path , x , y , font , data , resize=44 , size=10) :
-    paste_image = Image.open(path).convert("RGBA").resize((resize , resize))
+    paste_image = Image.open(path).convert("RGBA")
     image.paste(paste_image , (x , y) , paste_image)
 
 
@@ -108,9 +111,10 @@ def playerprofile_(tag) :
         draw_image(image , f"resources/buildings/townhalls/builder/bh{builder_hall}.png" , 270 , 80 , resize=100)
         draw_shadow_text(draw , 200 , 125 , font , f"Level {builder_hall}" , FONT_SIZE + 8)
         if player_data.get('league') is not None :
-            urllib.request.urlretrieve(f"{player_data.get('league').get('iconUrls').get('medium')}" , "league.png")
-            draw_image(image , "league.png" , 383 , 30 , resize=90)
-            os.remove("league.png")
+            response = requests.get(player_data.get('league').get('iconUrls').get('medium'))
+            img = Image.open(io.BytesIO(response.content))
+            draw_url_image(image , img , 383 , 30 , resize=90)
+
         else :
             draw_image(image , "resources/icons/noleague.png" , 383 , 30 , resize=90)
         draw_centered_text(draw , (382 , 142 , 450 , 170) , font , str(player_data.get("trophies")) , FONT_SIZE + 6)
@@ -129,9 +133,10 @@ def playerprofile_(tag) :
                                                                                  -4] is not None else "0" ,
                     FONT_SIZE - 1 , (68 , 69 , 69))
         if player_data.get("clan") is not None :
-            urllib.request.urlretrieve(f"{player_data.get('clan').get('badgeUrls').get('large')}" , "clan.png")
-            draw_image(image , "clan.png" , 800 , 30 , resize=105)
-            os.remove("clan.png")
+            response = requests.get(player_data.get("clan").get("badgeUrls").get("large"))
+            img = Image.open(io.BytesIO(response.content))
+            draw_url_image(image , img , 800 , 30 , resize=105)
+
             draw_centered_text(draw , (775 , 130 , 923 , 160) , font , player_data.get("clan").get("name") ,
                                FONT_SIZE + 2)
             draw_centered_text(draw , (775 , 151 , 923 , 181) , font ,
@@ -265,9 +270,8 @@ def playerprofile_(tag) :
         image_buffer = io.BytesIO()
         image.save(image_buffer , format='PNG')  # Convert image to PNG format
         image_buffer.seek(0)
-
         return image_buffer
 
 
 if __name__ == '__main__' :
-    playerprofile('9LPY0JVVG')
+    playerprofile_('9LPY0JVVG')
