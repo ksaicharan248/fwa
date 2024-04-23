@@ -705,7 +705,7 @@ async def player_profile(ctx,tag : str or discord.Member = None):
     else:
         user_id = ctx.author.id
         tag = user_data[user_id]['tag']
-    print(tag)
+
     try:
         data_buffrr = playerprofile_(tag=tag)
         await ctx.send(file=discord.File(data_buffrr , 'player_profile.png'))
