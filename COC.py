@@ -280,6 +280,4 @@ async def fetch_users_info(tags_dict , headers=header) :
 
 
 if __name__ == '__main__' :
-    data = asyncio.run(list_of_clans())
-    for tag , clt in data.items() :
-        print(clt)
+    print(get_user('U0LPRYL2'))

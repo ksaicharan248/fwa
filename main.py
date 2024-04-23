@@ -20,7 +20,7 @@ from setkey import keyy
 from webser import keep_alive
 import pickle
 from warattacksummary import get_pins , get_clan_tags , fetch_and_count_offline , fetch_data , main , fwa_count
-
+from playerprofile import playerprofile_
 # Define the intents
 intents = discord.Intents.all()
 intents.message_content = True
@@ -693,7 +693,26 @@ async def get_back(ctx , role: discord.Role) :
                     pass
     except Exception as e :
         pass
-
+@client.hybrid_command(name="player" , help="Get player profile")
+async def player_profile(ctx,tag : str or discord.Member = None):
+    with open('datasheets/userdata.pkl' , 'rb') as file:
+        user_data = pickle.load(file)
+    if isinstance(tag, discord.Member):
+        user_id = tag.id
+        tag = user_data[user_id]['tag']
+    elif isinstance(tag, str):
+        tag = tag.strip("#")
+    else:
+        user_id = ctx.author.id
+        tag = user_data[user_id]['tag']
+    print(tag)
+    try:
+        data_buffrr = playerprofile_(tag=tag)
+        await ctx.send(file=discord.File(data_buffrr , 'player_profile.png'))
+    except Exception as e:
+        embed = Embed(title="Something went wrong")
+        embed.description = f"{e}"
+        await ctx.send(embed=embed)
 
 @client.command(name="clan_revoke" , aliases=["cr"] , help="Revoke all roles and assign new role to members")
 @commands.has_any_role('🔰ADMIN🔰')
