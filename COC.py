@@ -113,6 +113,7 @@ def get_prefix(role: str) :
     else :
         return "Mb - "
 
+
 def getcoc(tag) :
     link = f"https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{tag}"
     return link
@@ -232,34 +233,30 @@ def fwa_clan_data(tag) :
     return clan_name , sorted_clan_weight , last_date
 
 
-
-async def fetch_clan_info(session, tag, header, clan_info):
-    async with session.get('https://api.clashofclans.com/v1/clans/%23' + tag.strip('#'), headers=header) as resp:
+async def fetch_clan_info(session , tag , header , clan_info) :
+    async with session.get('https://api.clashofclans.com/v1/clans/%23' + tag.strip('#') , headers=header) as resp :
         clt = await resp.json()
-        clan_info[tag] = {
-            "name": clt["name"],
-            "badge": clt["badgeUrls"]["large"],
-            'clancapital': "1" if clt["clanCapital"] == {} else clt["clanCapital"]["capitalHallLevel"]
-            , 'clan_level': clt["clanLevel"]
-            , 'members': clt["members"]
-        }
+        clan_info[tag] = {"name" : clt["name"] , "badge" : clt["badgeUrls"]["large"] ,
+            'clancapital' : "1" if clt["clanCapital"] == {} else clt["clanCapital"]["capitalHallLevel"] ,
+            'clan_level' : clt["clanLevel"] , 'members' : clt["members"]}
 
-async def list_of_clans():
+
+async def list_of_clans() :
     header = {'Accept' : 'application/json' , 'Authorization' : auth}
     clan_info = {}
-    with open('datasheets/clan_deltails.pkl', 'rb') as f:
+    with open('datasheets/clan_deltails.pkl' , 'rb') as f :
         data = pickle.load(f)
     clan_tags = [data[key]['clantag'] for key in data.keys()]
-    async with aiohttp.ClientSession() as session:
-        tasks = [fetch_clan_info(session, tag, header, clan_info) for tag in clan_tags]
+    async with aiohttp.ClientSession() as session :
+        tasks = [fetch_clan_info(session , tag , header , clan_info) for tag in clan_tags]
         await asyncio.gather(*tasks)
 
-    clan_info = dict(sorted(clan_info.items(), key=lambda item: item[1]['clan_level'], reverse=True))
+    clan_info = dict(sorted(clan_info.items() , key=lambda item : item[1]['clan_level'] , reverse=True))
     return clan_info
 
 
 async def fetch_user_info(tag , id , headers , session) :
-    if tag:
+    if tag :
         url = f'https://api.clashofclans.com/v1/players/%23{tag}'
         async with session.get(url , headers=headers) as response :
             userinfo = await response.json()
@@ -267,7 +264,7 @@ async def fetch_user_info(tag , id , headers , session) :
                 return id , userinfo
             else :
                 return id , None
-    else:
+    else :
         return id , None
 
 
@@ -278,6 +275,38 @@ async def fetch_users_info(tags_dict , headers=header) :
         return {user[0] : user[1] for user in results}
 
 
+async def fetch_mu_list(tag , headers , session) :
+    if tag :
+        url = f'https://api.clashofclans.com/v1/players/%23{tag}'
+        async with session.get(url , headers=headers) as response :
+            userinfo = await response.json()
+            if response.status == 200 :
+                return tag , {"name" : userinfo["name"] , "level" : userinfo["townHallLevel"], "tick": "✅"}
+            else :
+                return tag , None
+    else :
+        return tag , None
+
+
+async def fetch_my_info(tags_dict , headers=header) :
+    async with aiohttp.ClientSession() as session :
+        tasks = [fetch_mu_list(tag , headers=headers , session=session) for tag in tags_dict.keys()]
+        results = await asyncio.gather(*tasks)
+        result = {user[0] : user[1] for user in results}
+        result = dict(sorted(result.items() , key=lambda item : item[1]['level'] , reverse=True))
+        return result
 
 if __name__ == '__main__' :
-    print(get_user('U0LPRYL2'))
+
+    data = {"9JVUQGYLQ" : {"name" : "Saicharan reddy" , "level" : "" , "tick": "✅"} ,
+            "PJVL0JRR9" : {"name" : "Rizzo" , "level" : "", "tick": "✅"} , "PR9GRL8RY" : {"name" : "SuNNy SoMu 2" , "level" : ""} ,
+            "Y0URPVQ9V" : {"name" : "Ghôst Rid€r 4" , "level" : ""} ,
+            "P2VLY0Y80" : {"name" : "ɪ͜͡٭KinG" , "level" : ""} , "QVQ9VLCCP" : {"name" : "Leo" , "level" : ""} ,
+            "QVGQGUUPL" : {"name" :"" }}
+    do = asyncio.run(fetch_my_info(data))
+    import pickle
+
+
+    with open('datasheets/warstarter.pkl' , 'wb') as f :
+        pickle.dump(do , f)
+    print(do)

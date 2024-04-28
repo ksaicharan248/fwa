@@ -1,8 +1,53 @@
+import asyncio
+
 import discord
 from discord.ext import commands
 import COC
 import pickle
 from discord import Embed , Color
+
+
+class Buttons(discord.ui.View) :
+
+    def __init__(self , ctx , data) :
+        super().__init__(timeout=180)
+        self.data = data
+        self.ctx = ctx
+        self.used = []
+        self.count = 0  # Initialize count for tracking buttons per row
+        row = 0  # Initialize row number
+        for tag , values in self.data.items() :
+            button = discord.ui.Button(label=values['name'] , style=discord.ButtonStyle.primary , row=row)
+            button.custom_id = tag
+            self.add_item(button)
+            self.count += 1
+            if self.count >= 3 :
+                self.count = 0  # Reset count to start a new row
+                row += 1  # Move to the next row
+
+    async def update_embed(self , interaction , idx , embed_sent) :
+        embed = discord.Embed(title="Starter" , colour=discord.Color.random())
+        player_data = ""
+        self.data[idx]['tick'] = "❌"
+        for tag , values in self.data.items() :
+            player_data += f'{values["tick"]} {tag} : {values["name"]}\n'
+        embed.description = f'```{player_data}```'
+        with open('datasheets/warstarter.pkl' , 'wb') as file :
+            pickle.dump(self.data , file)
+        await interaction.response.defer()
+        await interaction.message.edit(embed=embed)
+        await interaction.followup.send(embed=embed_sent , ephemeral=True)
+
+    async def interaction_check(self , interaction) -> bool :
+        if interaction.user == self.ctx.author :
+            embed = discord.Embed(colour=discord.Colour.red())
+            embed.description = f'```Please invite my account below👇\n(Kindly let me know when it`s done🙂)\nIn-game name : {self.data[interaction.data["custom_id"]]["name"]}\nTag : #{interaction.data["custom_id"]}\nLink : \nhttps://link.clashofclans.com/en?action=OpenPlayerProfile&tag={interaction.data["custom_id"]}```'
+            tag = interaction.data["custom_id"]
+            await self.update_embed(interaction , idx=tag , embed_sent=embed)
+            return False
+        else :
+            return True
+
 
 
 class fuunctionmethods(commands.Cog) :
@@ -65,11 +110,11 @@ class fuunctionmethods(commands.Cog) :
 
     @commands.command(name='thread-remove' , aliases=['rt'])
     @commands.has_any_role('🔰ADMIN🔰')
-    async def remve_from_thread(self , ctx , *members : discord.Member) :
+    async def remve_from_thread(self , ctx , *members: discord.Member) :
         # Ensure the context is within a thread
         if isinstance(ctx.channel , discord.Thread) :
             # Remove the member from the current thread
-            for member in members:
+            for member in members :
                 await ctx.channel.remove_user(member)
         else :
             await ctx.send("This command can only be used inside a thread.")
@@ -86,28 +131,72 @@ class fuunctionmethods(commands.Cog) :
         else :
             await ctx.send('This command can only be used in a thread.')
 
-    @commands.command(name='win-check' , aliases=['wc' , 'wincheck' ,  'winc'])
-    async def win_check(self , ctx , tag : str= None) :
+    @commands.command(name='win-check' , aliases=['wc' , 'wincheck' , 'winc'])
+    async def win_check(self , ctx , tag: str = None) :
         with open('datasheets/userdata.pkl' , 'rb') as f :
             user_data = pickle.load(f)
-        if ctx.message.mentions and ctx.message.mentions[0].id in user_data.keys():
+        if ctx.message.mentions and ctx.message.mentions[0].id in user_data.keys() :
             tag = user_data[ctx.message.mentions[0].id]['clan']
         if tag is None :
-            if ctx.author.id in user_data.keys():
+            if ctx.author.id in user_data.keys() :
                 tag = user_data[ctx.author.id]['clan']
-            else:
+            else :
                 await ctx.send('Please provide a tag.')
                 return
-        else:
+        else :
             tag = tag.strip('#')
         data = COC.get_points(tag)
         embed = discord.Embed(title=f"Win Check - {tag}" , colour=Color.random())
         embed.description = f"{data}"
         await ctx.send(embed=embed)
 
+    @commands.command(name="starter" , aliases=['st'])
+    async def starter(self , ctx) :
+        with open('datasheets/warstarter.pkl' , 'rb') as file :
+            data = pickle.load(file)
+        if ctx.author.id == 765929481311354881 :
+            player_data = ""
+            embed = discord.Embed(title="Starter" , colour=Color.random())
+            for tag , values in data.items() :
+                player_data += f"{values['tick']}  #{tag} : {values['name']}\n"
+            embed.description = f'```{player_data}```'
 
+            await ctx.send(embed=embed , view=Buttons(ctx , data))
 
+    @commands.command(name="add_acc")
+    @commands.is_owner()
+    async def add_acc(self , ctx , *tags : str) :
+        for tag in tags:
+            tag = tag.strip('#')
+            with open('datasheets/warstarter.pkl' , 'rb') as file :
+                data = pickle.load(file)
+            data[tag] = {'name' : 'name'}
+            final = await COC.fetch_my_info(data)
+            with open('datasheets/warstarter.pkl' , 'wb') as file :
+                pickle.dump(final , file)
+            await ctx.send(f"Added {final[tag]['name']} with tag {tag} to the war starter list")
 
+    @commands.command(name="remove_acc")
+    @commands.is_owner()
+    async def remove_acc(self , ctx , tag : str) :
+        tag = tag.strip('#')
+        with open('datasheets/warstarter.pkl' , 'rb') as file :
+            data = pickle.load(file)
+        del data[tag]
+        with open('datasheets/warstarter.pkl' , 'wb') as file :
+            pickle.dump(data , file)
+        await ctx.send(f"Removed {tag} from the war starter list")
+
+    @commands.command(name="reset_s")
+    @commands.is_owner()
+    async def clear_acc(self , ctx) :
+        with open('datasheets/warstarter.pkl' , 'rb') as file :
+            data = pickle.load(file)
+        for tag , value in data.items() :
+            data[tag]['tick'] = '✅'
+        with open('datasheets/warstarter.pkl' , 'wb') as file :
+            pickle.dump(data , file)
+        await ctx.send("Cleared the war starter list")
 
 async def setup(client) :
     await client.add_cog(fuunctionmethods(client))
