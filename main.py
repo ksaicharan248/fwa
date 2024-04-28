@@ -545,7 +545,7 @@ async def warstats(ctx , limit=20) :
         plt.savefig(buffer , format='png')
         buffer.seek(0)
         file = discord.File(buffer , filename='plot.png')
-        await ctx.send(f"List of common missed attacks \n{user_data[ctx.author.id]['clanname']} - {tag}" , file=file)
+        await ctx.reply(f"List of common missed attacks \n{user_data[ctx.author.id]['clanname']} - {tag}" , file=file)
     except :
         await ctx.send("An error occured. Please try again later.")
         return
