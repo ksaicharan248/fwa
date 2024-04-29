@@ -694,17 +694,20 @@ async def get_back(ctx , role: discord.Role) :
     except Exception as e :
         pass
 @client.hybrid_command(name="player" , help="Get player profile")
-async def player_profile(ctx,tag : str or discord.Member = None):
+async def player_profile(ctx,tag : str = None,  user: discord.Member = None):
     with open('datasheets/userdata.pkl' , 'rb') as file:
         user_data = pickle.load(file)
-    if isinstance(tag, discord.Member):
-        user_id = tag.id
-        tag = user_data[user_id]['tag']
-    elif isinstance(tag, str):
+    if tag is not None:
         tag = tag.strip("#")
+    elif user is not None:
+        tag = user_data[user.id]['tag'].strip("#")
+    elif user is None and tag is None:
+        tag = user_data[ctx.author.id]['tag'].strip("#")
     else:
-        user_id = ctx.author.id
-        tag = user_data[user_id]['tag']
+        embed = Embed(title="missing something ")
+        embed.description = "Please provide a valid player tag or mention a user"
+        await ctx.send(embed=embed)
+        return
 
     try:
         data_buffrr = playerprofile_(tag=tag)
