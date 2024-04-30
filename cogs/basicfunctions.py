@@ -9,6 +9,49 @@ from discord import Embed , Color
 from main import p
 
 
+class reapply(discord.ui.View):
+    def __init__(self, ids: list , reapply_role: discord.Role):
+        super().__init__(timeout=100)
+        self.ids = ids
+        self.role = reapply_role
+
+
+    @discord.ui.button(label="✅", style=discord.ButtonStyle.green)
+    async def tick_button_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
+        for id in self.ids:
+            member = interaction.guild.get_member(id)
+            if member is not None:
+                await member.edit(nick=f're - {member.name}' , roles=[self.role])
+        re_apply_channel = interaction.guild.get_channel(1055440286806966322)
+        txt1 = ""
+        for mbid in self.ids :
+            txt1 += f'<@{mbid}> , '
+        txt1 = txt1[:-2]
+        e = Embed(title="RE-APPLY \nYou have been Placed here due to the Following Reasons\n" , color=Color.random())
+        e.description = f'• You have been Inactive from a Long time in our Clans. \n ' \
+                        f'• You Left without informing your Clans Leader/Co-Leader.\n' \
+                        f'• Your Activity seems Suspicious in the Server.\n' \
+                        f'• If you wish to reapply and join us again\n\n' \
+                        f'**Do the following**\n' \
+                        f'• Ping one of clan leaders using @thiername\n' \
+                        f'• Or just type " I need help reapplying "\n' \
+                        f'• We will assist you further, be kind and wait until we reply.'
+
+        await re_apply_channel.send(f'{txt1} has been sent to re-apply by <@{interaction.user.id}>')
+        await re_apply_channel.send(embed=e)
+
+
+    @discord.ui.button(label="❌", style=discord.ButtonStyle.red)
+    async def cross_button_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
+        await interaction.response.defer()
+        await interaction.response.send_message("Cancelled", ephemeral=True)
+
+
+
+
+
+
+
 class basicfuctions(commands.Cog) :
     def __init__(self , client) :
         self.client = client
@@ -78,9 +121,9 @@ class basicfuctions(commands.Cog) :
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' )
     async def checkall(self , ctx , member_role: discord.Role = None , clan_tag=None) :
         try:
-            re_apply = ctx.guild.get_role(1055440440968617994)
+            re_apply_role = ctx.guild.get_role(1055440440968617994)
             re_apply_tags = []
-            re_apply_channel = ctx.guild.get_channel(1055440286806966322)
+
             with open("datasheets/war_announcements.pkl" , "rb") as file :
                 clan_data = pickle.load(file)
             with open('datasheets/userdata.pkl' , 'rb') as file :
@@ -141,7 +184,7 @@ class basicfuctions(commands.Cog) :
                         if member :
                             embed_linked_reapply_description += f"{member.nick} \n"
                             re_apply_tags.append(member.id)
-                            await member.edit(nick=f're - {member.name}' , roles=[re_apply])
+
                 else :
                     if member :
                         embed_no_data_description += f"{member.nick} \n"
@@ -156,29 +199,30 @@ class basicfuctions(commands.Cog) :
             await ctx.send(embed=embed)
 
             if len(re_apply_tags) > 0 :
-                txt1 = ""
-                for mbid in re_apply_tags:
-                    txt1 += f'<@{mbid}> , '
-                txt1 = txt1[:-2]
-                e = Embed(title="RE-APPLY \nYou have been Placed here due to the Following Reasons\n" ,
-                          color=Color.random())
-                e.description = f'• You have been Inactive from a Long time in our Clans. \n ' \
-                                f'• You Left without informing your Clans Leader/Co-Leader.\n' \
-                                f'• Your Activity seems Suspicious in the Server.\n' \
-                                f'• If you wish to reapply and join us again\n\n' \
-                                f'**Do the following**\n' \
-                                f'• Ping one of clan leaders using @thiername\n' \
-                                f'• Or just type " I need help reapplying "\n' \
-                                f'• We will assist you further, be kind and wait until we reply.'
-
-                await re_apply_channel.send(f'{txt1} has been sent to re-apply by <@{ctx.author.id}>')
-                await re_apply_channel.send(embed=e)
+                embed1 = Embed(title="PLease confirm" , description="Are you sure you want to re-apply the above users ?", color=Color.red())
+                await ctx.send(embed=embed1 , view=reapply(re_apply_tags , reapply_role=re_apply_role))
 
 
         except Exception as e :
             embed = Embed(title="ERROR" , color=Color.red())
             embed.description = f"```{e}```"
             await ctx.send(embed=embed)
+
+
+    @commands.command(name='members')
+    async def role_members(self , ctx , *role_names: discord.Role) :
+        await ctx.message.delete()
+        with open("datasheets/userdata.pkl" , "rb") as file :
+            user_data = pickle.load(file)
+            for role_name in role_names :
+                embed_text = ""
+                embed = Embed(title="Members of " + role_name.name , color=Color.random())
+                for member in role_name.members :
+                    embed_text += f"{member.nick}{int(21 - len(member.nick)) * ' '} : {user_data[member.id]['tag'] if member.id in user_data.keys() else 'no data'}\n"
+                embed.description = f"```{embed_text}```"
+                embed.set_footer(text="Total members : " + str(len(role_name.members)))
+                await ctx.send(embed=embed)
+
 
     @commands.command(name='usage' , aliases=['u'])
     async def usage(self , ctx , command_name: str) :

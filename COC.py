@@ -190,19 +190,34 @@ def get_hero_id(id) :
         return None
 
 
-def fwa_clan_data(tag) :
-    url = f"https://fwastats.com/Clan/{tag.strip('#')}/Weight"
+async def fwa_clan_data(tag):
+    url = f"https://fwastats.com/Clan/{tag.strip('#')}/Members.json"
+    url2 = f"https://fwastats.com/Clan/{tag.strip('#')}/Weight"
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            clan_data = await response.json()
+
+        async with session.get(url2) as response:
+            html = await response.text()
+            soup = BeautifulSoup(html, "html.parser")
+            clan_name = soup.select_one('body > div.container.body-content.fill > div.well > div > div > h3').text
+            try:
+                try :
+                    last_date = soup.select_one(
+                        'body > div.container.body-content.fill > div.alert.alert-success > strong').text
+                except :
+                    last_date = soup.select_one(
+                        'body > div.container.body-content.fill > div.alert.alert-warning > strong').text
+            except :
+                last_date = "Clan weight submission was too long ago or did not found"
+
     clan_weight = {}
-    response = requests.get(url)
-    html_content = response.content
-    soup = BeautifulSoup(html_content , 'html.parser')
-    for i in range(1 , 51) :
+    for member in clan_data :
         try :
-            player_name = soup.select_one(f"#myTable > tbody > tr:nth-child({i}) > td:nth-child(2) > a").text
-            town_hall_level = int(
-                soup.select_one(f"#myTable > tbody > tr:nth-child({i}) > td:nth-child(2) > span").text)
-            weight = int(
-                soup.select_one(f"#myTable > tbody > tr:nth-child({i}) > td:nth-child(3) > div > input")['value'])
+            player_name = member['name']
+            town_hall_level = member['townHall']
+            weight = int(member['weight'])
             if 150000 < weight <= 160000 :
                 equivalent = 16
             elif 140000 < weight <= 150000 :
@@ -225,11 +240,10 @@ def fwa_clan_data(tag) :
         except AttributeError :
             pass
     sorted_clan_weight = dict(sorted(clan_weight.items() , key=lambda item : item[1]["weight"] , reverse=True))
-    clan_name = soup.select_one('body > div.container.body-content.fill > div.well > div > div > h3').text
-    try :
-        last_date = soup.select_one('body > div.container.body-content.fill > div.alert.alert-success > strong').text
-    except :
-        last_date = soup.select_one('body > div.container.body-content.fill > div.alert.alert-warning > strong').text
+
+
+
+
     return clan_name , sorted_clan_weight , last_date
 
 
@@ -297,16 +311,5 @@ async def fetch_my_info(tags_dict , headers=header) :
         return result
 
 if __name__ == '__main__' :
-
-    data = {"9JVUQGYLQ" : {"name" : "Saicharan reddy" , "level" : "" , "tick": "✅"} ,
-            "PJVL0JRR9" : {"name" : "Rizzo" , "level" : "", "tick": "✅"} , "PR9GRL8RY" : {"name" : "SuNNy SoMu 2" , "level" : ""} ,
-            "Y0URPVQ9V" : {"name" : "Ghôst Rid€r 4" , "level" : ""} ,
-            "P2VLY0Y80" : {"name" : "ɪ͜͡٭KinG" , "level" : ""} , "QVQ9VLCCP" : {"name" : "Leo" , "level" : ""} ,
-            "QVGQGUUPL" : {"name" :"" }}
-    do = asyncio.run(fetch_my_info(data))
-    import pickle
-
-
-    with open('datasheets/warstarter.pkl' , 'wb') as f :
-        pickle.dump(do , f)
-    print(do)
+    data = asyncio.run(fwa_clan_data('U0LPRYL2'))
+    print(data)

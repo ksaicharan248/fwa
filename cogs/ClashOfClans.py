@@ -299,7 +299,7 @@ class clashofclansmethods(commands.Cog) :
             clan_tag = clan_tag.strip("#")
         if clan_tag :
             try :
-                clani = COC.fwa_clan_data(tag=clan_tag)
+                clani = await COC.fwa_clan_data(tag=clan_tag)
 
             except :
                 e = Embed(title="Not a Fwa Clan" , color=Color.red())
@@ -405,7 +405,7 @@ class clashofclansmethods(commands.Cog) :
             clan_tag = clan_tag.strip("#")
         if clan_tag :
             try :
-                claninfoo = COC.fwa_clan_data(tag=clan_tag)
+                claninfoo = await COC.fwa_clan_data(tag=clan_tag)
             except :
                 e = Embed(title="Not a Fwa Clan" , color=Color.red())
                 await ctx.reply(embed=e)

@@ -97,7 +97,7 @@ class fuunctionmethods(commands.Cog) :
             pickle.dump(userdata , f)
         await ctx.send(f'{len(userdata.keys())}')
 
-    @commands.command(name='pm' , help="create a private chat using threads")
+    @commands.command(name='create' ,aliases=['pm', 'private-message'], help="create a private chat using threads")
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
     async def thread_add(self , ctx , thread_name=None , *members: discord.Member) :
         thread_name = thread_name if thread_name is not None else "Team X Elites"
@@ -108,7 +108,7 @@ class fuunctionmethods(commands.Cog) :
                                                  invitable=False)
         await thread.send(output_message)
 
-    @commands.command(name='thread-remove' , aliases=['rt'])
+    @commands.command(name='thread-remove' , aliases=['rt'], help="remove a members from a thread")
     @commands.has_any_role('🔰ADMIN🔰')
     async def remve_from_thread(self , ctx , *members: discord.Member) :
         # Ensure the context is within a thread
@@ -119,7 +119,7 @@ class fuunctionmethods(commands.Cog) :
         else :
             await ctx.send("This command can only be used inside a thread.")
 
-    @commands.command(name='deletethread' , aliases=['dt'])
+    @commands.command(name='deletethread' , aliases=['dt'], help="delete the current thread")
     @commands.has_any_role('🔰ADMIN🔰')
     async def thread_delete(self , ctx) :
         if isinstance(ctx.channel , discord.Thread) :
@@ -131,7 +131,7 @@ class fuunctionmethods(commands.Cog) :
         else :
             await ctx.send('This command can only be used in a thread.')
 
-    @commands.command(name='win-check' , aliases=['wc' , 'wincheck' , 'winc'])
+    @commands.command(name='win-check' , aliases=['wc' , 'wincheck' , 'winc'] , help="check your win count")
     async def win_check(self , ctx , tag: str = None) :
         with open('datasheets/userdata.pkl' , 'rb') as f :
             user_data = pickle.load(f)
@@ -150,7 +150,7 @@ class fuunctionmethods(commands.Cog) :
         embed.description = f"{data}"
         await ctx.send(embed=embed)
 
-    @commands.command(name="starter" , aliases=['st'])
+    @commands.command(name="starter" , aliases=['st'], help = "View the war starter list")
     async def starter(self , ctx) :
         with open('datasheets/warstarter.pkl' , 'rb') as file :
             data = pickle.load(file)
@@ -163,7 +163,7 @@ class fuunctionmethods(commands.Cog) :
 
             await ctx.send(embed=embed , view=Buttons(ctx , data))
 
-    @commands.command(name="add_acc")
+    @commands.command(name="add_acc",help="add a account to the war starter list")
     @commands.is_owner()
     async def add_acc(self , ctx , *tags : str) :
         for tag in tags:
@@ -176,7 +176,7 @@ class fuunctionmethods(commands.Cog) :
                 pickle.dump(final , file)
             await ctx.send(f"Added {final[tag]['name']} with tag {tag} to the war starter list")
 
-    @commands.command(name="remove_acc")
+    @commands.command(name="remove_acc", help="remove a account from the war starter list")
     @commands.is_owner()
     async def remove_acc(self , ctx , tag : str) :
         tag = tag.strip('#')
@@ -187,7 +187,7 @@ class fuunctionmethods(commands.Cog) :
             pickle.dump(data , file)
         await ctx.send(f"Removed {tag} from the war starter list")
 
-    @commands.command(name="reset_s")
+    @commands.command(name="reset_s", help="reset the war starter list")
     @commands.is_owner()
     async def clear_acc(self , ctx) :
         with open('datasheets/warstarter.pkl' , 'rb') as file :
