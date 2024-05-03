@@ -19,27 +19,26 @@ class cwlbutton(View) :
         super().__init__(timeout=None)
         self.ctx = ctx
         self.round = round
-        self.update_embed.start()
+       
 
-    def cog_unload(self) :
-        self.update_embed.cancel()  # Cancel the task when cog is unloaded
 
-    @tasks.loop(seconds=15)  # Update embed every minute
+      # Update embed every minute
     async def update_embed(self , interaction , user_data) :
         print("updating")
         embed = Embed(title=f"CWL ROSTER -ROUND {self.round}" , colour=Color.random())
         clan_one = '\n'.join(user_data[0].values())
         clan_two = '\n'.join(user_data[1].values())
-        clan_three = '\n'.join(user_data[2].values())
+        #clan_three = '\n'.join(user_data[2].values())
         embed.add_field(name="TÉÃM ËLÏTËS -16 - #2RPJPR8VY", value=f'{clan_one}')
         embed.add_field(name="TÊÀM ĒLĪTËS -15 - #2RP0LG2U0]", value=f'{clan_two}')
-        embed.add_field(name="TÉÂM ĒLĪTÊS - #2RVGYGYRY" , value=f'{clan_three}')
+        #embed.add_field(name="TÉÂM ĒLĪTÊS - #2RVGYGYRY" , value=f'{clan_three}')
         await interaction.response.defer()
         await interaction.message.edit(embed=embed)
 
-    @update_embed.before_loop
-    async def before_update_embed(self) :
-        await self.bot.wait_until_ready()
+
+
+
+
 
     @discord.ui.button(style=discord.ButtonStyle.blurple , label="TÉÃM ËLÏTËS -16 " , custom_id="1" )
     async def button_callback2(self , interaction: discord.Interaction , button: discord.ui.button) :
@@ -65,7 +64,7 @@ class cwlbutton(View) :
             with open('datasheets/cwlrooster.pkl' , 'wb') as f :
                 pickle.dump(user_data , f)
 
-    @discord.ui.button(style=discord.ButtonStyle.red , label="TÉÂM ĒLĪTÊS" , custom_id="3")
+    '''@discord.ui.button(style=discord.ButtonStyle.red , label="TÉÂM ĒLĪTÊS" , custom_id="3")
     async def button_callbackthree(self , interaction: discord.Interaction , button: discord.ui.button) :
         with open('datasheets/cwlrooster.pkl' , 'rb') as file :
             user_data = pickle.load(file)
@@ -75,7 +74,7 @@ class cwlbutton(View) :
             user_data[2][interaction.user.id] = interaction.user.nick
             await self.update_embed(interaction , user_data)
             with open('datasheets/cwlrooster.pkl' , 'wb') as f :
-                pickle.dump(user_data , f)
+                pickle.dump(user_data , f)'''
 
     @discord.ui.button(style=discord.ButtonStyle.secondary , emoji="❌" , custom_id="4" )
     async def button_callbackcros(self , interaction: discord.Interaction , button: discord.ui.button) :
@@ -93,6 +92,11 @@ class cwlbutton(View) :
                 pickle.dump(user_data , f)
         else :
             await interaction.response.send_message("You have not enrolled for the CWL." , ephemeral=True)
+    @discord.ui.button(style=discord.ButtonStyle.secondary , emoji="🔃" , custom_id="5" )
+    async def refresh(self , interaction: discord.Interaction , button: discord.ui.button) :
+        with open('datasheets/cwlrooster.pkl' , 'rb') as file :
+            user_data = pickle.load(file)
+        await self.update_embed(interaction, user_data)
 
 
 class My_View(View) :
@@ -291,7 +295,7 @@ class clashofclansmethods(commands.Cog) :
 
     @commands.command(name="cwl-roster" , aliases=['cwlr'] , help="CWL rooster announcement")
     async def cwl_compo(self , ctx , round='') :
-        await ctx.message.delete()
+        #await ctx.message.delete()
         await ctx.send(
             f"Hey everyone,\n🔔🚨Select the clan below to enroll in the CWL compo. 🚨🔔\nIf you have not enrolled, we don't take any responsibility \nFirst come, first served.\n---------------------------------\n CWL ROUND {round}", view=cwlbutton(ctx , round))
 
