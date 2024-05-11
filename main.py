@@ -279,52 +279,7 @@ class Selectmenu1(discord.ui.View) :
             pass
 
 
-class Selectmenu2(discord.ui.View) :
-    def __init__(self) :
-        super().__init__(timeout=70)
 
-    optoins = [discord.SelectOption(label='MOD COMMANDS🧑‍🔧' , value='1') ,
-               discord.SelectOption(label='LEADER COMMANDS 🌿' , value='2') ,
-               discord.SelectOption(label='PLAYER COMMANDS 🌙' , value='3')]
-
-    @discord.ui.select(placeholder='Select an option' , options=optoins , min_values=1 , max_values=1)
-    async def select(self , interaction: discord.Interaction , select) :
-        try :
-            if select.values[0] == '1' :
-                embed1 = discord.Embed(title='MOD COMMANDS' , colour=Color.random())
-                embed1.description = f"{p}role        - Add a role to member\n" \
-                                     f"{p}rm          - Remove roles\n" \
-                                     f"{p}changenick  - Change nickname \n" \
-                                     f"{p}removenick  - remove nick name\n" \
-                                     f"{p}kick        - kick a member from the server" \
-                                     f"\n\nfor more info type ```{p}usage <command name>```"
-                await interaction.response.defer()
-                await interaction.message.edit(embed=embed1)
-            elif select.values[0] == '2' :
-                embed2 = discord.Embed(title='LEADER COMMANDS' , colour=Color.random())
-                embed2.description = f"`{p}j-m        - add player to Jigglets clan\n" \
-                                     f"`{p}i-m          - add player to Illuminati clan\n" \
-                                     f"`{p}unq`         - add player to unqualified\n" \
-                                     f"`{p}app`         - approve the player\n" \
-                                     f"`{p}re`          - send the player to reapply \n" \
-                                     f"`{p}check`       - check the player with CCNS\n" \
-                                     f"`{p}force_link`     - link any other player with tag " \
-                                     f"\n\nfor more info type ```{p}usage <command name>```"
-                await interaction.response.defer()
-                await interaction.message.edit(embed=embed2)
-
-            elif select.values[0] == '3' :
-                embed3 = discord.Embed(title='PLAYER COMMANDS' , colour=Color.random())
-                embed3.description = f"`{p}ping`         - Show latency\n" \
-                                     f"`{p}link`       - link the bot with player tag \n" \
-                                     f"`{p}clan`       - clan info\n\nfor more info type " \
-                                     f"```{p}usage <command name>```"
-
-                await interaction.response.defer()
-                await interaction.message.edit(embed=embed3)
-
-        except Exception as e :
-            pass
 
 
 @client.hybrid_command(name='help' , help='help')
@@ -332,10 +287,8 @@ async def help(ctx) :
     if ctx.guild.id == 1054435038881665024 :
         await ctx.defer()
         await ctx.send(content='HELP COMMAND' , view=Selectmenu1())
-    elif ctx.guild.id == 1152220160028057660 :
-        await ctx.defer()
-        await ctx.send(content='HELP COMMAND' , view=Selectmenu2())
-
+    else :
+        await ctx.send("This command is not available in this server")
 
 @client.command(name='listcommands' , aliases=["lstcmd"] , help='List all available commands')
 async def list_commands(ctx) :
