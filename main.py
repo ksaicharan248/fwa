@@ -21,6 +21,7 @@ from webser import keep_alive
 import pickle
 from warattacksummary import get_pins , get_clan_tags , fetch_and_count_offline , fetch_data , main , fwa_count
 from playerprofile import playerprofile_
+
 # Define the intents
 intents = discord.Intents.all()
 intents.message_content = True
@@ -71,13 +72,9 @@ async def on_command_error(ctx , error) :
     elif isinstance(error , commands.CommandNotFound) :
         pass
     else :
-        embed = discord.Embed(title="ERROR" ,
-                              color=discord.Color.red())
+        embed = discord.Embed(title="ERROR" , color=discord.Color.red())
         embed.add_field(name="..........." , value=f'{error} \nSomething went wrong. Please contact the developer.')
         await ctx.send(embed=embed)
-
-
-
 
 
 @client.event
@@ -223,7 +220,6 @@ async def delete_all_channels(ctx) :
 
 @client.command()
 async def emoji(ctx) :
-
     embed = Embed(title="Emoji")
     embed.description = f"<a:ra:1221838183378194563> hello and welcome"
     await ctx.send(embed=embed)
@@ -280,9 +276,6 @@ class Selectmenu1(discord.ui.View) :
             pass
 
 
-
-
-
 @client.hybrid_command(name='help' , help='help')
 async def help(ctx) :
     if ctx.guild.id == 1054435038881665024 :
@@ -290,6 +283,7 @@ async def help(ctx) :
         await ctx.send(content='HELP COMMAND' , view=Selectmenu1())
     else :
         await ctx.send("This command is not available in this server")
+
 
 @client.command(name='listcommands' , aliases=["lstcmd"] , help='List all available commands')
 async def list_commands(ctx) :
@@ -313,7 +307,7 @@ async def ping(ctx) :
 async def war_info(ctx , target=None) :
     cid = ctx.channel.category.id
     with open('datasheets/war_announcements.pkl' , 'rb') as f :
-        cidinfo  = pickle.load(f)
+        cidinfo = pickle.load(f)
 
     await ctx.message.delete()
     if cid in cidinfo.keys() :
@@ -647,30 +641,33 @@ async def get_back(ctx , role: discord.Role) :
                     pass
     except Exception as e :
         pass
-@client.hybrid_command(name="player" , help="Get player profile")
-async def player_profile(ctx,tag : str = None,  user: discord.Member = None):
-    await ctx.defer(ephemeral=True)
-    with open('datasheets/userdata.pkl' , 'rb') as file:
+
+
+@client.hybrid_command(name="player" , help="Get player profile",with_app_command=True)
+async def player_profile(ctx , tag: str = None , user: discord.Member = None) :
+    await ctx.defer(ephemeral=False)
+    with open('datasheets/userdata.pkl' , 'rb') as file :
         user_data = pickle.load(file)
-    if tag is not None:
+    if tag is not None :
         tag = tag.strip("#")
-    elif user is not None:
+    elif user is not None :
         tag = user_data[user.id]['tag'].strip("#")
-    elif user is None and tag is None:
+    elif user is None and tag is None :
         tag = user_data[ctx.author.id]['tag'].strip("#")
-    else:
+    else :
         embed = Embed(title="missing something ")
         embed.description = "Please provide a valid player tag or mention a user"
         await ctx.send(embed=embed)
         return
 
-    try:
+    try :
         data_buffrr = playerprofile_(tag=tag)
         await ctx.send(file=discord.File(data_buffrr , 'player_profile.png'))
-    except Exception as e:
+    except Exception as e :
         embed = Embed(title="Something went wrong")
         embed.description = f"{e}"
         await ctx.send(embed=embed)
+
 
 @client.command(name="clan_revoke" , aliases=["cr"] , help="Revoke all roles and assign new role to members")
 @commands.has_any_role('🔰ADMIN🔰')
