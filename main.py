@@ -649,6 +649,7 @@ async def get_back(ctx , role: discord.Role) :
         pass
 @client.hybrid_command(name="player" , help="Get player profile")
 async def player_profile(ctx,tag : str = None,  user: discord.Member = None):
+    await ctx.defer(ephemeral=True)
     with open('datasheets/userdata.pkl' , 'rb') as file:
         user_data = pickle.load(file)
     if tag is not None:
