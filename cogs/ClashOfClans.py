@@ -80,7 +80,7 @@ class cwlbutton(View) :
     async def button_callbackcros(self , interaction: discord.Interaction , button: discord.ui.button) :
         with open('datasheets/cwlrooster.pkl' , 'rb') as file :
             user_data = pickle.load(file)
-        if interaction.user.id in user_data[0] or interaction.user.id in user_data[1] :
+        if interaction.user.id in user_data[0] or interaction.user.id in user_data[1] or interaction.user.id in user_data[2] :
             if interaction.user.id in user_data[0] :
                 user_data[0].pop(interaction.user.id , None)
             if interaction.user.id in user_data[1] :

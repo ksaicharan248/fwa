@@ -15,18 +15,15 @@ class reapply(discord.ui.View):
         self.ids = ids
         self.role = reapply_role
 
-
     @discord.ui.button(label="✅", style=discord.ButtonStyle.green)
     async def tick_button_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
-        for id in self.ids:
-            member = interaction.guild.get_member(id)
+        for user_id in self.ids:
+            member = interaction.guild.get_member(user_id)
             if member is not None:
-                await member.edit(nick=f're - {member.name}' , roles=[self.role])
+                await member.edit(nick=f're - {member.name}', roles=[self.role])
+
         re_apply_channel = interaction.guild.get_channel(1055440286806966322)
-        txt1 = ""
-        for mbid in self.ids :
-            txt1 += f'<@{mbid}> , '
-        txt1 = txt1[:-2]
+        txt1 = ", ".join([f'<@{user_id}>' for user_id in self.ids])
         e = Embed(title="RE-APPLY \nYou have been Placed here due to the Following Reasons\n" , color=Color.random())
         e.description = f'• You have been Inactive from a Long time in our Clans. \n ' \
                         f'• You Left without informing your Clans Leader/Co-Leader.\n' \
@@ -39,6 +36,11 @@ class reapply(discord.ui.View):
 
         await re_apply_channel.send(f'{txt1} has been sent to re-apply by <@{interaction.user.id}>')
         await re_apply_channel.send(embed=e)
+
+    @discord.ui.button(label="❌", style=discord.ButtonStyle.red)
+    async def cross_button_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
+        await interaction.response.defer()
+        await interaction.response.send_message("Cancelled", ephemeral=True)
 
 
     @discord.ui.button(label="❌", style=discord.ButtonStyle.red)
@@ -117,30 +119,34 @@ class basicfuctions(commands.Cog) :
             await ctx.send("An error occurred while removing the user's nickname.")
 
 
-    @commands.command(name='checkall' , aliases=['ca'])
+    @commands.command(name='checkall' , aliases=['cal'])
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' )
     async def checkall(self , ctx , member_role: discord.Role = None , clan_tag=None) :
         try:
             re_apply_role = ctx.guild.get_role(1055440440968617994)
             re_apply_tags = []
-
+            #fetching data from database
             with open("datasheets/war_announcements.pkl" , "rb") as file :
                 clan_data = pickle.load(file)
             with open('datasheets/userdata.pkl' , 'rb') as file :
                 user_data = pickle.load(file)
+            #checking parameters are recived
             if member_role is None :
                 member_role = ctx.guild.get_role(clan_data[ctx.channel.category.id][1])
             if clan_tag is None :
                 clan_tag = clan_data[ctx.channel.category.id][0]
             else :
                 clan_tag = clan_tag.strip('#')
+            #fetching member ids from the role
             member_ids = [member.id for member in ctx.channel.members if member_role in member.roles]
             user_data_tags = {}
+            #assigning tags for the ids
             for member_id in member_ids :
                 try :
                     user_data_tags[member_id] = user_data[member_id]['tag']
                 except KeyError :
                     user_data_tags[member_id] = None
+            #fetching data from coc
             updated_data = await COC.fetch_users_info(user_data_tags)
             embed = Embed(title="MEMBERS AUDIT" , color=Color.red())
             embed_no_data_description = f"NO DATA EXITS \nfor the following users :\n\n"
@@ -200,7 +206,7 @@ class basicfuctions(commands.Cog) :
 
             if len(re_apply_tags) > 0 :
                 embed1 = Embed(title="PLease confirm" , description="Are you sure you want to re-apply the above users ?", color=Color.red())
-                await ctx.send(embed=embed1 , view=reapply(re_apply_tags , reapply_role=re_apply_role))
+                await ctx.send(embed=embed1 , view=reapply(ids=re_apply_tags , reapply_role=re_apply_role))
 
 
         except Exception as e :
@@ -208,20 +214,28 @@ class basicfuctions(commands.Cog) :
             embed.description = f"```{e}```"
             await ctx.send(embed=embed)
 
-
     @commands.command(name='members')
     async def role_members(self , ctx , *role_names: discord.Role) :
-        await ctx.message.delete()
+        #await ctx.message.delete()
         with open("datasheets/userdata.pkl" , "rb") as file :
             user_data = pickle.load(file)
             for role_name in role_names :
+                sorted_members = sorted(role_name.members , key=lambda x : x.nick.lower())
                 embed_text = ""
                 embed = Embed(title="Members of " + role_name.name , color=Color.random())
-                for member in role_name.members :
+                for member in sorted_members :
                     embed_text += f"{member.nick}{int(21 - len(member.nick)) * ' '} : {user_data[member.id]['tag'] if member.id in user_data.keys() else 'no data'}\n"
                 embed.description = f"```{embed_text}```"
                 embed.set_footer(text="Total members : " + str(len(role_name.members)))
                 await ctx.send(embed=embed)
+
+    @commands.command(name='active_threads')
+    async def active_threads(self , ctx) :
+        threads = ctx.guild.threads
+        for thread in threads :
+
+            await ctx.send(f"Thread Name: {thread.mention}| Category: {thread.category.name} ")
+
 
 
     @commands.command(name='usage' , aliases=['u'])
