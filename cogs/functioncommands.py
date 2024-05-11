@@ -159,7 +159,7 @@ class fuunctionmethods(commands.Cog) :
             embed = discord.Embed(title="Starter" , colour=Color.random())
             for tag , values in data.items() :
                 player_data += f"{values['tick']}  #{tag} : {values['name']}\n"
-            embed.description = f'```{player_data}```'
+            embed.description = f'{player_data}'
 
             await ctx.send(embed=embed , view=Buttons(ctx , data))
 
