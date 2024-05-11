@@ -217,6 +217,7 @@ class basicfuctions(commands.Cog) :
     @commands.command(name='members')
     async def role_members(self , ctx , *role_names: discord.Role) :
         await ctx.message.delete()
+
         with open("datasheets/userdata.pkl" , "rb") as file :
             user_data = pickle.load(file)
             for role_name in role_names :

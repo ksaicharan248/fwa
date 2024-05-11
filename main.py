@@ -82,7 +82,7 @@ async def on_command_error(ctx , error) :
 
 @client.event
 async def on_member_remove(member) :
-    owner = await client.fetch_user(int(765929481311354881))
+    owner = await client.get_channel(int(1231221798939660338))
     with open("datasheets/userdata.pkl" , "rb") as file :
         user_data = pickle.load(file)
     with open("datasheets/leader_userdata.pkl" , 'rb') as foo :
@@ -106,6 +106,7 @@ async def on_member_remove(member) :
             del token[pop_tag]
         except :
             token.pop(pop_tag)
+        await owner.send(f'{member} removed from leader data base')
         with open("datasheets/leader_userdata.pkl" , "wb") as file :
             pickle.dump(token , file)
 

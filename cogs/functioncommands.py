@@ -41,7 +41,7 @@ class Buttons(discord.ui.View) :
     async def interaction_check(self , interaction) -> bool :
         if interaction.user == self.ctx.author :
             embed = discord.Embed(colour=discord.Colour.red())
-            embed.description = f'Please invite my account below👇\n(Kindly let me know when it`s done🙂)\nIn-game name : {self.data[interaction.data["custom_id"]]["name"]}\nTag : #{interaction.data["custom_id"]}\nLink : \nhttps://link.clashofclans.com/en?action=OpenPlayerProfile&tag={interaction.data["custom_id"]}'
+            embed.description = f'Please invite my account below👇\n(Kindly let me know when it`s done🙂)\nIn-game name : {self.data[interaction.data["custom_id"]]["name"]}\nTag : #{interaction.data["custom_id"]}\nLink : \nhttps://link.clashofclans.com/en?action=OpenPlayerProfile&tag={interaction.data["custom_id"]} '
             tag = interaction.data["custom_id"]
             await self.update_embed(interaction , idx=tag , embed_sent=embed)
             return False
