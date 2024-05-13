@@ -7,6 +7,31 @@ import pickle
 from discord import Embed , Color
 
 
+class refresh(discord.ui.View):
+    def __init__(self ,ctx,  keys ):
+        super().__init__(timeout=43200*2)
+        self.ctx = ctx
+        self.keys = keys
+
+    @discord.ui.button(emoji="🔃", style=discord.ButtonStyle.primary , custom_id="refresh")
+    async def refresh(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer()
+        status_data = await COC.fetch_status_of_clans(self.keys)
+        embed = discord.Embed(title="Status" , colour=Color.random())
+        for tag , value in status_data.items() :
+            embed.add_field(name=f"{self.keys[tag]['name']}  -  #{tag}" ,
+                            value=f"```name     : {value[1]}\ncompo    : {value[0]}\nstatus   : {value[2]}\nopponent : {value[3]}\ntag      : {value[4]}```" ,
+                            inline=False)
+        await interaction.message.edit(embed=embed)
+
+    async def interaction_check(self , interaction) -> bool :
+        if interaction.user != self.ctx.author :
+            await interaction.response.send_message(f"only {self.ctx.author.mention} can approve this " ,
+                                                    ephemeral=True)
+            return False
+        else :
+            return True
+
 class Buttons(discord.ui.View) :
 
     def __init__(self , ctx , data) :
@@ -212,7 +237,8 @@ class fuunctionmethods(commands.Cog) :
         embed = discord.Embed(title="Status" , colour=Color.random())
         for tag , value in status_data.items() :
             embed.add_field(name=f"{update_data[tag]['name']}  -  #{tag}" , value=f"```name     : {value[1]}\ncompo    : {value[0]}\nstatus   : {value[2]}\nopponent : {value[3]}\ntag      : {value[4]}```" , inline=False)
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed , view=refresh(ctx , update_data))
+
 
 
 
