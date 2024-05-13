@@ -170,7 +170,7 @@ class fuunctionmethods(commands.Cog) :
             tag = tag.strip('#')
             with open('datasheets/warstarter.pkl' , 'rb') as file :
                 data = pickle.load(file)
-            data[tag] = {'name' : 'name'}
+            data[tag] = {'name' : 'name' , 'tick' : '✅'}
             final = await COC.fetch_my_info(data)
             with open('datasheets/warstarter.pkl' , 'wb') as file :
                 pickle.dump(final , file)
@@ -197,6 +197,29 @@ class fuunctionmethods(commands.Cog) :
         with open('datasheets/warstarter.pkl' , 'wb') as file :
             pickle.dump(data , file)
         await ctx.send("Cleared the war starter list")
+
+    @commands.command(name="status_s" ,  aliases=['sst'])
+    @commands.is_owner()
+    async def status_s(self , ctx) :
+        with open('datasheets/warstarter.pkl' , 'rb') as file :
+            data = pickle.load(file)
+        copy_data = data.copy()
+        for tag , value in data.items() :
+            if value['tick'] != '❌' :
+                del copy_data[tag]
+        update_data = await COC.fetch_my_info(copy_data)
+        status_data = await COC.fetch_status_of_clans(update_data)
+        embed = discord.Embed(title="Status" , colour=Color.random())
+        for tag , value in status_data.items() :
+            embed.add_field(name=f"{update_data[tag]['name']}  -  #{tag}" , value=f"```name     : {value[1]}\ncompo    : {value[0]}\nstatus   : {value[2]}\nopponent : {value[3]}\ntag      : {value[4]}```" , inline=False)
+        await ctx.send(embed=embed)
+
+
+
+
+
+
+
 
 async def setup(client) :
     await client.add_cog(fuunctionmethods(client))
