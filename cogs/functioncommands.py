@@ -35,7 +35,7 @@ class refresh(discord.ui.View):
 class Buttons(discord.ui.View) :
 
     def __init__(self , ctx , data) :
-        super().__init__(timeout=180)
+        super().__init__(timeout=43200*2)
         self.data = data
         self.ctx = ctx
         self.used = []
