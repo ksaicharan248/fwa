@@ -273,6 +273,7 @@ class Selectmenu1(discord.ui.View) :
                                      f'</profile:1172576773611995249>\n- profile of player\n\n' \
                                      f'</text-to-image:1222447217030336524>\n- text to image using AI\n\n' \
                                      f'</th:1229080783969456260>\n- Shows FWA base of specific Town Hall\n\n' \
+                                     f'</update_info:1239564436872888372>\n- Updates or shows the information in data base\n\n' \
                                      f'</warcompo:1192138029255643189>\n- show war composition\n\n' \
                                      f'for more info type ```{p}usage <command name>```'
 
