@@ -26,7 +26,7 @@ from playerprofile import playerprofile_
 intents = discord.Intents.all()
 intents.message_content = True
 
-client = commands.Bot(command_prefix="$" , intents=intents)
+client = commands.Bot(command_prefix=">>" , intents=intents)
 client.remove_command("help")
 
 p = client.command_prefix
@@ -72,8 +72,8 @@ async def on_command_error(ctx , error) :
     elif isinstance(error , commands.CommandNotFound) :
         pass
     else :
-        embed = discord.Embed(title="ERROR" , color=discord.Color.red())
-        embed.add_field(name="..........." , value=f'{error} \nSomething went wrong. Please contact the developer.')
+        embed = discord.Embed(color=discord.Color.red())
+        embed.add_field(name="ERROR" , value=f'{error} \n\n\nSomething went wrong. Please contact the developer.')
         await ctx.send(embed=embed)
 
 

@@ -67,8 +67,11 @@ class profile_link(commands.Cog) :
 
     @commands.hybrid_command(name='link' , help='To link your clash of clans account with your discord account' ,
                              usage=f'{p}link <#player_tag> \nexample : {p}link #2UVH89FH\n/link #2UVH89FH')
-    async def link(self , ctx , player_tag=None) :
-        await ctx.message.delete()
+    async def link(self , ctx: discord.ext.commands.Context , player_tag: str = None) :
+        if ctx.prefix == '/' :
+            await ctx.defer(ephemeral=True)
+        else :
+            await ctx.message.delete()
         if player_tag is None :
             e = Embed(title="Please provide the player tag ." , color=Color.random())
             await ctx.send(embed=e)
@@ -158,7 +161,10 @@ class profile_link(commands.Cog) :
                              hidden=True)
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'WAL' , 'TSL' , 'HML' , 'Staff')
     async def force_link(self , ctx , user_mention: discord.Member = None , player_tag=None) :
-        await ctx.message.delete()
+        if ctx.prefix == '/' :
+            await ctx.defer(ephemeral=False)
+        else :
+            await ctx.message.delete()
         if player_tag is None :
             e = Embed(title="Please provide the player tag ." , color=Color.red())
             await ctx.send(embed=e)
@@ -305,8 +311,8 @@ class profile_link(commands.Cog) :
         await member.kick(reason=reason)
 
     @commands.hybrid_command(name='update_info' , aliases=['uinfo'] ,
-                      help='To update your clash of clans account details with your discord account' ,
-                      usage=f'{p}update_info')
+                             help='To update your clash of clans account details with your discord account' ,
+                             usage=f'{p}update_info')
     async def update_information(self , ctx , member: discord.Member = None) :
         with open('datasheets/userdata.pkl' , 'rb') as file :
             user_info = pickle.load(file)
