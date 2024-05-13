@@ -89,7 +89,7 @@ class basicfuctions(commands.Cog) :
         else :
             await ctx.send('You do not have permission to manage roles.')
 
-    @commands.command(name="rm" , help="Remove a role from a user" , usage=f"{p}rm <user> <@roles>")
+    @commands.command(name="remove_role" , aliases=["rm"] , help="Remove a role from a user" , usage=f"{p}rm <user> <@roles>")
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
     async def rm_role(self , ctx , user: discord.Member , *roles: discord.Role) :
         if ctx.author.guild_permissions.manage_roles :

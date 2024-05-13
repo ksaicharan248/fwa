@@ -238,37 +238,43 @@ class Selectmenu1(discord.ui.View) :
         try :
             if select.values[0] == '1' :
                 embed1 = discord.Embed(title='MOD COMMANDS' , colour=Color.random())
-                embed1.description = f"{p}wel         - Welome a player\n" \
-                                     f"{p}role        - Add a role to member\n" \
-                                     f"{p}rm          - Remove roles\n" \
-                                     f"{p}changenick  - Change nickname \n" \
-                                     f"{p}removenick  - remove nick name\n" \
-                                     f"{p}kick        - kick a member from the server" \
-                                     f"\n\nfor more info type ```{p}usage <command name>```"
+                embed1.description = f"`{p}welcome`\n- Welome a player\n\n" \
+                                     f"`{p}role`\n- Add roles to the mentioned member\n\n" \
+                                     f"`{p}remove_role`\n- Remove roles to the mentioned members\n\n" \
+                                     f"`{p}changenick`\n- Change nickname to the mentioned member \n\n" \
+                                     f"`{p}removenick`\n- remove nick name to the mentioned member\n\n" \
+                                     f"`{p}members`\n- list mentioned role members in the server\n\n" \
+                                     f"`{p}kick`\n- kick a member from the server\n\n" \
+                                     f"for more info type ```{p}usage <command name>```"
                 await interaction.response.defer()
                 await interaction.message.edit(embed=embed1)
             elif select.values[0] == '2' :
                 embed2 = discord.Embed(title='LEADER COMMANDS' , colour=Color.random())
-                embed2.description = f"`{p}mc`          - move a player to your clan chat\n" \
-                                     f"`{p}unq`         - add player to unqualified\n" \
-                                     f"`{p}app`         - approve the player\n" \
-                                     f"`{p}re`          - send the player to reapply \n" \
-                                     f"`{p}check`       - check the player with CCNS\n" \
-                                     f"`{p}war`         - send war updates\n" \
-                                     f"`{p}force_link`     - link any other player with tag " \
-                                     f"\n\nfor more info type ```{p}usage <command name>```"
+                embed2.description = f"`{p}move-clan`\n- move a player to your clan chat\n\n" \
+                                     f"`{p}unq`\n- add player to unqualified\n\n" \
+                                     f"`{p}app`\n- approve the player\n\n" \
+                                     f"`{p}re`\n- add player to reapply \n\n" \
+                                     f"`{p}war`\n- send war updates\n\n" \
+                                     f"`{p}create`\n- create a private chat using threads\n\n" \
+                                     f"</check:1170701374267330653>\n- check the player with CCNS\n\n" \
+                                     f"</force-link:1172586442225102889>\n- link any other player with tag \n\n" \
+                                     f"for more info type ```{p}usage <command name>```"
 
                 await interaction.response.defer()
                 await interaction.message.edit(embed=embed2)
             elif select.values[0] == '3' :
                 embed3 = discord.Embed(title='PLAYER COMMANDS' , colour=Color.random())
-                embed3.description = f"`{p}ping`         - Show latency\n" \
-                                     f"`{p}link`       - link the bot with player tag \n" \
-                                     f"`{p}profile`    - profile of player\n" \
-                                     f"`{p}clan`       - clan info\n\nfor more info type " \
-                                     f"`{p}listcompo   - lists the clan composition`\n" \
-                                     f"`{p}warcompo`        - show war composition\n" \
-                                     f"```{p}usage <command name>```"
+                embed3.description = f'{p}clan\n- shows clan info\n\n' \
+                                     f'</bases:1172586442225102890>\n- lists FWA approved bases\n\n' \
+                                     f'</link:1172586442225102888>\n- link the bot with player tag\n\n' \
+                                     f'</listcompo:1192894131207413760>\n- lists the clan composition\n\n' \
+                                     f'{p}ping\n- Show latency\n\n' \
+                                     f'</player:1232374536171814932>\n - show player profile\n\n' \
+                                     f'</profile:1172576773611995249>\n- profile of player\n\n' \
+                                     f'</text-to-image:1222447217030336524>\n- text to image using AI\n\n' \
+                                     f'</th:1229080783969456260>\n- Shows FWA base of specific Town Hall\n\n' \
+                                     f'</warcompo:1192138029255643189>\n- show war composition\n\n' \
+                                     f'for more info type ```{p}usage <command name>```'
 
                 await interaction.response.defer()
                 await interaction.message.edit(embed=embed3)
@@ -280,7 +286,18 @@ class Selectmenu1(discord.ui.View) :
 async def help(ctx) :
     if ctx.guild.id == 1054435038881665024 :
         await ctx.defer()
-        await ctx.send(content='HELP COMMAND' , view=Selectmenu1())
+        embed_help = discord.Embed(title='PLAYER COMMANDS' , colour=Color.random())
+        embed_help.description = f'{p}clan\n- shows clan info\n\n' \
+                                 f'</bases:1172586442225102890>\n- lists FWA approved bases\n\n' \
+                                 f'</link:1172586442225102888>\n- link the bot with player tag\n\n' \
+                                 f'</listcompo:1192894131207413760>\n- lists the clan composition\n\n' \
+                                 f'{p}ping\n- Show latency\n\n' \
+                                 f'</player:1232374536171814932>\n - show player profile\n\n' \
+                                 f'</profile:1172576773611995249>\n- profile of player\n\n' \
+                                 f'</warcompo:1192138029255643189>\n- show war composition\n\n' \
+                                 f'for more info type ```{p}usage <command name>```'
+
+        await ctx.send(content='HELP COMMAND' , embed=embed_help , view=Selectmenu1())
     else :
         await ctx.send("This command is not available in this server")
 
@@ -291,7 +308,7 @@ async def list_commands(ctx) :
     command_info = ""
     for command in sorted_commands :
         aliases = '  -- ' + ', '.join(command.aliases) if command.aliases else " "
-        command_info += f"->{client.command_prefix}{command.name}{aliases}\n"
+        command_info += f"->{client.command_prefix}{command.name}{aliases}\n\n"
 
     await ctx.send(f"List of available commands:\n```{command_info}```")
 
@@ -643,7 +660,7 @@ async def get_back(ctx , role: discord.Role) :
         pass
 
 
-@client.hybrid_command(name="player" , help="Get player profile",with_app_command=True)
+@client.hybrid_command(name="player" , help="Get player profile" )
 async def player_profile(ctx , tag: str = None , user: discord.Member = None) :
     await ctx.defer(ephemeral=False)
     with open('datasheets/userdata.pkl' , 'rb') as file :

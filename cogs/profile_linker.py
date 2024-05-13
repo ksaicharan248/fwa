@@ -302,11 +302,9 @@ class profile_link(commands.Cog) :
         owner = await self.client.fetch_user(int(765929481311354881))
         await ctx.send(f'{member.nick} has been flew from the server 🍃')
         await member.send(f"You have been kicked from {ctx.guild.name} for {reason}")
-        await self.unlink(ctx , member=member)
-        await owner.send(f'{member} removed from data base')
         await member.kick(reason=reason)
 
-    @commands.command(name='update_info' , aliases=['uinfo'] ,
+    @commands.hybrid_command(name='update_info' , aliases=['uinfo'] ,
                       help='To update your clash of clans account details with your discord account' ,
                       usage=f'{p}update_info')
     async def update_information(self , ctx , member: discord.Member = None) :

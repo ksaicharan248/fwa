@@ -130,7 +130,7 @@ class ClanRoleAdder(commands.Cog) :
         category_id = ctx.channel.category.id
         await ctx.send(f'Hey , <@&{category_info[category_id][1]}>\n{message}')
 
-    @commands.command(name='wel' , help='Welcome a player')
+    @commands.command(name='welcome',aliases=['wel'] , help='Welcome a player')
     async def welcome(self , ctx , member: discord.Member = None) :
         if member is None :
             await ctx.send('welcome !')
