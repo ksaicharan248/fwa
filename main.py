@@ -289,14 +289,17 @@ async def help(ctx) :
         await ctx.defer()
         embed_help = discord.Embed(title='PLAYER COMMANDS' , colour=Color.random())
         embed_help.description = f'{p}clan\n- shows clan info\n\n' \
-                                 f'</bases:1172586442225102890>\n- lists FWA approved bases\n\n' \
-                                 f'</link:1172586442225102888>\n- link the bot with player tag\n\n' \
-                                 f'</listcompo:1192894131207413760>\n- lists the clan composition\n\n' \
-                                 f'{p}ping\n- Show latency\n\n' \
-                                 f'</player:1232374536171814932>\n - show player profile\n\n' \
-                                 f'</profile:1172576773611995249>\n- profile of player\n\n' \
-                                 f'</warcompo:1192138029255643189>\n- show war composition\n\n' \
-                                 f'for more info type ```{p}usage <command name>```'
+                                     f'</bases:1172586442225102890>\n- lists FWA approved bases\n\n' \
+                                     f'</link:1172586442225102888>\n- link the bot with player tag\n\n' \
+                                     f'</listcompo:1192894131207413760>\n- lists the clan composition\n\n' \
+                                     f'{p}ping\n- Show latency\n\n' \
+                                     f'</player:1232374536171814932>\n - show player profile\n\n' \
+                                     f'</profile:1172576773611995249>\n- profile of player\n\n' \
+                                     f'</text-to-image:1222447217030336524>\n- text to image using AI\n\n' \
+                                     f'</th:1229080783969456260>\n- Shows FWA base of specific Town Hall\n\n' \
+                                     f'</update_info:1239564436872888372>\n- Updates or shows the information in data base\n\n' \
+                                     f'</warcompo:1192138029255643189>\n- show war composition\n\n' \
+                                     f'for more info type ```{p}usage <command name>```'
 
         await ctx.send(content='HELP COMMAND' , embed=embed_help , view=Selectmenu1())
     else :
