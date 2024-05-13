@@ -26,7 +26,7 @@ from playerprofile import playerprofile_
 intents = discord.Intents.all()
 intents.message_content = True
 
-client = commands.Bot(command_prefix=">>" , intents=intents)
+client = commands.Bot(command_prefix="$" , intents=intents)
 client.remove_command("help")
 
 p = client.command_prefix
