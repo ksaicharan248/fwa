@@ -370,7 +370,6 @@ async def fetch_clan_data_leauge(tags) :
 
 
 if __name__ == '__main__' :
-    print(getclan("U0LPRYL2"))
     info = {'PR9GRL8RY' : {'name' : '..M.O.O.N..' , 'level' : 13 , 'tick' : '✅' , 'clantag' : '#PUQ2PYGG'} ,
             'Y0URPVQ9V' : {'name' : '*Ghõst Rid€r* 4' , 'level' : 13 , 'tick' : '❌' , 'clantag' : '#2GCVCUVCC'} ,
             'P2VLY0Y80' : {'name' : 'ɪ͜͡٭KinG' , 'level' : 12 , 'tick' : '❌' , 'clantag' : '#LYQCYUPY'} ,

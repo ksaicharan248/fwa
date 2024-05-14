@@ -26,6 +26,7 @@ class refresh(discord.ui.View) :
                             inline=False)
         await interaction.message.edit(embed=embed)
 
+
     @discord.ui.button(emoji="🔍" , style=discord.ButtonStyle.primary , custom_id="stop")
     async def stop(self , interaction: discord.Interaction , button: discord.ui.Button) :
         await interaction.response.defer()
