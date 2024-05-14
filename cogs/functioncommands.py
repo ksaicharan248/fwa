@@ -261,7 +261,7 @@ class fuunctionmethods(commands.Cog) :
             pickle.dump(data , file)
         await ctx.send("Cleared the war starter list")
 
-    @commands.command(name="status_s" , aliases=['sst'])
+    @commands.command(name="status_s" , aliases=['sst'], help="View the war starter status")
     @commands.is_owner()
     async def status_s(self , ctx) :
         with open('datasheets/warstarter.pkl' , 'rb') as file :
@@ -279,7 +279,7 @@ class fuunctionmethods(commands.Cog) :
         stater_write(update_data)
         await ctx.send(embed=embed , view=refresh(ctx , status_data))
 
-    @commands.command(name='downvote' , aliases=['dv'])
+    @commands.command(name='downvote' , aliases=['down'] , help="down vote a player from the war starter list")
     @commands.is_owner()
     async def downvote(self , ctx , number:int) :
         with open('datasheets/warstarter.pkl' , 'rb') as file :
