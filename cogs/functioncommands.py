@@ -7,47 +7,64 @@ import pickle
 from discord import Embed , Color
 
 
+def stater_read():
+    with open('datasheets/warstarter.pkl' , 'rb') as file :
+        data = pickle.load(file)
+    return data
+
+
+
 class refresh(discord.ui.View) :
-    def __init__(self , ctx , keys , update_value) :
+    def __init__(self , ctx , update_value) :
         super().__init__(timeout=43200 * 2)
         self.ctx = ctx
-        self.keys = keys
+        self.keys = stater_read()
         self.update_value = update_value
 
     @discord.ui.button(emoji="🔃" , style=discord.ButtonStyle.primary , custom_id="refresh")
     async def refresh(self , interaction: discord.Interaction , button: discord.ui.Button) :
         await interaction.response.defer()
+        self.keys = stater_read()
         status_data = await COC.fetch_status_of_clans(self.keys)
         self.update_value = status_data
-        embed = discord.Embed(title="Status" , colour=Color.random())
-        for tag , value in status_data.items() :
-            embed.add_field(name=f"{self.keys[tag]['name']}  -  #{tag}" ,
-                            value=f"```name     : {value[1]}\ncompo    : {value[0]}\nstatus   : {value[2]}\nopponent : {value[3]}\ntag      : {value[4]}```" ,
-                            inline=False)
-        await interaction.message.edit(embed=embed)
-
+        await self.update_embed(interaction)
 
     @discord.ui.button(emoji="🔍" , style=discord.ButtonStyle.primary , custom_id="stop")
     async def stop(self , interaction: discord.Interaction , button: discord.ui.Button) :
         await interaction.response.defer()
-        leauge_tags = [ key[4].strip("#") for key in self.update_value.values() ]
-        farm_league = await COC.fetch_clan_data_leauge(leauge_tags)
+        league_tags = [key[4].strip("#") for key in self.update_value.values()]
+        farm_league = await COC.fetch_clan_data_league(league_tags)
+        await self.update_embed(interaction , farm_league)
+
+    async def update_embed(self , interaction: discord.Interaction , farm_league=None) :
         embed = discord.Embed(title="Status" , colour=Color.random())
-        emoji_league = {"Official FWA ": "💎" ,"FWA Blacklisted ":"🤬" , "Global Farming League ":"🌍",  "Probably Orange China ":"🍊", "1945 League ":"🍀",'No League Association':'⚔️'}
+        emoji_league = {"Official FWA " : "💎" , "FWA Blacklisted " : "🤬" , "Global Farming League " : "🌍" ,
+            "Probably Orange China " : "🍊" , "1945 League " : "🍀" , 'No League Association' : '⚔️' , 'No data' : ''}
+
         for tag , value in self.update_value.items() :
-            embed.add_field(name=f"{self.keys[tag]['name']}  -  #{tag}" ,
-                            value=f"```name     : {value[1]}\ncompo    : {value[0]}\nstatus   : {value[2]}\nopponent : {value[3]}\ntag      : {value[4]}\nleague   : {farm_league[value[4].strip('#')]} {emoji_league[farm_league[value[4].strip('#')]] if farm_league.get(value[4].strip('#')) else ''}```" ,
-                            inline=False)
+            league_info = ""
+            if farm_league :
+                league_name = farm_league.get(value[4].strip('#') , '')
+                league_emoji = emoji_league.get(league_name , '')
+                league_info = f"\nleague   : {league_name} {league_emoji}"
+
+            embed.add_field(name=f"{self.keys[tag]['name']}  -  #{tag}" , value=(f"```name     : {value[1]}\n"
+                                                                                 f"compo    : {f'{value[0]} ✅' if value[0] == 50 else f'{value[0]} ❌'}\n"
+                                                                                 f"status   : {value[2]}\nopponent : {value[3]}\ntag      : {value[4]}{league_info}```") ,
+                inline=False)
         await interaction.message.edit(embed=embed)
 
-
-
-    async def interaction_check(self , interaction) -> bool :
+    async def interaction_check(self , interaction: discord.Interaction) -> bool :
         if interaction.user != self.ctx.author :
-            await interaction.response.send_message(f"only {self.ctx.author.mention} can do  this " , ephemeral=True)
+            await interaction.response.send_message(f"Only {self.ctx.author.mention} can do this." , ephemeral=True)
             return False
-        else :
-            return True
+        return True
+
+
+
+
+
+
 
 
 class Buttons(discord.ui.View) :
@@ -90,6 +107,11 @@ class Buttons(discord.ui.View) :
             return False
         else :
             return True
+
+
+def stater_write(update_data) :
+    with open('datasheets/warstarter.pkl' , 'wb') as file :
+        pickle.dump(update_data , file)
 
 
 class fuunctionmethods(commands.Cog) :
@@ -202,7 +224,6 @@ class fuunctionmethods(commands.Cog) :
             for tag , values in data.items() :
                 player_data += f"{values['tick']}  #{tag} : {values['name']}\n"
             embed.description = f'```{player_data}```'
-
             await ctx.send(embed=embed , view=Buttons(ctx , data))
 
     @commands.command(name="add_acc" , help="add a account to the war starter list")
@@ -245,19 +266,28 @@ class fuunctionmethods(commands.Cog) :
     async def status_s(self , ctx) :
         with open('datasheets/warstarter.pkl' , 'rb') as file :
             data = pickle.load(file)
-        copy_data = data.copy()
-        for tag , value in data.items() :
-            if value['tick'] != '❌' :
-                del copy_data[tag]
-        update_data = await COC.fetch_my_info(copy_data)
+        update_data = await COC.fetch_my_info(data)
         status_data = await COC.fetch_status_of_clans(update_data)
+
         embed = discord.Embed(title="Status" , colour=Color.random())
         for tag , value in status_data.items() :
-            embed.add_field(name=f"{update_data[tag]['name']}  -  #{tag}" ,
-                            value=f"```name     : {value[1]}\ncompo    : {value[0]}\nstatus   : {value[2]}\nopponent : {value[3]}\ntag      : {value[4]}```" ,
-                            inline=False)
-        await ctx.send(embed=embed , view=refresh(ctx , update_data , status_data))
+            embed.add_field(name=f"{update_data[tag]['name']}  -  #{tag}" , value=(f"```name     : {value[1]}\n"
+                                                                                   f"compo    : {f'{value[0]} ✅' if value[0] == 50 else f'{value[0]} ❌'}\n"
+                                                                                   f"status   : {value[2]}\nopponent : {value[3]}\ntag      : {value[4]}```") ,
+                inline=False)
 
+        stater_write(update_data)
+        await ctx.send(embed=embed , view=refresh(ctx , status_data))
+
+    @commands.command(name='downvote' , aliases=['dv'])
+    @commands.is_owner()
+    async def downvote(self , ctx , number:int) :
+        with open('datasheets/warstarter.pkl' , 'rb') as file :
+            data = pickle.load(file)
+        data[list(data.keys())[number]]['tick'] = '✅'
+        with open('datasheets/warstarter.pkl' , 'wb') as file :
+            pickle.dump(data , file)
+        await ctx.send(f"Downvoted {list(data.keys())[number]} - {data[list(data.keys())[number]]['name']} to the war starter list")
 
 async def setup(client) :
     await client.add_cog(fuunctionmethods(client))

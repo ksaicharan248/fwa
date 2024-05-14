@@ -320,10 +320,11 @@ async def fetch_status_of_user(session , key , value) :
         data1 = await response1.json()
         data2 = await response2.json()
         return key , (
-        data1["members"] if data1.get("members") else "No members" , data1["name"] if data1.get("name") else "No name" ,
+        data1["members"] if data1.get("members") else "No members" ,
+        data1["name"] if data1.get("name") else "No name" ,
         data2["state"] if data2.get("state") else "No state" ,
-        data2["opponent"]["name"] if data2["opponent"].get("name") else "No opponent" ,
-        data2["opponent"]["tag"] if data2["opponent"].get("tag") else "No opponent")
+        data2["opponent"]["name"] if data2.get("opponent") and data2["opponent"].get("name") else "No opponent" ,
+        data2["opponent"]["tag"] if data2.get("opponent") and data2["opponent"].get("tag") else "No opponent")
 
 
 async def fetch_status_of_clans(keys) :
@@ -335,8 +336,10 @@ async def fetch_status_of_clans(keys) :
     return results_dict
 
 
-async def fetch_clan_data_leauge(tags) :
+async def fetch_clan_data_league(tags) :
     async def get_data(tag) :
+        if tag == "No clan" :
+            return tag , f"No data"
         url = f'https://fwa.chocolateclash.com/cc_n/clan.php?tag={tag}'
         async with aiohttp.ClientSession() as session :
             async with session.get(url) as response :
@@ -362,7 +365,7 @@ async def fetch_clan_data_leauge(tags) :
                     return tag , text[text_index :text_index + lastindex].replace('\n' , '')
 
     clan_acc = {}
-    tasks = [get_data(tag) for tag in tags]
+    tasks = [get_data(tag) for tag in tags ]
     results = await asyncio.gather(*tasks)
     for result in results :
         clan_acc[result[0]] = result[1]
