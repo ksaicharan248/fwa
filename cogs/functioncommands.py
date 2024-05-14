@@ -7,16 +7,18 @@ import pickle
 from discord import Embed , Color
 
 
-class refresh(discord.ui.View):
-    def __init__(self ,ctx,  keys ):
-        super().__init__(timeout=43200*2)
+class refresh(discord.ui.View) :
+    def __init__(self , ctx , keys , update_value) :
+        super().__init__(timeout=43200 * 2)
         self.ctx = ctx
         self.keys = keys
+        self.update_value = update_value
 
-    @discord.ui.button(emoji="🔃", style=discord.ButtonStyle.primary , custom_id="refresh")
-    async def refresh(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(emoji="🔃" , style=discord.ButtonStyle.primary , custom_id="refresh")
+    async def refresh(self , interaction: discord.Interaction , button: discord.ui.Button) :
         await interaction.response.defer()
         status_data = await COC.fetch_status_of_clans(self.keys)
+        self.update_value = status_data
         embed = discord.Embed(title="Status" , colour=Color.random())
         for tag , value in status_data.items() :
             embed.add_field(name=f"{self.keys[tag]['name']}  -  #{tag}" ,
@@ -24,18 +26,33 @@ class refresh(discord.ui.View):
                             inline=False)
         await interaction.message.edit(embed=embed)
 
+    @discord.ui.button(emoji="🔍" , style=discord.ButtonStyle.primary , custom_id="stop")
+    async def stop(self , interaction: discord.Interaction , button: discord.ui.Button) :
+        await interaction.response.defer()
+        leauge_tags = [ key[4].strip("#") for key in self.update_value.values() ]
+        farm_league = await COC.fetch_clan_data_leauge(leauge_tags)
+        embed = discord.Embed(title="Status" , colour=Color.random())
+        emoji_league = {"Official FWA ": "💎" ,"FWA Blacklisted ":"🤬" , "Global Farming League ":"🌍",  "Probably Orange China ":"🍊", "1945 League ":"🍀",'No League Association':'⚔️'}
+        for tag , value in self.update_value.items() :
+            embed.add_field(name=f"{self.keys[tag]['name']}  -  #{tag}" ,
+                            value=f"```name     : {value[1]}\ncompo    : {value[0]}\nstatus   : {value[2]}\nopponent : {value[3]}\ntag      : {value[4]}\nleague   : {farm_league[value[4].strip('#')]} {emoji_league[farm_league[value[4].strip('#')]] if farm_league.get(value[4].strip('#')) else ''}```" ,
+                            inline=False)
+        await interaction.message.edit(embed=embed)
+
+
+
     async def interaction_check(self , interaction) -> bool :
         if interaction.user != self.ctx.author :
-            await interaction.response.send_message(f"only {self.ctx.author.mention} can approve this " ,
-                                                    ephemeral=True)
+            await interaction.response.send_message(f"only {self.ctx.author.mention} can do  this " , ephemeral=True)
             return False
         else :
             return True
 
+
 class Buttons(discord.ui.View) :
 
     def __init__(self , ctx , data) :
-        super().__init__(timeout=43200*2)
+        super().__init__(timeout=43200 * 2)
         self.data = data
         self.ctx = ctx
         self.used = []
@@ -72,7 +89,6 @@ class Buttons(discord.ui.View) :
             return False
         else :
             return True
-
 
 
 class fuunctionmethods(commands.Cog) :
@@ -122,7 +138,7 @@ class fuunctionmethods(commands.Cog) :
             pickle.dump(userdata , f)
         await ctx.send(f'{len(userdata.keys())}')
 
-    @commands.command(name='create' ,aliases=['pm', 'private-message'], help="create a private chat using threads")
+    @commands.command(name='create' , aliases=['pm' , 'private-message'] , help="create a private chat using threads")
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
     async def thread_add(self , ctx , thread_name=None , *members: discord.Member) :
         thread_name = thread_name if thread_name is not None else "Team X Elites"
@@ -133,7 +149,7 @@ class fuunctionmethods(commands.Cog) :
                                                  invitable=False)
         await thread.send(output_message)
 
-    @commands.command(name='thread-remove' , aliases=['rt'], help="remove a members from a thread")
+    @commands.command(name='thread-remove' , aliases=['rt'] , help="remove a members from a thread")
     @commands.has_any_role('🔰ADMIN🔰')
     async def remve_from_thread(self , ctx , *members: discord.Member) :
         # Ensure the context is within a thread
@@ -144,7 +160,7 @@ class fuunctionmethods(commands.Cog) :
         else :
             await ctx.send("This command can only be used inside a thread.")
 
-    @commands.command(name='deletethread' , aliases=['dt'], help="delete the current thread")
+    @commands.command(name='deletethread' , aliases=['dt'] , help="delete the current thread")
     @commands.has_any_role('🔰ADMIN🔰')
     async def thread_delete(self , ctx) :
         if isinstance(ctx.channel , discord.Thread) :
@@ -175,7 +191,7 @@ class fuunctionmethods(commands.Cog) :
         embed.description = f"{data}"
         await ctx.send(embed=embed)
 
-    @commands.command(name="starter" , aliases=['st'], help = "View the war starter list")
+    @commands.command(name="starter" , aliases=['st'] , help="View the war starter list")
     async def starter(self , ctx) :
         with open('datasheets/warstarter.pkl' , 'rb') as file :
             data = pickle.load(file)
@@ -188,10 +204,10 @@ class fuunctionmethods(commands.Cog) :
 
             await ctx.send(embed=embed , view=Buttons(ctx , data))
 
-    @commands.command(name="add_acc",help="add a account to the war starter list")
+    @commands.command(name="add_acc" , help="add a account to the war starter list")
     @commands.is_owner()
-    async def add_acc(self , ctx , *tags : str) :
-        for tag in tags:
+    async def add_acc(self , ctx , *tags: str) :
+        for tag in tags :
             tag = tag.strip('#')
             with open('datasheets/warstarter.pkl' , 'rb') as file :
                 data = pickle.load(file)
@@ -201,9 +217,9 @@ class fuunctionmethods(commands.Cog) :
                 pickle.dump(final , file)
             await ctx.send(f"Added {final[tag]['name']} with tag {tag} to the war starter list")
 
-    @commands.command(name="remove_acc", help="remove a account from the war starter list")
+    @commands.command(name="remove_acc" , help="remove a account from the war starter list")
     @commands.is_owner()
-    async def remove_acc(self , ctx , tag : str) :
+    async def remove_acc(self , ctx , tag: str) :
         tag = tag.strip('#')
         with open('datasheets/warstarter.pkl' , 'rb') as file :
             data = pickle.load(file)
@@ -212,7 +228,7 @@ class fuunctionmethods(commands.Cog) :
             pickle.dump(data , file)
         await ctx.send(f"Removed {tag} from the war starter list")
 
-    @commands.command(name="reset_s", help="reset the war starter list")
+    @commands.command(name="reset_s" , help="reset the war starter list")
     @commands.is_owner()
     async def clear_acc(self , ctx) :
         with open('datasheets/warstarter.pkl' , 'rb') as file :
@@ -223,7 +239,7 @@ class fuunctionmethods(commands.Cog) :
             pickle.dump(data , file)
         await ctx.send("Cleared the war starter list")
 
-    @commands.command(name="status_s" ,  aliases=['sst'])
+    @commands.command(name="status_s" , aliases=['sst'])
     @commands.is_owner()
     async def status_s(self , ctx) :
         with open('datasheets/warstarter.pkl' , 'rb') as file :
@@ -236,15 +252,10 @@ class fuunctionmethods(commands.Cog) :
         status_data = await COC.fetch_status_of_clans(update_data)
         embed = discord.Embed(title="Status" , colour=Color.random())
         for tag , value in status_data.items() :
-            embed.add_field(name=f"{update_data[tag]['name']}  -  #{tag}" , value=f"```name     : {value[1]}\ncompo    : {value[0]}\nstatus   : {value[2]}\nopponent : {value[3]}\ntag      : {value[4]}```" , inline=False)
-        await ctx.send(embed=embed , view=refresh(ctx , update_data))
-
-
-
-
-
-
-
+            embed.add_field(name=f"{update_data[tag]['name']}  -  #{tag}" ,
+                            value=f"```name     : {value[1]}\ncompo    : {value[0]}\nstatus   : {value[2]}\nopponent : {value[3]}\ntag      : {value[4]}```" ,
+                            inline=False)
+        await ctx.send(embed=embed , view=refresh(ctx , update_data , status_data))
 
 
 async def setup(client) :

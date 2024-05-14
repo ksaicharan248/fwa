@@ -190,19 +190,19 @@ def get_hero_id(id) :
         return None
 
 
-async def fwa_clan_data(tag):
+async def fwa_clan_data(tag) :
     url = f"https://fwastats.com/Clan/{tag.strip('#')}/Members.json"
     url2 = f"https://fwastats.com/Clan/{tag.strip('#')}/Weight"
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
+    async with aiohttp.ClientSession() as session :
+        async with session.get(url) as response :
             clan_data = await response.json()
 
-        async with session.get(url2) as response:
+        async with session.get(url2) as response :
             html = await response.text()
-            soup = BeautifulSoup(html, "html.parser")
+            soup = BeautifulSoup(html , "html.parser")
             clan_name = soup.select_one('body > div.container.body-content.fill > div.well > div > div > h3').text
-            try:
+            try :
                 try :
                     last_date = soup.select_one(
                         'body > div.container.body-content.fill > div.alert.alert-success > strong').text
@@ -241,9 +241,6 @@ async def fwa_clan_data(tag):
             pass
     sorted_clan_weight = dict(sorted(clan_weight.items() , key=lambda item : item[1]["weight"] , reverse=True))
 
-
-
-
     return clan_name , sorted_clan_weight , last_date
 
 
@@ -251,8 +248,8 @@ async def fetch_clan_info(session , tag , header , clan_info) :
     async with session.get('https://api.clashofclans.com/v1/clans/%23' + tag.strip('#') , headers=header) as resp :
         clt = await resp.json()
         clan_info[tag] = {"name" : clt["name"] , "badge" : clt["badgeUrls"]["large"] ,
-            'clancapital' : "1" if clt["clanCapital"] == {} else clt["clanCapital"]["capitalHallLevel"] ,
-            'clan_level' : clt["clanLevel"] , 'members' : clt["members"]}
+                          'clancapital' : "1" if clt["clanCapital"] == {} else clt["clanCapital"]["capitalHallLevel"] ,
+                          'clan_level' : clt["clanLevel"] , 'members' : clt["members"]}
 
 
 async def list_of_clans() :
@@ -289,13 +286,15 @@ async def fetch_users_info(tags_dict , headers=header) :
         return {user[0] : user[1] for user in results}
 
 
-async def fetch_mu_list(tag ,tick, headers , session) :
+async def fetch_mu_list(tag , tick , headers , session) :
     if tag :
         url = f'https://api.clashofclans.com/v1/players/%23{tag}'
         async with session.get(url , headers=headers) as response :
             userinfo = await response.json()
             if response.status == 200 :
-                return tag , {"name" : userinfo["name"] , "level" : userinfo["townHallLevel"], "tick": f"{tick if tick else '✅'}" , "clantag" : userinfo["clan"]["tag"] if userinfo["clan"] else "No clan" }
+                return tag , {"name" : userinfo["name"] , "level" : userinfo["townHallLevel"] ,
+                              "tick" : f"{tick if tick else '✅'}" ,
+                              "clantag" : userinfo["clan"]["tag"] if userinfo.get("clan") else "No clan"}
             else :
                 return tag , None
     else :
@@ -304,33 +303,81 @@ async def fetch_mu_list(tag ,tick, headers , session) :
 
 async def fetch_my_info(tags_dict , headers=header) :
     async with aiohttp.ClientSession() as session :
-        tasks = [fetch_mu_list(tag , value['tick'], headers=headers , session=session) for tag,value in tags_dict.items()]
+        tasks = [fetch_mu_list(tag , value['tick'] , headers=headers , session=session) for tag , value in
+                 tags_dict.items()]
         results = await asyncio.gather(*tasks)
         result = {user[0] : user[1] for user in results}
         result = dict(sorted(result.items() , key=lambda item : item[1]['level'] , reverse=True))
         return result
 
 
-async def fetch_status_of_user(session, key, value) :
+async def fetch_status_of_user(session , key , value) :
     global header
     base_url = "https://api.clashofclans.com/v1/clans/%23"
     url1 = f"{base_url}{value.strip('#')}"
     url2 = f"{base_url}{value.strip('#')}/currentwar"
-    async with session.get(url1 , headers=header) as response1, session.get(url2, headers=header) as response2:
+    async with session.get(url1 , headers=header) as response1 , session.get(url2 , headers=header) as response2 :
         data1 = await response1.json()
         data2 = await response2.json()
-        return key, (data1["members"], data1["name"], data2["state"] , data2["opponent"]["name"] if data2["opponent"].get("name") else "No opponent", data2["opponent"]["tag"] if data2["opponent"].get("tag") else "No opponent")
+        return key , (
+        data1["members"] if data1.get("members") else "No members" , data1["name"] if data1.get("name") else "No name" ,
+        data2["state"] if data2.get("state") else "No state" ,
+        data2["opponent"]["name"] if data2["opponent"].get("name") else "No opponent" ,
+        data2["opponent"]["tag"] if data2["opponent"].get("tag") else "No opponent")
 
-async def fetch_status_of_clans(keys):
-    async with aiohttp.ClientSession() as session:
-        tasks = [fetch_status_of_user(session, key , value["clantag"]) for key , value  in keys.items() if value["tick"] != "✅"]
+
+async def fetch_status_of_clans(keys) :
+    async with aiohttp.ClientSession() as session :
+        tasks = [fetch_status_of_user(session , key , value["clantag"]) for key , value in keys.items() if
+                 value["tick"] != "✅"]
         results = await asyncio.gather(*tasks)
     results_dict = {key : data for key , data in results}
     return results_dict
 
 
+async def fetch_clan_data_leauge(tags) :
+    async def get_data(tag) :
+        url = f'https://fwa.chocolateclash.com/cc_n/clan.php?tag={tag}'
+        async with aiohttp.ClientSession() as session :
+            async with session.get(url) as response :
+                if response.status != 200 :
+                    raise "Error fetching data"
+
+                text = await response.text()
+                soup = BeautifulSoup(text , 'html.parser')
+
+                top_element = soup.select_one('#top')
+                if not top_element :
+                    return tag , f"No data"
+
+                text = top_element.text
+                text_index = text.find('Association: ') + 13
+
+                if text[text_index :].startswith("N") :
+                    return tag , text[text_index :].replace('\n' , '')
+                else :
+                    lastindex = text[text_index :].find('(')
+                    if lastindex == -1 :
+                        return f"No data"
+                    return tag , text[text_index :text_index + lastindex].replace('\n' , '')
+
+    clan_acc = {}
+    tasks = [get_data(tag) for tag in tags]
+    results = await asyncio.gather(*tasks)
+    for result in results :
+        clan_acc[result[0]] = result[1]
+    return clan_acc
+
 
 if __name__ == '__main__' :
-    info ={'PR9GRL8RY': {'name': '..M.O.O.N..', 'level': 13, 'tick': '✅', 'clantag': '#PUQ2PYGG'}, 'Y0URPVQ9V': {'name': '*Ghõst Rid€r* 4', 'level': 13, 'tick': '❌', 'clantag': '#2GCVCUVCC'}, 'P2VLY0Y80': {'name': 'ɪ͜͡٭KinG', 'level': 12, 'tick': '❌', 'clantag': '#LYQCYUPY'}, 'QVQ9VLCCP': {'name': 'Leo', 'level': 9, 'tick': '❌', 'clantag': '#CQ8QY90L'}, 'QVGQGUUPL': {'name': 'Hex', 'level': 6, 'tick': '❌', 'clantag': '#99LQQYLG'}, 'LUCGQC2PL': {'name': 'SILLENT KILLER', 'level': 5, 'tick': '❌', 'clantag': '#YUR0JUQY'}, 'YG8PV2PGL': {'name': 'Meo', 'level': 5, 'tick': '❌', 'clantag': '#PLURCRVY'}, 'GLVL8LVYG': {'name': '^•Moon•^', 'level': 4, 'tick': '✅', 'clantag': '#2RPJPR8VY'}}
+    print(getclan("U0LPRYL2"))
+    info = {'PR9GRL8RY' : {'name' : '..M.O.O.N..' , 'level' : 13 , 'tick' : '✅' , 'clantag' : '#PUQ2PYGG'} ,
+            'Y0URPVQ9V' : {'name' : '*Ghõst Rid€r* 4' , 'level' : 13 , 'tick' : '❌' , 'clantag' : '#2GCVCUVCC'} ,
+            'P2VLY0Y80' : {'name' : 'ɪ͜͡٭KinG' , 'level' : 12 , 'tick' : '❌' , 'clantag' : '#LYQCYUPY'} ,
+            'QVQ9VLCCP' : {'name' : 'Leo' , 'level' : 9 , 'tick' : '❌' , 'clantag' : '#CQ8QY90L'} ,
+            'QVGQGUUPL' : {'name' : 'Hex' , 'level' : 6 , 'tick' : '❌' , 'clantag' : '#99LQQYLG'} ,
+            'LUCGQC2PL' : {'name' : 'SILLENT KILLER' , 'level' : 5 , 'tick' : '❌' , 'clantag' : '#YUR0JUQY'} ,
+            'YG8PV2PGL' : {'name' : 'Meo' , 'level' : 5 , 'tick' : '❌' , 'clantag' : '#PLURCRVY'} ,
+            'GLVL8LVYG' : {'name' : '^•Moon•^' , 'level' : 4 , 'tick' : '✅' , 'clantag' : '#2RPJPR8VY'}}
     data = asyncio.run(fetch_status_of_clans(info))
     print(data)
