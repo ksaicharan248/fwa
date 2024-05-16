@@ -263,13 +263,22 @@ class ClanRoleAdder(commands.Cog) :
         await channel.send(f"{member.mention} has been unqualified by {ctx.author.mention}")
         e = Embed(title="UNQUALIFIED " , color=Color.random())
         e.description = f'⚠️ You have been placed here Because you havent Fulfill the Minimum Requirements to Apply to ' \
-                        f'Join our Clans. To check our Requirements please type \n ➡️ !reqs \n\n🔍 We are always here also ' \
+                        f'Join our Clans. To check our Requirements please type \n ➡️ </reqs:1240749660499476521> \n\n🔍 We are always here also ' \
                         f'to Assist you.\n❌ Donot request to Join in Game unless Instructed to do so\n🏛️You may stay in ' \
                         f'your current Clan or join a Random Clan while upgrading your base to Meet our Clan Requirements. ' \
                         f'But do not join any FWA Blacklisted clans.\n ✅When your requirements are met, type !wel \n ' \
                         f'\n**please follow all the instructions** \nauthour : {ctx.author.mention}'
 
         await channel.send(embed=e)
+
+    @commands.hybrid_command(name='reqs' , help='shows requirements')
+    async def ranimated(self , ctx) :
+        embed = discord.Embed(
+            title="<a:fire1:1221838889195409549>Minimum Requirements to Join us<a:fire1:1221838889195409549>" ,
+            description="<a:r3:1221839351760031774> We Accept Only the Town Halls\n     <a:fire1:1221838889195409549>   <:th16:1184685970814156800> <:th15:1158776040525680694>  <:th14:1157934828784734299> <:th13:1157933611337666620>  <:th12:1157933184529469471> <a:fire1:1221838889195409549>\n\n<a:ra:1221838183378194563> We Don't take Rushed Base into our Team   Of Clans <a:th:1221839043340271617>\n\n<a:ra:1221838183378194563> We prefer non-rushed accounts but depending upon the weight of your base we can consider.\n\n<a:ra:1221838183378194563> You must have maxed Defenses, Heroes, Spells, and Troops of your prior townhall level.\n\n<a:ra:1221838183378194563> Meaning if you are Th12 and have Th11  Defenses, Heroes, Spells, and Troops levels it's acceptable.<a:tick33:1221843592826458232>\n\n<a:warn22:1221846589572780114> WE DON’T RECRUIT BANNED\nPLAYERS. <a:ban22:1221846452213645414>\n\n<a:spp:1221850353826529310> If You were ready with you base tag one of our Leaders/Co-Leaders <a:pin:1221838710719643668>" ,
+            colour=discord.Colour.random())
+        await ctx.send(embed=embed)
+
 
 
 
