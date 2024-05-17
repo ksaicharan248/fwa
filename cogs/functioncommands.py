@@ -25,7 +25,9 @@ class refresh(discord.ui.View) :
     async def refresh(self , interaction: discord.Interaction , button: discord.ui.Button) :
         await interaction.response.defer()
         self.keys = stater_read()
-        status_data = await COC.fetch_status_of_clans(self.keys)
+        updated_keys = await COC.fetch_my_info(self.keys)
+        stater_write(updated_keys)
+        status_data = await COC.fetch_status_of_clans(updated_keys)
         self.update_value = status_data
         await self.update_embed(interaction)
 
