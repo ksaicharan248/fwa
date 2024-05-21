@@ -291,5 +291,53 @@ class fuunctionmethods(commands.Cog) :
             pickle.dump(data , file)
         await ctx.send(f"Downvoted {list(data.keys())[number]} - {data[list(data.keys())[number]]['name']} to the war starter list")
 
+    async def delete_messages_in_channel(self , channel , user , channels_with_deletions) :
+        deleted_messages_count = 0
+        try :
+            async for message in channel.history(limit=200) :
+                if message.author == user :
+                    try :
+                        await message.delete()
+                        deleted_messages_count += 1
+                        if channel.name not in channels_with_deletions :
+                            channels_with_deletions[channel.name] = 1
+                        else :
+                            channels_with_deletions[channel.name] += 1
+                    except discord.Forbidden :
+                        print(f"Bot does not have permission to delete message in {channel.mention}")
+                    except discord.NotFound :
+                        print(f"Message already deleted in {channel.mention}")
+                    except discord.HTTPException as e :
+                        print(f"Failed to delete a message in {channel.mention}: {e}")
+        except discord.Forbidden :
+            print(f"Bot does not have permission to fetch messages in {channel.mention}")
+        except discord.HTTPException as e :
+            print(f"Failed to fetch messages in {channel.mention}: {e}")
+        return deleted_messages_count
+
+    @commands.hybrid_command(name='delete_user_messages',aliases=['dum'] , help="Delete user messages in guild")
+    #@commands.has_permissions(manage_messages=True)
+    @commands.has_any_role('🔰ADMIN🔰' , '☘️CO-ADMIN☘️' , 'Staff')
+    async def delete_user_messages(self , ctx , user: discord.Member) :
+
+        channels = ctx.guild.text_channels
+        await ctx.send(f"Deleting messages from {user.display_name} in {ctx.guild.name} channels...")
+
+        channels_with_deletions = {}
+        tasks = []
+
+        for channel in channels :
+            tasks.append(self.delete_messages_in_channel(channel , user , channels_with_deletions))
+
+        deleted_messages_count = sum(await asyncio.gather(*tasks))
+
+        if deleted_messages_count > 0 :
+            result_message = f"Deleted {deleted_messages_count} messages from {user.display_name} in the following channels:\n"
+            for channel_name , count in channels_with_deletions.items() :
+                result_message += f"- {channel_name}: {count} messages\n"
+        else :
+            result_message = f"No messages from {user.display_name} were found in any channels."
+
+        await ctx.send(result_message)
 async def setup(client) :
     await client.add_cog(fuunctionmethods(client))

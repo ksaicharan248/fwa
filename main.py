@@ -690,6 +690,17 @@ async def player_profile(ctx , tag: str = None , user: discord.Member = None) :
         await ctx.send(embed=embed)
 
 
+@client.command(name = "slashcommand",aliases = ["slash"], help = "view all slash commands")
+@commands.is_owner()
+async def slashcommand_viewer(ctx):
+    synced = await client.tree.sync()
+    embed = discord.Embed(title="Slash command list")
+    slash_command_des = ""
+    for command in synced :
+        slash_command_des+= f"{command.name}{(14-len(str(command.name)))*' '}:  {command.id}\n"
+    embed.description=f"```{slash_command_des}```"
+    await ctx.send(embed=embed)
+
 @client.command(name="clan_revoke" , aliases=["cr"] , help="Revoke all roles and assign new role to members")
 @commands.has_any_role('🔰ADMIN🔰')
 async def clan_revoke(ctx , role_to_remove: discord.Role , new_role: discord.Role) :
