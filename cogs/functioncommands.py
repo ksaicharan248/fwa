@@ -7,7 +7,7 @@ import pickle
 from discord import Embed , Color
 
 
-def stater_read():
+def stater_read() :
     with open('datasheets/warstarter.pkl' , 'rb') as file :
         data = pickle.load(file)
     return data
@@ -41,7 +41,8 @@ class refresh(discord.ui.View) :
     async def update_embed(self , interaction: discord.Interaction , farm_league=None) :
         embed = discord.Embed(title="Status" , colour=Color.random())
         emoji_league = {"Official FWA " : "💎" , "FWA Blacklisted " : "🤬" , "Global Farming League " : "🌍" ,
-            "Probably Orange China " : "🍊" , "1945 League " : "🍀" , 'No League Association' : '⚔️' , 'No data' : ''}
+                        "Probably Orange China " : "🍊" , "1945 League " : "🍀" , 'No League Association' : '⚔️' ,
+                        'No data' : ''}
 
         for tag , value in self.update_value.items() :
             league_info = ""
@@ -53,7 +54,7 @@ class refresh(discord.ui.View) :
             embed.add_field(name=f"{self.keys[tag]['name']}  -  #{tag}" , value=(f"```name     : {value[1]}\n"
                                                                                  f"compo    : {f'{value[0]} ✅' if value[0] == 50 else f'{value[0]} ❌'}\n"
                                                                                  f"status   : {value[2]}\nopponent : {value[3]}\ntag      : {value[4]}{league_info}```") ,
-                inline=False)
+                            inline=False)
         await interaction.message.edit(embed=embed)
 
     async def interaction_check(self , interaction: discord.Interaction) -> bool :
@@ -63,12 +64,6 @@ class refresh(discord.ui.View) :
         return True
 
 
-
-
-
-
-
-
 class Buttons(discord.ui.View) :
 
     def __init__(self , ctx , data) :
@@ -76,6 +71,7 @@ class Buttons(discord.ui.View) :
         self.data = data
         self.ctx = ctx
         self.used = []
+        self.flag = True
         self.count = 0  # Initialize count for tracking buttons per row
         row = 0  # Initialize row number
         for tag , values in self.data.items() :
@@ -90,18 +86,37 @@ class Buttons(discord.ui.View) :
     async def update_embed(self , interaction , idx , embed_sent) :
         embed = discord.Embed(title="Starter" , colour=discord.Color.random())
         player_data = ""
-        self.data[idx]['tick'] = "❌"
+        if self.flag :
+            self.data[idx]['tick'] = "❌"
+        else :
+            self.data[idx]['tick'] = "✅"
         for tag , values in self.data.items() :
             player_data += f'{values["tick"]} {tag} : {values["name"]}\n'
         embed.description = f'```{player_data}```'
         with open('datasheets/warstarter.pkl' , 'wb') as file :
             pickle.dump(self.data , file)
+        if self.flag :
+            await interaction.response.defer()
+            await interaction.message.edit(embed=embed)
+            await interaction.followup.send(embed=embed_sent , ephemeral=True)
+        else :
+            await interaction.response.defer()
+            await interaction.message.edit(embed=embed)
+
+    @discord.ui.button(emoji="❌" , style=discord.ButtonStyle.primary , custom_id="close")
+    async def close_stater(self , interaction , button) :
         await interaction.response.defer()
-        await interaction.message.edit(embed=embed)
-        await interaction.followup.send(embed=embed_sent , ephemeral=True)
+        if self.flag :
+            self.flag = False
+            await interaction.followup.send("Started Removing" , ephemeral=True)
+        else :
+            self.flag = True
+            await interaction.followup.send("Removing stopped" , ephemeral=True)
 
     async def interaction_check(self , interaction) -> bool :
-        if interaction.user == self.ctx.author :
+        # print(interaction.data,'vars(interaction.data)')
+        if interaction.user == self.ctx.author and interaction.data["custom_id"] != "refresh" and interaction.data[
+            "custom_id"] != "close" :
             embed = discord.Embed(colour=discord.Colour.red())
             embed.description = f'Please invite my account below👇\n(Kindly let me know when it`s done🙂)\nIn-game name : {self.data[interaction.data["custom_id"]]["name"]}\nTag : #{interaction.data["custom_id"]}\nLink : \nhttps://link.clashofclans.com/en?action=OpenPlayerProfile&tag={interaction.data["custom_id"]} '
             tag = interaction.data["custom_id"]
@@ -138,7 +153,6 @@ class fuunctionmethods(commands.Cog) :
             if guild.get_member(int(member)) :
                 elite += f'{x}  . {member}\n'
                 elites.append(member)
-
                 x += 1
             elif guild2.get_member(int(member)) :
                 fwa += f'{y}  . {member}\n'
@@ -165,8 +179,9 @@ class fuunctionmethods(commands.Cog) :
 
     @commands.command(name='create' , aliases=['pm' , 'private-message'] , help="create a private chat using threads")
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️' , 'Staff')
-    async def thread_add(self , ctx , thread_name=None , *members: discord.Member) :
-        thread_name = thread_name if thread_name is not None else "Team X Elites"
+    async def thread_add(self , ctx , thread_name="TEAM-ELITES X FWA" , *members: discord.Member) :
+        print(type(thread_name))
+        thread_name = thread_name if isinstance(thread_name , str) else "Team X Elites"
         auto_archive_duration = 1440
         member_mentions = ' '.join([member.mention for member in members])
         output_message = f'{ctx.author.mention} has invited {member_mentions} to the thread'
@@ -263,7 +278,7 @@ class fuunctionmethods(commands.Cog) :
             pickle.dump(data , file)
         await ctx.send("Cleared the war starter list")
 
-    @commands.command(name="status_s" , aliases=['sst'], help="View the war starter status")
+    @commands.command(name="status_s" , aliases=['sst'] , help="View the war starter status")
     @commands.is_owner()
     async def status_s(self , ctx) :
         with open('datasheets/warstarter.pkl' , 'rb') as file :
@@ -276,20 +291,21 @@ class fuunctionmethods(commands.Cog) :
             embed.add_field(name=f"{update_data[tag]['name']}  -  #{tag}" , value=(f"```name     : {value[1]}\n"
                                                                                    f"compo    : {f'{value[0]} ✅' if value[0] == 50 else f'{value[0]} ❌'}\n"
                                                                                    f"status   : {value[2]}\nopponent : {value[3]}\ntag      : {value[4]}```") ,
-                inline=False)
+                            inline=False)
 
         stater_write(update_data)
         await ctx.send(embed=embed , view=refresh(ctx , status_data))
 
     @commands.command(name='downvote' , aliases=['down'] , help="down vote a player from the war starter list")
     @commands.is_owner()
-    async def downvote(self , ctx , number:int) :
+    async def downvote(self , ctx , number: int) :
         with open('datasheets/warstarter.pkl' , 'rb') as file :
             data = pickle.load(file)
         data[list(data.keys())[number]]['tick'] = '✅'
         with open('datasheets/warstarter.pkl' , 'wb') as file :
             pickle.dump(data , file)
-        await ctx.send(f"Downvoted {list(data.keys())[number]} - {data[list(data.keys())[number]]['name']} to the war starter list")
+        await ctx.send(
+            f"Downvoted {list(data.keys())[number]} - {data[list(data.keys())[number]]['name']} to the war starter list")
 
     async def delete_messages_in_channel(self , channel , user , channels_with_deletions) :
         deleted_messages_count = 0
@@ -315,8 +331,8 @@ class fuunctionmethods(commands.Cog) :
             print(f"Failed to fetch messages in {channel.mention}: {e}")
         return deleted_messages_count
 
-    @commands.hybrid_command(name='delete_user_messages',aliases=['dum'] , help="Delete user messages in guild")
-    #@commands.has_permissions(manage_messages=True)
+    @commands.hybrid_command(name='delete_user_messages' , aliases=['dum'] , help="Delete user messages in guild")
+    # @commands.has_permissions(manage_messages=True)
     @commands.has_any_role('🔰ADMIN🔰' , '☘️CO-ADMIN☘️' , 'Staff')
     async def delete_user_messages(self , ctx , user: discord.Member) :
 
@@ -339,5 +355,7 @@ class fuunctionmethods(commands.Cog) :
             result_message = f"No messages from {user.display_name} were found in any channels."
 
         await ctx.send(result_message)
+
+
 async def setup(client) :
     await client.add_cog(fuunctionmethods(client))
