@@ -1,5 +1,6 @@
 import traceback
-
+from discord import ButtonStyle, Embed, Color, Interaction, Member
+from discord.ui import Button, View
 import discord
 from discord.ext import commands
 import COC
@@ -10,19 +11,22 @@ from main import p
 
 
 class reapply(discord.ui.View):
-    def __init__(self, ids: list , reapply_role: discord.Role):
+    def __init__(self, ids: list , reapply_role: discord.Role , guild : discord.Guild):
         super().__init__(timeout=100)
         self.ids = ids
         self.role = reapply_role
+        self.guild = guild
 
-    @discord.ui.button(label="✅", style=discord.ButtonStyle.green)
-    async def tick_button_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
+    @discord.ui.button(label="✅" , style=discord.ButtonStyle.green)
+    async def tick_button_callback(self , interaction: Interaction , button: discord.ui.Button) :
+        await interaction.response.defer()  # Deferring the interaction response
+        guild = self.guild
         for user_id in self.ids:
-            member = interaction.guild.get_member(user_id)
+            member = guild.get_member(user_id)
             if member is not None:
                 await member.edit(nick=f're - {member.name}', roles=[self.role])
 
-        re_apply_channel = interaction.guild.get_channel(1055440286806966322)
+        re_apply_channel = guild.get_channel(1055440286806966322)
         txt1 = ", ".join([f'<@{user_id}>' for user_id in self.ids])
         e = Embed(title="RE-APPLY \nYou have been Placed here due to the Following Reasons\n" , color=Color.random())
         e.description = f'• You have been Inactive from a Long time in our Clans. \n ' \
@@ -36,17 +40,19 @@ class reapply(discord.ui.View):
 
         await re_apply_channel.send(f'{txt1} has been sent to re-apply by <@{interaction.user.id}>')
         await re_apply_channel.send(embed=e)
+        self.clear_items()
+        await interaction.message.edit(view=self)
+        #rmove all the buttons after interaction
 
-    @discord.ui.button(label="❌", style=discord.ButtonStyle.red)
-    async def cross_button_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
+
+    @discord.ui.button(label="❌", style=discord.ButtonStyle.gray)
+    async def cross_button_callback(self,  interaction: discord.Interaction,button: discord.ui.Button):
         await interaction.response.defer()
-        await interaction.response.send_message("Cancelled", ephemeral=True)
+        await interaction.followup.send("Cancelled", ephemeral=True)
+        self.clear_items()
+        await interaction.message.edit(view=self)
 
 
-    @discord.ui.button(label="❌", style=discord.ButtonStyle.red)
-    async def cross_button_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
-        await interaction.response.defer()
-        await interaction.response.send_message("Cancelled", ephemeral=True)
 
 
 
@@ -200,13 +206,14 @@ class basicfuctions(commands.Cog) :
                 embed.add_field(name="NO UPDATE" , value=f'```{embed_linked_no_update_description}```' ,inline=False)
             if embed_linked_updated_description != "" :
                 embed.add_field(name="UPDATED" , value=f'```{embed_linked_updated_description}```' ,inline=False)
-            if embed_no_data_description != "" :
+            if embed_no_data_description != f"NO DATA EXITS \nfor the following users :\n\n" :
                 embed.description = f'```{embed_no_data_description}```'
             await ctx.send(embed=embed)
 
             if len(re_apply_tags) > 0 :
+                guild =  ctx.guild
                 embed1 = Embed(title="PLease confirm" , description="Are you sure you want to re-apply the above users ?", color=Color.red())
-                await ctx.send(embed=embed1 , view=reapply(ids=re_apply_tags , reapply_role=re_apply_role))
+                await ctx.send(embed=embed1 , view=reapply(ids=re_apply_tags , reapply_role=re_apply_role , guild = guild))
 
 
         except Exception as e :
