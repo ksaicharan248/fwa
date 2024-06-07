@@ -43,10 +43,10 @@ def write_data(data):
 
 if __name__ == '__main__':
     data = {
-        '#2RYGCY2QJ':{'name': 'TEAM ELITES', 'round1':'', 'round2':'', 'round3':'', 'round4':'', 'round5':'', 'round6':'', 'round7':''},
-        '#2J28YUU0R': {'name': 'THE ELITES', 'round1':'', 'round2':'', 'round3':'', 'round4':'', 'round5':'', 'round6':'', 'round7':''},
-        '#2RV9P0RCL': {'name': 'LAZY CWL - 15', 'round1':'', 'round2':'', 'round3':'', 'round4':'', 'round5':'', 'round6':'', 'round7':''},
-        '#2RPJPR8VY' : {'name' : 'TÉÃM ËLÏTËS -16' , 'round1' : '' , 'round2' : '' , 'round3' : '' , 'round4' : '' ,'round5' : '' , 'round6' : '' , 'round7' : ''}
+        '#2RYGCY2QJ':{'name': 'TEAM ELITES'},
+        '#2J28YUU0R': {'name': 'THE ELITES'},
+        '#2RV9P0RCL': {'name': 'LAZY CWL - 15'},
+        '#2RPJPR8VY' : {'name' : 'TÉÃM ËLÏTËS -16'}
     }
     write_data(data)
     print(read_data())
