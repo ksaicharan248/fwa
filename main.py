@@ -3,7 +3,6 @@ import os
 import io
 import traceback
 from datetime import datetime, timezone
-from unwanted.nope6 import fetch_cwl
 import discord
 import matplotlib.pyplot as plt
 import typing
