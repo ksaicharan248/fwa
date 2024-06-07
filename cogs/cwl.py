@@ -10,7 +10,6 @@ import COC
 import pickle
 import requests
 from setkey import auth
-from unwanted.nope6 import fetch_cwl
 from emoji_utlis import find_emoji
 from main import p
 from datetime import datetime , timezone
@@ -126,7 +125,7 @@ class CWL(commands.Cog) :
     async def cwl_info(self , interaction: discord.Interaction , clan: typing.Optional[str] = "#2RPJPR8VY") :
         await interaction.response.defer()
         try :
-            cwl_info = await fetch_cwl(tag=clan.strip("#") , header=header)
+            cwl_info = await COC.fetch_cwl(tag=clan.strip("#") , header=header)
         except Exception as e :
             await interaction.followup.send(embed=discord.Embed(title=f"Error" , description=f"{e}"))
             return
@@ -165,7 +164,7 @@ class CWL(commands.Cog) :
     async def cwl_lineup(self , interaction: discord.Interaction , clan: typing.Optional[str] = "#2RPJPR8VY") :
         await interaction.response.defer()
         try :
-            cwl_info = await fetch_cwl(tag=clan.strip("#") , header=header)
+            cwl_info = await COC.fetch_cwl(tag=clan.strip("#") , header=header)
         except Exception as e :
             await interaction.followup.send(embed=discord.Embed(title=f"Error" , description=f"{e}"))
             return
