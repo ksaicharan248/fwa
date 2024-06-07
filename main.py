@@ -723,7 +723,7 @@ async def clan_revoke(ctx , role_to_remove: discord.Role , new_role: discord.Rol
         except discord.Forbidden :
             await ctx.send(f"Failed to change role for {member.display_name}")
 
-    await ctx.send(f"Removed all roles and assigned {new_role.name} to {len(members_with_role)} members.")
+    await ctx.send(f"Removed all roles and assigned {new_role.name} to {len(members_with_role)} members")
 
 
 # Unload Cog
