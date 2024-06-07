@@ -115,8 +115,7 @@ class Buttons(discord.ui.View) :
 
     async def interaction_check(self , interaction) -> bool :
         # print(interaction.data,'vars(interaction.data)')
-        if interaction.user == self.ctx.author and interaction.data["custom_id"] != "refresh" and interaction.data[
-            "custom_id"] != "close" :
+        if interaction.user == self.ctx.author and interaction.data["custom_id"] != "refresh" and interaction.data["custom_id"] != "close" :
             embed = discord.Embed(colour=discord.Colour.red())
             embed.description = f'Please invite my account below👇\n(Kindly let me know when it`s done🙂)\nIn-game name : {self.data[interaction.data["custom_id"]]["name"]}\nTag : #{interaction.data["custom_id"]}\nLink : \nhttps://link.clashofclans.com/en?action=OpenPlayerProfile&tag={interaction.data["custom_id"]} '
             tag = interaction.data["custom_id"]
@@ -330,6 +329,7 @@ class fuunctionmethods(commands.Cog) :
         except discord.HTTPException as e :
             print(f"Failed to fetch messages in {channel.mention}: {e}")
         return deleted_messages_count
+
 
     @commands.hybrid_command(name='delete_user_messages' , aliases=['dum'] , help="Delete user messages in guild")
     # @commands.has_permissions(manage_messages=True)

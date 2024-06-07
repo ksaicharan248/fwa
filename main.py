@@ -2,6 +2,8 @@ import asyncio
 import os
 import io
 import traceback
+from datetime import datetime, timezone
+from unwanted.nope6 import fetch_cwl
 import discord
 import matplotlib.pyplot as plt
 import typing
@@ -11,10 +13,10 @@ from PIL import Image , ImageDraw , ImageFont
 import requests
 from io import BytesIO
 from discord.ext import commands
-import fwastats
+from readwriter import *
 from fwastats import get_nope
 import COC
-from discord import Embed , Color
+from discord import Embed , Color , app_commands
 from discord.ui import Button , View , Select
 from setkey import keyy
 from webser import keep_alive
@@ -34,6 +36,8 @@ p = client.command_prefix
 warnings.filterwarnings("ignore" , category=UserWarning , message="Glyph.*missing from current font." ,
                         module="tkinter")
 
+
+coc_client = None
 
 @client.event
 async def on_ready() :
@@ -664,7 +668,7 @@ async def get_back(ctx , role: discord.Role) :
         pass
 
 
-@client.hybrid_command(name="player" , help="Get player profile" )
+@client.hybrid_command(name="player" , help="Get player profile")
 async def player_profile(ctx , tag: str = None , user: discord.Member = None) :
     await ctx.defer(ephemeral=False)
     with open('datasheets/userdata.pkl' , 'rb') as file :
@@ -690,15 +694,15 @@ async def player_profile(ctx , tag: str = None , user: discord.Member = None) :
         await ctx.send(embed=embed)
 
 
-@client.command(name = "slashcommand",aliases = ["slash"], help = "view all slash commands")
+@client.command(name="slashcommand" , aliases=["slash"] , help="view all slash commands")
 @commands.is_owner()
-async def slashcommand_viewer(ctx):
+async def slashcommand_viewer(ctx) :
     synced = await client.tree.sync()
     embed = discord.Embed(title="Slash command list")
     slash_command_des = ""
     for command in synced :
-        slash_command_des+= f"{command.name}{(14-len(str(command.name)))*' '}:  {command.id}\n"
-    embed.description=f"```{slash_command_des}```"
+        slash_command_des += f"{command.name}{(14 - len(str(command.name))) * ' '}:  {command.id}\n"
+    embed.description = f"```{slash_command_des}```"
     await ctx.send(embed=embed)
 
 @client.command(name="clan_revoke" , aliases=["cr"] , help="Revoke all roles and assign new role to members")

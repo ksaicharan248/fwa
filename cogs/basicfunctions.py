@@ -86,7 +86,7 @@ class basicfuctions(commands.Cog) :
     @commands.command(name='role' , help='Add a role to a user' , usage=f"{p}role <user> <@roles>")
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
     async def role(self , ctx , user: discord.Member , *roles: discord.Role) :
-        if ctx.author.guild_permissions.manage_roles :
+        if ctx.author:
             if ctx.guild.me.guild_permissions.manage_roles :
                 await user.add_roles(*roles)
                 await ctx.message.delete()
@@ -98,7 +98,7 @@ class basicfuctions(commands.Cog) :
     @commands.command(name="remove_role" , aliases=["rm"] , help="Remove a role from a user" , usage=f"{p}rm <user> <@roles>")
     @commands.has_any_role('🔰ADMIN🔰' , '💎FWA REPS💎' , '☘️CO-ADMIN☘️')
     async def rm_role(self , ctx , user: discord.Member , *roles: discord.Role) :
-        if ctx.author.guild_permissions.manage_roles :
+        if ctx.author :
             if ctx.guild.me.guild_permissions.manage_roles :
                 await user.remove_roles(*roles)
                 await ctx.message.delete()

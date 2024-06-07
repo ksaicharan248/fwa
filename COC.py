@@ -18,6 +18,13 @@ header = {'Accept' : 'application/json' , 'Authorization' : auth}
 verifyheaders = {'Content-Type' : 'application/json' , 'Authorization' : auth}
 
 
+
+def get_clan_link(tag):
+    return f"https://link.clashofclans.com/en?action=OpenClanProfile&tag=%23{tag.strip('#')}"
+
+def get_playe_link(tag):
+    return f"https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23{tag.strip('#')}"
+
 def verify(player , token) :
     player = player.strip('#')
     data = {"token" : token}
@@ -372,7 +379,54 @@ async def fetch_clan_data_league(tags) :
     return clan_acc
 
 
+async def fetch_cwl(tag , header) :
+    tag = tag.strip("#")
+    base_url = 'https://api.clashofclans.com/v1'
+
+    async def fetch_json(url) :
+        async with aiohttp.ClientSession(headers=header) as session :
+            async with session.get(url) as response :
+                if response.status == 200  or response.status == 404 :
+                    return await response.json() if response.status == 200 else "Not Found"
+                else :
+                    print(f"Failed to fetch data: {response}")
+                    return None
+
+    # Fetch the clan's current war league group
+    league_group_url = f'{base_url}/clans/%23{tag}/currentwar/leaguegroup'
+    clan_info = await fetch_json(league_group_url)
+    if clan_info == "Not Found" :
+        raise "This clan is not participating in a clan war League"
+        return None
+    for round_info in clan_info['rounds'] :
+        round_info['warTags'] = {war_tag : {} for war_tag in round_info['warTags']}
+
+    async def fetch_war_details(war_tag , round_idx , war_tag_key) :
+        war_tag = war_tag_key.strip("#")
+        war_url = f'{base_url}/clanwarleagues/wars/%23{war_tag}'
+        war_info1 = await fetch_json(war_url)
+        war_info = war_info1 if (
+                war_info1['opponent']['tag'] == f"#{tag}" or war_info1['clan']['tag'] == f'#{tag}') else {}
+
+        if not war_info :
+            del(clan_info['rounds'][round_idx]['warTags'][war_tag_key])
+        else:
+            clan_info['rounds'][round_idx]['warTags'][war_tag_key] = war_info
+
+    tasks = []
+    for round_idx , round_info in enumerate(clan_info['rounds']) :
+        for war_tag_key in round_info['warTags'].keys() :
+            if war_tag_key != "#0" :
+                tasks.append(fetch_war_details(war_tag_key , round_idx , war_tag_key))
+
+    # Run all tasks concurrently
+    await asyncio.gather(*tasks)
+    return clan_info
+
+
+
 if __name__ == '__main__' :
+    print(get_user(""))
     info = {'PR9GRL8RY' : {'name' : '..M.O.O.N..' , 'level' : 13 , 'tick' : '✅' , 'clantag' : '#PUQ2PYGG'} ,
             'Y0URPVQ9V' : {'name' : '*Ghõst Rid€r* 4' , 'level' : 13 , 'tick' : '❌' , 'clantag' : '#2GCVCUVCC'} ,
             'P2VLY0Y80' : {'name' : 'ɪ͜͡٭KinG' , 'level' : 12 , 'tick' : '❌' , 'clantag' : '#LYQCYUPY'} ,
