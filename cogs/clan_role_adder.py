@@ -318,9 +318,13 @@ class ClanRoleAdder(commands.Cog) :
                 await member.add_roles(*[discord.utils.get(ctx.guild.roles , name=role) for role in roles_to_add])
             except Exception as e :
                 pass
-
-            new_nickname = f'{COC.get_prefix(info["role"]) if info["role"] else "Mb - "}{info["name"]}'
-            await member.edit(nick=new_nickname)
+            if info['clan']['tag'] in ['#PUQ2PYGG','#P229L9Q2']:
+                clan_name_sort = {'#PUQ2PYGG':'[ILT] - ','#P229L9Q2':'[CC] - '}
+                new_nickname = f'{clan_name_sort[info["clan"]["tag"]]}{info["name"]}'
+                await member.edit(nick=new_nickname)
+            else:
+                new_nickname = f'{COC.get_prefix(info["role"]) if info["role"] else "Mb - "}{info["name"]}'
+                await member.edit(nick=new_nickname)
 
             await ctx.send(f"{member.nick} moved to  **{clanInfo.upper()}** 🚀")
             await channel.send(f"{member.mention} is now a member of **{clanInfo.upper()}**")
