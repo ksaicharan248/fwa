@@ -18,7 +18,7 @@ SPELLS = ["Lightning Spell" , "Healing Spell" , "Rage Spell" , "Jump Spell" , "F
           "Invisibility Spell" , "Recall Spell" , "Poison Spell" , "Earthquake Spell" , "Haste Spell" ,
           "Skeleton Spell" , "Bat Spell" , "Overgrowth Spell"]
 BUILDER_TROOPS = ["Raged Barbarian" , "Sneaky Archer" , "Boxer Giant" , "Beta Minion" , "Bomber" , "Baby Dragon" ,
-                  "Cannon Cart" , "Night Witch" , "Drop Ship" , "Super P.E.K.K.A" , "Hog Glider" , "Electrofire Wizard"]
+                  "Cannon Cart" , "Night Witch" , "Drop Ship" , "Power P.E.K.K.A" , "Hog Glider" , "Electrofire Wizard"]
 SUPER_TROOPS = ["Super Barbarian" , "Super Archer" , "Super Giant" , "Sneaky Goblin" , "Super Wall Breaker" ,
                 "Super Wizard" , "Inferno Dragon" , "Super Minion" , "Super Valkyrie" , "Super Witch" , "Ice Hound" ,
                 "Rocket Balloon" , "Super Dragon" , "Super Bowler"]
