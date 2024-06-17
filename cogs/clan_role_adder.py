@@ -326,7 +326,7 @@ class ClanRoleAdder(commands.Cog) :
                 await channel.send(f"{member.mention} is now a member of **{clanInfo.upper()}**")
                 message_text = f"""<a:cheers:1252319872025755680> Welcome, this is your clan chat. Make sure to go through the followings -
 
-<a:siren:1250741028915511376> **<#{clan_data[clan_name]['announcement_channel']}>** - For important clan announcements 
+<a:siren:1250741028915511376> **{clan_data[clan_name]['announcement_channel']}** - For important clan announcements 
 
 Note - Make Sure To Maintain This In Clan 
 
