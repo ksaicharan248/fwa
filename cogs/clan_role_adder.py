@@ -322,29 +322,49 @@ class ClanRoleAdder(commands.Cog) :
                 clan_name_sort = {'#PUQ2PYGG':'[ILT] - ','#P229L9Q2':'[CC] - '}
                 new_nickname = f'{clan_name_sort[info["clan"]["tag"]]}{info["name"]}'
                 await member.edit(nick=new_nickname)
+                await ctx.send(f"{member.nick} moved to  **{clanInfo.upper()}** 🚀")
+                await channel.send(f"{member.mention} is now a member of **{clanInfo.upper()}**")
+                message_text = f"""<a:cheers:1252319872025755680> Welcome, this is your clan chat. Make sure to go through the followings -
+
+<a:siren:1250741028915511376> **<#{clan_data[clan_name]['announcement_channel']}>** - For important clan announcements 
+
+Note - Make Sure To Maintain This In Clan 
+
+<a:tick:1250740837990797372>  Donate
+<a:tick:1250740837990797372>  Attack in wars
+<a:tick:1250740837990797372>  Follow mails
+<a:tick:1250740837990797372>  2000 in CG 
+<a:tick:1250740837990797372>  Participate in Clan-Capitals raids
+<a:PHcross:1250741424601956377>  Don’t kick anyone <a:PHcross:1250741424601956377> """
+
+                embed = Embed(color=Color.random())
+                embed.description = message_text
+                await channel.send(embed=embed)
             else:
                 new_nickname = f'{COC.get_prefix(info["role"]) if info["role"] else "Mb - "}{info["name"]}'
                 await member.edit(nick=new_nickname)
+                await ctx.send(f"{member.nick} moved to  **{clanInfo.upper()}** 🚀")
+                await channel.send(f"{member.mention} is now a member of **{clanInfo.upper()}**")
 
-            await ctx.send(f"{member.nick} moved to  **{clanInfo.upper()}** 🚀")
-            await channel.send(f"{member.mention} is now a member of **{clanInfo.upper()}**")
+                embed = Embed(color=Color.random())
+                embed.description = ("🍻 Welcome, This is your clan chat.\n"
+                                     "Make sure to go through the followings -\n"
+                                     "\n"
+                                     f"『📢』**<#{clan_data[clan_name]['announcement_channel']}>** \nFor important clan announcements\n"
+                                     f"『⚠』**<#1054439098342969425>** \nFor war rules and instructions\n"
+                                     "\n"
+                                     "Note - Make Sure To Maintain This In Clan\n"
+                                     "<:tickup:1196453042464239686> Donate\n"
+                                     "<:tickup:1196453042464239686> Attack in wars\n"
+                                     "<:tickup:1196453042464239686> Follow mails\n"
+                                     "<:tickup:1196453042464239686>2000 in CG\n"
+                                     "<:tickup:1196453042464239686> Above 16k in Clan-Capitals raids\n"
+                                     "<:tickup:1196453042464239686> Participate in Clan-Capitals\n"
+                                     "❌ Don’t kick anyone")
+                await channel.send(embed=embed)
 
-            embed = Embed(color=Color.random())
-            embed.description = ("🍻 Welcome, This is your clan chat.\n"
-                                 "Make sure to go through the followings -\n"
-                                 "\n"
-                                 f"『📢』**<#{clan_data[clan_name]['announcement_channel']}>** \nFor important clan announcements\n"
-                                 f"『⚠』**<#1054439098342969425>** \nFor war rules and instructions\n"
-                                 "\n"
-                                 "Note - Make Sure To Maintain This In Clan\n"
-                                 "<:tickup:1196453042464239686> Donate\n"
-                                 "<:tickup:1196453042464239686> Attack in wars\n"
-                                 "<:tickup:1196453042464239686> Follow mails\n"
-                                 "<:tickup:1196453042464239686>2000 in CG\n"
-                                 "<:tickup:1196453042464239686> Above 16k in Clan-Capitals raids\n"
-                                 "<:tickup:1196453042464239686> Participate in Clan-Capitals\n"
-                                 "❌ Don’t kick anyone")
-            await channel.send(embed=embed)
+
+
 
         except Exception as e :
             error_embed = Embed(color=Color.red())
