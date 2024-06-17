@@ -314,7 +314,10 @@ class ClanRoleAdder(commands.Cog) :
             return
         try :
             await member.remove_roles(*[role for role in member.roles if role != ctx.guild.default_role])
-            await member.add_roles(*[discord.utils.get(ctx.guild.roles , name=role) for role in roles_to_add])
+            try :
+                await member.add_roles(*[discord.utils.get(ctx.guild.roles , name=role) for role in roles_to_add])
+            except Exception as e :
+                pass
 
             new_nickname = f'{COC.get_prefix(info["role"]) if info["role"] else "Mb - "}{info["name"]}'
             await member.edit(nick=new_nickname)
