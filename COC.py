@@ -78,15 +78,15 @@ def get_id(th) :
     if th == 11 :
         return "1157932788683653170"
     elif th == 12 :
-        return "1157933184529469471"
+        return "1269136504643653733"
     elif th == 13 :
-        return "1157933611337666620"
+        return "1250758290384879668"
     elif th == 14 :
-        return "1157934828784734299"
+        return "1250758245493116938"
     elif th == 15 :
-        return "1158776040525680694"
+        return "1250758155722428438"
     elif th == 16 :
-        return "1184685970814156800"
+        return "1250758139427426374"
     else :
         return "1184693650907746324"
 
@@ -186,13 +186,13 @@ def get_points(tag) :
 
 def get_hero_id(id) :
     if id == "Barbarian King" :
-        return 1172564470984347678
+        return 1269133097186623528
     elif id == "Archer Queen" :
-        return 1172566801259954196
+        return 1269133328150433927
     elif id == "Grand Warden" :
-        return 1172565750133837844
+        return 1269133505720487948
     elif id == "Royal Champion" :
-        return 1172566389131841547
+        return 1269133507666378792
     else :
         return None
 
@@ -426,14 +426,4 @@ async def fetch_cwl(tag , header) :
 
 
 if __name__ == '__main__' :
-    print(get_user(""))
-    info = {'PR9GRL8RY' : {'name' : '..M.O.O.N..' , 'level' : 13 , 'tick' : '✅' , 'clantag' : '#PUQ2PYGG'} ,
-            'Y0URPVQ9V' : {'name' : '*Ghõst Rid€r* 4' , 'level' : 13 , 'tick' : '❌' , 'clantag' : '#2GCVCUVCC'} ,
-            'P2VLY0Y80' : {'name' : 'ɪ͜͡٭KinG' , 'level' : 12 , 'tick' : '❌' , 'clantag' : '#LYQCYUPY'} ,
-            'QVQ9VLCCP' : {'name' : 'Leo' , 'level' : 9 , 'tick' : '❌' , 'clantag' : '#CQ8QY90L'} ,
-            'QVGQGUUPL' : {'name' : 'Hex' , 'level' : 6 , 'tick' : '❌' , 'clantag' : '#99LQQYLG'} ,
-            'LUCGQC2PL' : {'name' : 'SILLENT KILLER' , 'level' : 5 , 'tick' : '❌' , 'clantag' : '#YUR0JUQY'} ,
-            'YG8PV2PGL' : {'name' : 'Meo' , 'level' : 5 , 'tick' : '❌' , 'clantag' : '#PLURCRVY'} ,
-            'GLVL8LVYG' : {'name' : '^•Moon•^' , 'level' : 4 , 'tick' : '✅' , 'clantag' : '#2RPJPR8VY'}}
-    data = asyncio.run(fetch_status_of_clans(info))
-    print(data)
+    print(getclan("#2QGRUR0JQ"))
