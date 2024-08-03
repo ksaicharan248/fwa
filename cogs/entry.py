@@ -88,7 +88,9 @@ class NewModal(discord.ui.Modal , title="Link your profile") :
                             await interaction.user.edit(nick=f'TH {player_data["townHallLevel"]} - {player_data["name"]}')
                         await interaction.user.remove_roles(
                             *[role for role in interaction.user.roles if role != interaction.user.guild.default_role])
-                        channel_info = {1054435038881665024 : ['approved✅' , 1055439744739315743 , 1126856734095462511]}
+                        channel_info = {
+                            1054435038881665024 : ['approved✅' , 1055439744739315743 , 1126856734095462511] ,
+                            1250477280426201181 : ['approved✅' , 1250529194090172517 , 1250842431432429689]}
                         await interaction.user.add_roles(
                             discord.utils.get(interaction.user.guild.roles , name=channel_info[interaction.user.guild.id][0]))
                         channel = interaction.user.guild.get_channel(channel_info[interaction.user.guild.id][1])
