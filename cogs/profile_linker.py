@@ -112,8 +112,10 @@ class profile_link(commands.Cog) :
                             await ctx.author.edit(nick=f'TH {player["townHallLevel"]} - {player["name"]}')
                         await ctx.author.remove_roles(
                             *[role for role in ctx.author.roles if role != ctx.guild.default_role])
-                        channel_info = {1054435038881665024 : ['approved✅' , 1055439744739315743 , 1126856734095462511]
-                                        ,1250477280426201181 : ['approved✅' ,1250529194090172517 , 1250842431432429689]}
+                        print(ctx.guild.id)
+                        channel_info = {
+                            1054435038881665024 : ['approved✅' , 1055439744739315743 , 1126856734095462511] ,
+                            1250477280426201181 : ['approved✅' , 1250529194090172517 , 1250842431432429689]}
                         await ctx.author.add_roles(
                             discord.utils.get(ctx.guild.roles , name=channel_info[ctx.guild.id][0]))
                         channel = self.client.get_channel(channel_info[ctx.guild.id][1])
